@@ -100,13 +100,13 @@
         <section class="text-center mb-6">
             <h2 class="text-3xl font-bold text-green-500 mb-4">Détails du Projet</h2>
             <p class="text-gray-700 leading-relaxed">
-                Développement de solutions Python pour la gestion des données scolaires
+                Développement de solutions Python pour la gestion des données scolaires.
                 Dans le cadre de mes compétences en Python, j'ai conçu et implémenté des solutions pour la gestion des données scolaires. Ces solutions incluent la manipulation, l'organisation et l'analyse des informations relatives aux élèves, enseignants et résultats académiques. En utilisant des outils tels que Tkinter pour les interfaces graphiques et SQLiteStudio pour la gestion de bases de données, j'ai optimisé le traitement des données et automatisé des processus administratifs, améliorant ainsi l'efficacité et la précision des opérations.
             </p>
         </section>
 
         <!-- Media Section -->
-        <div class="grid grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <img src="images/TKINTER7.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover">
             <img src="images/TKINTER10.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover">
             <img src="images/TKINTER9.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover">
@@ -116,7 +116,7 @@
             <img src="images/TKINTER3.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover">
             <img src="images/TKINTER4.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover">
             <img src="images/TKINTER6.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover">
-            <div class="col-start-2 col-end-3 flex justify-center items-center">
+            <div class="flex justify-center items-center">
                 <img src="images/TKINTER1.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover">
             </div>
         </div>
@@ -169,7 +169,7 @@
         <p>&copy; 2025 Boubker Cheyoukh. Tous droits réservés.</p>
     </footer>
 
-    <!-- JavaScript for Accordion -->
+    <!-- JavaScript for Accordion and Modal -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const buttons = document.querySelectorAll(".accordion-button");
@@ -205,10 +205,9 @@
             });
 
             modal.addEventListener('click', (event) => {
-                if (event.target === modal){
-                modal.style.display = 'none'; // Fermer le modal si clic en dehors
+                if (event.target === modal) {
+                    modal.style.display = 'none'; // Fermer le modal si clic en dehors
                 }
-
             });
         });
     </script>
