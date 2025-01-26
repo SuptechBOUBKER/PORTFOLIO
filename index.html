@@ -29,8 +29,27 @@
             }
         }
 
+        /* Style pour l'icône WhatsApp */
+        .whatsapp-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #25d366; /* Couleur WhatsApp */
+            color: white;
+            border-radius: 30%;
+            padding: 15px;
+            font-size: 24px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            z-index: 1000;
+        }
+
+        .whatsapp-icon:hover {
+            background-color: #128c7e; /* Couleur WhatsApp au survol */
+            transform: scale(1.1);
+        }
+
         /* Responsive adjustments */
-        /* Masquer le menu par défaut sur les petits écrans */
         @media (max-width: 768px) {
             nav ul {
                 color: bisque;
@@ -259,6 +278,11 @@
         </div>
     </footer>
 
+    <!-- Icône WhatsApp -->
+    <a href="https://wa.me/212644435752" target="_blank" class="whatsapp-icon">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
     <!-- JavaScript pour le menu hamburger -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -279,7 +303,5 @@
             });
         });
     </script>
-
 </body>
-
 </html>

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Site éducatif full-stack</title>
-
+    <link rel="icon" href="images/icon_projet.png">
     <!-- TailwindCSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -65,12 +65,14 @@
             background-color: rgba(0, 0, 0, 0.9);
             justify-content: center;
             align-items: center;
+            transition: opacity 0.3s ease;
         }
 
         .modal img {
             max-width: 90%;
             max-height: 90%;
             border-radius: 8px;
+            transition: transform 0.3s ease;
         }
 
         .close {
@@ -81,6 +83,39 @@
             font-size: 40px;
             font-weight: bold;
             cursor: pointer;
+        }
+
+        /* Style pour les flèches de navigation */
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .left-arrow {
+            left: 20px;
+        }
+
+        .right-arrow {
+            right: 20px;
+        }
+
+        .nav-arrow:hover {
+            color: #38a169; /* Couleur au survol */
+        }
+
+        /* Animation au survol des images */
+        .image {
+            transition: transform 0.3s ease;
+        }
+
+        .image:hover {
+            transform: scale(1.05); /* Légère augmentation de la taille */
         }
     </style>
 </head>
@@ -101,28 +136,29 @@
             </p>
         </section>
 
-        <!-- Media Section -->
-        <section class="flex flex-col lg:flex-row items-center gap-4">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <!-- Images -->
-                <img src="images/ecole.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer">
-                <img src="images/ecole1.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer">
-                <img src="images/ecole5.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer">
-                <img src="images/ecole6.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer">
-                <img src="images/ecole2.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer">
-                <img src="images/ecole7.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer">
-                <img src="images/ecole8.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer">
-                <img src="images/ecole4.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer">
-                <img src="images/ecole3.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer">
-            </div>
-        </section>
-
         <!-- Modal pour afficher l'image agrandie -->
         <div id="modal" class="modal">
             <span class="close">&times;</span>
+            <span class="nav-arrow left-arrow">&#10094;</span> <!-- Flèche gauche -->
+            <span class="nav-arrow right-arrow">&#10095;</span> <!-- Flèche droite -->
             <img id="modal-image" src="" alt="Image agrandie">
         </div>
 
+        <!-- Media Section -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+            <!-- Images avec animation au survol -->
+            <img src="images/eco1.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
+            <img src="images/eco2.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
+            <img src="images/eco3.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
+            <img src="images/eco10.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
+            <img src="images/eco4.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
+            <img src="images/eco5.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
+            <img src="images/eco6.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
+            <img src="images/eco7.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
+            <img src="images/eco8.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
+            <img src="images/eco9.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
+        </div>
+       
         <!-- Accordion Section -->
         <section class="accordion mt-6" id="accordionDetails">
             <!-- Item 1 -->
@@ -198,21 +234,61 @@
             const modal = document.getElementById('modal');
             const modalImage = document.getElementById('modal-image');
             const closeButton = document.querySelector('.close');
+            const leftArrow = document.querySelector('.left-arrow');
+            const rightArrow = document.querySelector('.right-arrow');
 
-            images.forEach(image => {
+            let currentImageIndex = 0;
+
+            // Ouvrir le modal et afficher l'image cliquée
+            images.forEach((image, index) => {
                 image.addEventListener('click', () => {
-                    modal.style.display = 'flex'; // Afficher le modal
-                    modalImage.src = image.src; // Ajouter la source de l'image cliquée
+                    modal.style.display = 'flex';
+                    modalImage.src = image.src;
+                    currentImageIndex = index; // Mettre à jour l'index de l'image actuelle
                 });
             });
 
+            // Fermer le modal
             closeButton.addEventListener('click', () => {
-                modal.style.display = 'none'; // Fermer le modal
+                modal.style.display = 'none';
             });
 
+            // Fermer le modal si on clique en dehors de l'image
             modal.addEventListener('click', (event) => {
                 if (event.target === modal) {
-                    modal.style.display = 'none'; // Fermer le modal si clic en dehors
+                    modal.style.display = 'none';
+                }
+            });
+
+            // Navigation vers l'image précédente
+            leftArrow.addEventListener('click', (event) => {
+                event.stopPropagation(); // Empêcher la fermeture du modal
+                currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+                modalImage.src = images[currentImageIndex].src;
+            });
+
+            // Navigation vers l'image suivante
+            rightArrow.addEventListener('click', (event) => {
+                event.stopPropagation(); // Empêcher la fermeture du modal
+                currentImageIndex = (currentImageIndex + 1) % images.length;
+                modalImage.src = images[currentImageIndex].src;
+            });
+
+            // Navigation au clavier (flèches gauche, droite et Échap)
+            document.addEventListener('keydown', (event) => {
+                if (modal.style.display === 'flex') {
+                    if (event.key === 'ArrowLeft') {
+                        // Flèche gauche : image précédente
+                        currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+                        modalImage.src = images[currentImageIndex].src;
+                    } else if (event.key === 'ArrowRight') {
+                        // Flèche droite : image suivante
+                        currentImageIndex = (currentImageIndex + 1) % images.length;
+                        modalImage.src = images[currentImageIndex].src;
+                    } else if (event.key === 'Escape') {
+                        // Touche Échap : fermer le modal
+                        modal.style.display = 'none';
+                    }
                 }
             });
         });

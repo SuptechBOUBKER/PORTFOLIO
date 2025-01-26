@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plateforme Gestion de restaurant</title>
-
+    <link rel="icon" href="images/icon_projet.png">
     <!-- TailwindCSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -82,6 +82,30 @@
             font-weight: bold;
             cursor: pointer;
         }
+
+        /* Style pour les flèches de navigation */
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .left-arrow {
+            left: 20px;
+        }
+
+        .right-arrow {
+            right: 20px;
+        }
+
+        .nav-arrow:hover {
+            color: #38a169; /* Couleur au survol */
+        }
     </style>
 </head>
 
@@ -101,24 +125,26 @@
             </p>
         </section>
 
-        <!-- Media Section -->
-        <section class="flex flex-col lg:flex-row items-center gap-4">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <!-- Images -->
-                <img src="images/menu1.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer">
-                <img src="images/menu2.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer">
-                <img src="images/menu3.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer">
-                <img src="images/menu4.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer">
-                <img src="images/menu5.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer">
-                <img src="images/menu6.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer">
-            </div>
-        </section>
-
         <!-- Modal pour afficher l'image agrandie -->
         <div id="modal" class="modal">
             <span class="close">&times;</span>
+            <span class="nav-arrow left-arrow">&#10094;</span> <!-- Flèche gauche -->
+            <span class="nav-arrow right-arrow">&#10095;</span> <!-- Flèche droite -->
             <img id="modal-image" src="" alt="Image agrandie">
         </div>
+
+        <!-- Media Section -->
+        <section class="flex flex-col lg:flex-row items-center gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+                <!-- Images avec animation au survol -->
+                <img src="images/menu1.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
+                <img src="images/menu2.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
+                <img src="images/menu3.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
+                <img src="images/menu4.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
+                <img src="images/menu5.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
+                <img src="images/menu6.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
+            </div>
+        </section>
 
         <!-- Accordion Section -->
         <section class="accordion mt-6" id="accordionDetails">
@@ -191,29 +217,69 @@
 
     <!-- JavaScript pour le modal d'agrandissement des images -->
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const images = document.querySelectorAll('.image');
-            const modal = document.getElementById('modal');
-            const modalImage = document.getElementById('modal-image');
-            const closeButton = document.querySelector('.close');
+       document.addEventListener("DOMContentLoaded", function () {
+    const images = document.querySelectorAll('.image');
+    const modal = document.getElementById('modal');
+    const modalImage = document.getElementById('modal-image');
+    const closeButton = document.querySelector('.close');
+    const leftArrow = document.querySelector('.left-arrow');
+    const rightArrow = document.querySelector('.right-arrow');
 
-            images.forEach(image => {
-                image.addEventListener('click', () => {
-                    modal.style.display = 'flex'; // Afficher le modal
-                    modalImage.src = image.src; // Ajouter la source de l'image cliquée
-                });
-            });
+    let currentImageIndex = 0;
 
-            closeButton.addEventListener('click', () => {
-                modal.style.display = 'none'; // Fermer le modal
-            });
-
-            modal.addEventListener('click', (event) => {
-                if (event.target === modal) {
-                    modal.style.display = 'none'; // Fermer le modal si clic en dehors
-                }
-            });
+    // Ouvrir le modal et afficher l'image cliquée
+    images.forEach((image, index) => {
+        image.addEventListener('click', () => {
+            modal.style.display = 'flex';
+            modalImage.src = image.src;
+            currentImageIndex = index; // Mettre à jour l'index de l'image actuelle
         });
+    });
+
+    // Fermer le modal
+    closeButton.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+
+    // Fermer le modal si on clique en dehors de l'image
+    modal.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
+    // Navigation vers l'image précédente
+    leftArrow.addEventListener('click', (event) => {
+        event.stopPropagation(); // Empêcher la fermeture du modal
+        currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+        modalImage.src = images[currentImageIndex].src;
+    });
+
+    // Navigation vers l'image suivante
+    rightArrow.addEventListener('click', (event) => {
+        event.stopPropagation(); // Empêcher la fermeture du modal
+        currentImageIndex = (currentImageIndex + 1) % images.length;
+        modalImage.src = images[currentImageIndex].src;
+    });
+
+    // Navigation au clavier (flèches gauche, droite et Échap)
+    document.addEventListener('keydown', (event) => {
+        if (modal.style.display === 'flex') {
+            if (event.key === 'ArrowLeft') {
+                // Flèche gauche : image précédente
+                currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+                modalImage.src = images[currentImageIndex].src;
+            } else if (event.key === 'ArrowRight') {
+                // Flèche droite : image suivante
+                currentImageIndex = (currentImageIndex + 1) % images.length;
+                modalImage.src = images[currentImageIndex].src;
+            } else if (event.key === 'Escape') {
+                // Touche Échap : fermer le modal
+                modal.style.display = 'none';
+            }
+        }
+    });
+});
     </script>
 </body>
 
