@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Résultats de recherche</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+    <div class="container mx-auto p-4">
+        <h1 class="text-2xl font-bold mb-4">Résultats de recherche</h1>
+        <div id="search-results" class="bg-white p-6 rounded-lg shadow-lg">
+            <!-- Les résultats de recherche seront affichés ici -->
+        </div>
+    </div>
+
+    <script>
+        // Récupérer le terme de recherche depuis l'URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const query = urlParams.get("q");
+
+        // Afficher le terme de recherche
+        const searchResults = document.getElementById("search-results");
+        if (query) {
+            searchResults.innerHTML = `<p>Vous avez recherché : <strong>${query}</strong></p>`;
+        } else {
+            searchResults.innerHTML = "<p>Aucun terme de recherche spécifié.</p>";
+        }
+    </script>
+</body>
+
+</html>

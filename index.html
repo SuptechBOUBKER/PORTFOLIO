@@ -17,6 +17,29 @@
             animation: fadeIn 1.5s ease-in-out;
         }
 
+        #menu-toggle,
+        #whatsapp-toggle{
+            margin: 0; /* Supprime les marges */
+            padding: 8px; /* Ajuste le padding */
+            background-color: transparent; /* Fond transparent */
+            border: none; /* Supprime la bordure */
+            cursor: pointer; /* Curseur en pointeur */
+            display: flex; /* Utilise Flexbox pour aligner l'icône */
+            align-items: center; /* Centre verticalement */
+            justify-content: center; /* Centre horizontalement */
+        }
+
+        #menu-toggle i,
+        #whatsapp-toggle i{
+            font-size: 24px; /* Taille de l'icône */
+            color: white; /* Couleur de l'icône */
+        }
+
+        #menu-toggle:hover i,
+        #whatsapp-toggle:hover i{
+            color: #fbbf24; /* Couleur au survol (jaune-300) */
+        }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -29,7 +52,6 @@
             }
         }
 
-        /* Style pour l'icône WhatsApp */
         .whatsapp-icon {
             position: fixed;
             bottom: 20px;
@@ -72,18 +94,24 @@
         }
     </style>
 </head>
-
 <body class="bg-gray-100 font-sans leading-normal tracking-normal">
-
     <!-- Header -->
     <header class="bg-gradient-to-r from-purple-600 to-blue-500 text-white py-4 sticky top-0 z-50 shadow-lg">
         <div class="container mx-auto flex justify-between items-center px-4">
             <h1 class="text-2xl font-bold">Boubker Cheyoukh</h1>
 
-            <!-- Bouton hamburger pour les mobiles -->
-            <button id="menu-toggle" class="md:hidden focus:outline-none">
-                <i class="fas fa-bars text-2xl"></i>
-            </button>
+          <!-- Icônes pour les mobiles -->
+        <div class="flex items-center space-x-4 md:hidden">
+            <!-- Icône de menu -->
+            <div id="menu-toggle" class="focus:outline-none cursor-pointer" style="margin: 0; padding: 8px;">
+                <i class="fas fa-bars text-2xl text-white"></i> <!-- Icône de menu -->
+            </div>
+
+           <!-- Icône WhatsApp avec lien WhatsApp -->
+            <a href="https://wa.me/212644435752" target="_blank" id="whatsapp-toggle" class="focus:outline-none cursor-pointer" style="margin: 0; padding: 8px;">
+                <i class="fab fa-whatsapp text-2xl text-white"></i> <!-- Icône WhatsApp -->
+            </a>
+        </div>
 
             <!-- Navigation -->
             <nav>

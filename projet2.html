@@ -4,10 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plateforme Gestion de restaurant</title>
+    <title>Plateforme Gestion de Restaurant</title>
     <link rel="icon" href="images/icon_projet.png">
     <!-- TailwindCSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
     <style>
         /* Custom CSS for Accordion */
@@ -23,7 +25,7 @@
         }
 
         .accordion-button.active {
-            background-color: #38a169;
+            background-color: #7c3aed; /* Violet */
             color: white;
         }
 
@@ -32,12 +34,13 @@
             border-top: 1px solid #ddd;
             display: none;
             background-color: #f1f1f1;
+            transition: opacity 0.3s ease-in-out;
         }
 
         /* Custom CSS for Header and Footer */
         header,
         footer {
-            background-color: #38a169;
+            background-color: #7c3aed; /* Violet */
             color: white;
         }
 
@@ -51,6 +54,11 @@
         video {
             max-height: 400px;
             object-fit: cover;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .image:hover {
+            transform: scale(1.05);
         }
 
         /* Style pour le modal */
@@ -65,12 +73,29 @@
             background-color: rgba(0, 0, 0, 0.9);
             justify-content: center;
             align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .modal.open {
+            display: flex;
+            opacity: 1;
         }
 
         .modal img {
             max-width: 90%;
             max-height: 90%;
             border-radius: 8px;
+            animation: zoomIn 0.3s ease-in-out;
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.8);
+            }
+            to {
+                transform: scale(1);
+            }
         }
 
         .close {
@@ -81,6 +106,11 @@
             font-size: 40px;
             font-weight: bold;
             cursor: pointer;
+            transition: color 0.3s ease-in-out;
+        }
+
+        .close:hover {
+            color: #7c3aed; /* Violet */
         }
 
         /* Style pour les flèches de navigation */
@@ -93,6 +123,7 @@
             font-weight: bold;
             cursor: pointer;
             user-select: none;
+            transition: color 0.3s ease-in-out;
         }
 
         .left-arrow {
@@ -104,7 +135,7 @@
         }
 
         .nav-arrow:hover {
-            color: #38a169; /* Couleur au survol */
+            color: #7c3aed; /* Violet */
         }
     </style>
 </head>
@@ -112,14 +143,14 @@
 <body class="bg-gray-50">
     <!-- Header -->
     <header class="py-4 text-center shadow-lg">
-        <h1 class="text-2xl font-bold">Plateforme Gestion de restaurant</h1>
+        <h1 class="text-2xl font-bold">Plateforme Gestion de Restaurant</h1>
     </header>
 
     <!-- Main Content -->
     <main class="container mx-auto py-8 px-4">
         <!-- Introduction -->
         <section class="text-center mb-6">
-            <h2 class="text-3xl font-bold text-green-500 mb-4">Détails du Projet</h2>
+            <h2 class="text-3xl font-bold text-purple-600 mb-4">Détails du Projet</h2>
             <p class="text-gray-700 leading-relaxed">
                 Une plateforme de gestion de restaurant est un système en ligne qui permet la gestion des réservations, des commandes, du personnel et des stocks, optimisant ainsi les opérations et améliorant l'efficacité du restaurant.
             </p>
@@ -128,8 +159,8 @@
         <!-- Modal pour afficher l'image agrandie -->
         <div id="modal" class="modal">
             <span class="close">&times;</span>
-            <span class="nav-arrow left-arrow">&#10094;</span> <!-- Flèche gauche -->
-            <span class="nav-arrow right-arrow">&#10095;</span> <!-- Flèche droite -->
+            <span class="nav-arrow left-arrow">&#10094;</span>
+            <span class="nav-arrow right-arrow">&#10095;</span>
             <img id="modal-image" src="" alt="Image agrandie">
         </div>
 
@@ -137,14 +168,24 @@
         <section class="flex flex-col lg:flex-row items-center gap-4">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <!-- Images avec animation au survol -->
-                <img src="images/resto1.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
-                <img src="images/resto2.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
-                <img src="images/resto3.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
-                <img src="images/resto4.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
-                <img src="images/resto5.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
-                <img src="images/resto6.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
+                <img src="images/resto1.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer">
+                <img src="images/resto2.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer">
+                <img src="images/resto3.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer">
+                <img src="images/resto4.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer">
+                <img src="images/resto5.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer">
+                <img src="images/resto6.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer">
             </div>
         </section>
+
+        <!-- Bouton "Visualiser le site" -->
+        <div class="text-center mt-6">
+            <a href="https://suptechboubker.github.io/FRONT_END_PO/index.html" 
+               target="_blank"
+               class="inline-flex items-center justify-center bg-purple-600 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-purple-700 transition-all duration-300 transform hover:scale-105">
+                <i class="fas fa-eye mr-2"></i> <!-- Icône "œil" pour représenter "visualiser" -->
+                Visualiser le site
+            </a>
+        </div>
 
         <!-- Accordion Section -->
         <section class="accordion mt-6" id="accordionDetails">
@@ -181,7 +222,7 @@
 
         <!-- Navigation Button -->
         <div class="text-center mt-6">
-            <a href="index.html#projects" class="bg-green-500 text-white px-5 py-2 rounded shadow hover:bg-green-600 transition">
+            <a href="index.html#projects" class="bg-purple-600 text-white px-5 py-2 rounded shadow hover:bg-purple-700 transition">
                 Retour à l'accueil
             </a>
         </div>
@@ -217,70 +258,59 @@
 
     <!-- JavaScript pour le modal d'agrandissement des images -->
     <script>
-       document.addEventListener("DOMContentLoaded", function () {
-    const images = document.querySelectorAll('.image');
-    const modal = document.getElementById('modal');
-    const modalImage = document.getElementById('modal-image');
-    const closeButton = document.querySelector('.close');
-    const leftArrow = document.querySelector('.left-arrow');
-    const rightArrow = document.querySelector('.right-arrow');
+        document.addEventListener("DOMContentLoaded", function () {
+            const images = document.querySelectorAll('.image');
+            const modal = document.getElementById('modal');
+            const modalImage = document.getElementById('modal-image');
+            const closeButton = document.querySelector('.close');
+            const leftArrow = document.querySelector('.left-arrow');
+            const rightArrow = document.querySelector('.right-arrow');
 
-    let currentImageIndex = 0;
+            let currentImageIndex = 0;
 
-    // Ouvrir le modal et afficher l'image cliquée
-    images.forEach((image, index) => {
-        image.addEventListener('click', () => {
-            modal.style.display = 'flex';
-            modalImage.src = image.src;
-            currentImageIndex = index; // Mettre à jour l'index de l'image actuelle
-        });
-    });
+            // Ouvrir le modal et afficher l'image cliquée
+            images.forEach((image, index) => {
+                image.addEventListener('click', () => {
+                    modal.classList.add('open');
+                    modalImage.src = image.src;
+                    currentImageIndex = index;
+                });
+            });
 
-    // Fermer le modal
-    closeButton.addEventListener('click', () => {
-        modal.style.display = 'none';
-    });
+            // Fermer le modal
+            closeButton.addEventListener('click', () => {
+                modal.classList.remove('open');
+            });
 
-    // Fermer le modal si on clique en dehors de l'image
-    modal.addEventListener('click', (event) => {
-        if (event.target === modal) {
-            modal.style.display = 'none';
-        }
-    });
-
-    // Navigation vers l'image précédente
-    leftArrow.addEventListener('click', (event) => {
-        event.stopPropagation(); // Empêcher la fermeture du modal
-        currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
-        modalImage.src = images[currentImageIndex].src;
-    });
-
-    // Navigation vers l'image suivante
-    rightArrow.addEventListener('click', (event) => {
-        event.stopPropagation(); // Empêcher la fermeture du modal
-        currentImageIndex = (currentImageIndex + 1) % images.length;
-        modalImage.src = images[currentImageIndex].src;
-    });
-
-    // Navigation au clavier (flèches gauche, droite et Échap)
-    document.addEventListener('keydown', (event) => {
-        if (modal.style.display === 'flex') {
-            if (event.key === 'ArrowLeft') {
-                // Flèche gauche : image précédente
+            // Navigation vers l'image précédente
+            leftArrow.addEventListener('click', (event) => {
+                event.stopPropagation();
                 currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
                 modalImage.src = images[currentImageIndex].src;
-            } else if (event.key === 'ArrowRight') {
-                // Flèche droite : image suivante
+            });
+
+            // Navigation vers l'image suivante
+            rightArrow.addEventListener('click', (event) => {
+                event.stopPropagation();
                 currentImageIndex = (currentImageIndex + 1) % images.length;
                 modalImage.src = images[currentImageIndex].src;
-            } else if (event.key === 'Escape') {
-                // Touche Échap : fermer le modal
-                modal.style.display = 'none';
-            }
-        }
-    });
-});
+            });
+
+            // Navigation au clavier (flèches gauche, droite et Échap)
+            document.addEventListener('keydown', (event) => {
+                if (modal.classList.contains('open')) {
+                    if (event.key === 'ArrowLeft') {
+                        currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+                        modalImage.src = images[currentImageIndex].src;
+                    } else if (event.key === 'ArrowRight') {
+                        currentImageIndex = (currentImageIndex + 1) % images.length;
+                        modalImage.src = images[currentImageIndex].src;
+                    } else if (event.key === 'Escape') {
+                        modal.classList.remove('open');
+                    }
+                }
+            });
+        });
     </script>
 </body>
-
 </html>
