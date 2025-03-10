@@ -13,34 +13,10 @@
     <link rel="icon" href="portfolio.png" type="image/png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
 
-
     <style>
         /* Custom animations */
         .fade-in {
             animation: fadeIn 1.5s ease-in-out;
-        }
-
-        #menu-toggle,
-        #whatsapp-toggle{
-            margin: 0; /* Supprime les marges */
-            padding: 8px; /* Ajuste le padding */
-            background-color: transparent; /* Fond transparent */
-            border: none; /* Supprime la bordure */
-            cursor: pointer; /* Curseur en pointeur */
-            display: flex; /* Utilise Flexbox pour aligner l'icône */
-            align-items: center; /* Centre verticalement */
-            justify-content: center; /* Centre horizontalement */
-        }
-
-        #menu-toggle i,
-        #whatsapp-toggle i{
-            font-size: 24px; /* Taille de l'icône */
-            color: white; /* Couleur de l'icône */
-        }
-
-        #menu-toggle:hover i,
-        #whatsapp-toggle:hover i{
-            color: #fbbf24; /* Couleur au survol (jaune-300) */
         }
 
         @keyframes fadeIn {
@@ -59,9 +35,9 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background-color: #25d366; /* Couleur WhatsApp */
+            background-color: #25d366;
             color: white;
-            border-radius: 30%;
+            border-radius: 50%;
             padding: 15px;
             font-size: 24px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -70,14 +46,13 @@
         }
 
         .whatsapp-icon:hover {
-            background-color: #128c7e; /* Couleur WhatsApp au survol */
+            background-color: #128c7e;
             transform: scale(1.1);
         }
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
-            nav ul {
-                color: bisque;
+            #menu {
                 display: none;
                 flex-direction: column;
                 gap: 1rem;
@@ -91,30 +66,31 @@
                 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             }
 
-            nav ul.active {
+            #menu.active {
                 display: flex;
             }
         }
     </style>
 </head>
+
 <body class="bg-gray-100 font-sans leading-normal tracking-normal">
     <!-- Header -->
     <header class="bg-gradient-to-r from-purple-600 to-blue-500 text-white py-4 sticky top-0 z-50 shadow-lg">
         <div class="container mx-auto flex justify-between items-center px-4">
             <h1 class="text-2xl font-bold">Boubker Cheyoukh</h1>
 
-          <!-- Icônes pour les mobiles -->
-        <div class="flex items-center space-x-4 md:hidden">
-            <!-- Icône de menu -->
-            <div id="menu-toggle" class="focus:outline-none cursor-pointer" style="margin: 0; padding: 8px;">
-                <i class="fas fa-bars text-2xl text-white"></i> <!-- Icône de menu -->
-            </div>
+            <!-- Icônes pour les mobiles -->
+            <div class="flex items-center space-x-4 md:hidden">
+                <!-- Icône de menu -->
+                <button id="menu-toggle" class="focus:outline-none">
+                    <i class="fas fa-bars text-2xl text-white"></i>
+                </button>
 
-           <!-- Icône WhatsApp avec lien WhatsApp -->
-            <a href="https://wa.me/212644435752" target="_blank" id="whatsapp-toggle" class="focus:outline-none cursor-pointer" style="margin: 0; padding: 8px;">
-                <i class="fab fa-whatsapp text-2xl text-white"></i> <!-- Icône WhatsApp -->
-            </a>
-        </div>
+                <!-- Icône WhatsApp avec lien WhatsApp -->
+                <a href="https://wa.me/212644435752" target="_blank" class="focus:outline-none">
+                    <i class="fab fa-whatsapp text-2xl text-white"></i>
+                </a>
+            </div>
 
             <!-- Navigation -->
             <nav>
@@ -122,7 +98,6 @@
                     <li><a href="#about" class="hover:text-yellow-300 transition-all duration-300">À propos</a></li>
                     <li><a href="#skills" class="hover:text-yellow-300 transition-all duration-300">Compétences</a></li>
                     <li><a href="#projects" class="hover:text-yellow-300 transition-all duration-300">Projets</a></li>
-                    <!--<li><a href="#contact" class="hover:text-yellow-300 transition-all duration-300">Contact</a></li>-->
                 </ul>
             </nav>
         </div>
@@ -142,7 +117,7 @@
             <div class="mt-6 space-y-4 text-left md:text-center">
                 <p class="flex items-center justify-center text-gray-800">
                     <i class="fas fa-envelope text-purple-600 mr-3"></i>
-                    <a href="mailto:boubker@example.com" class="hover:underline">cheyoukheboubker@gmail.com</a>
+                    <a href="mailto:cheyoukheboubker@gmail.com" class="hover:underline">cheyoukheboubker@gmail.com</a>
                 </p>
                 <p class="flex items-center justify-center text-gray-800">
                     <i class="fas fa-phone text-purple-600 mr-3"></i>
@@ -164,81 +139,89 @@
                     class="bg-purple-600 text-white px-6 py-3 rounded-md shadow hover:bg-purple-700 transition duration-300">Voir mes projets</a>
                 <a href="https://wa.me/212644435752"
                     class="bg-gray-900 text-white px-6 py-3 rounded-md shadow hover:bg-gray-800 transition duration-300">Contactez-moi</a>
-                <a href="CV_BOUBKER.pdf" download="Mon_CV.pdf"
-                    class="bg-purple-600 text-white px-6 py-3 rounded-md shadow hover:bg-purple-700 transition duration-300">Télécharger mon CV</a>
+
+                <!-- CV download with language selection -->
+                <div class="relative inline-block">
+                    <button onclick="toggleDropdown()"
+                        class="bg-purple-600 text-white px-6 py-3 rounded-md shadow hover:bg-purple-700 transition duration-300">Télécharger mon CV</button>
+                    <div id="languageDropdown" class="dropdown-content hidden absolute mt-2 bg-white border border-gray-300 rounded-md shadow-lg">
+                        <a href="CV_BOUBKER.pdf" onclick="downloadCV('fr')" class="block px-4 py-2 hover:bg-gray-100">Télécharger mon CV (Français)</a>
+                        <a href="CV_BOUBKER_EN.pdf" onclick="downloadCV('en')" class="block px-4 py-2 hover:bg-gray-100">Download my CV (English)</a>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Skills Section -->
-<section id="skills" class="py-12 bg-gradient-to-br from-gray-100 to-gray-200">
-    <div class="container mx-auto px-4">
-        <h2 class="text-4xl font-bold text-center mb-6 text-blue-500">Compétences</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 skills-grid">
-            <!-- Développement Front-end -->
-            <div class="bg-white p-6 shadow-lg rounded text-center hover:shadow-xl transition-shadow">
-                <i class="devicon-html5-plain text-4xl text-orange-500 mb-4"></i>
-                <i class="devicon-css3-plain text-4xl text-blue-500 mb-4"></i>
-                <i class="devicon-javascript-plain text-4xl text-yellow-500 mb-4"></i>
-                <h3 class="font-bold">Développement Front-end</h3>
-                <p class="text-gray-600">HTML, CSS, JavaScript, Sass, Tailwind CSS, Bootstrap</p>
-            </div>
-            <!-- Bases de données -->
-            <div class="bg-white p-6 shadow-lg rounded text-center hover:shadow-xl transition-shadow">
-                <i class="devicon-mysql-plain text-4xl text-blue-500 mb-4"></i>
-                <i class="devicon-sqlite-plain text-4xl text-gray-500 mb-4"></i>
-                <h3 class="font-bold">Bases de données</h3>
-                <p class="text-gray-600">MySQL, SQLite, phpMyAdmin</p>
-            </div>
-            <!-- Développement Back-end -->
-            <div class="bg-white p-6 shadow-lg rounded text-center hover:shadow-xl transition-shadow">
-                <i class="devicon-java-plain text-4xl text-red-500 mb-4"></i>
-                <i class="devicon-php-plain text-4xl text-purple-500 mb-4"></i>
-                <i class="devicon-python-plain text-4xl text-blue-400 mb-4"></i>
-                <h3 class="font-bold">Développement Back-end</h3>
-                <p class="text-gray-600">Java_POO, PHP, Python</p>
-            </div>
-            <!-- Frameworks et outils Python -->
-            <div class="bg-white p-6 shadow-lg rounded text-center hover:shadow-xl transition-shadow">
-                <i class="devicon-django-plain text-4xl text-green-500 mb-4"></i>
-                <i class="devicon-flask-original text-4xl text-black mb-4"></i>
-                <h3 class="font-bold">Frameworks et outils Python</h3>
-                <p class="text-gray-600">Django, Flask, PyQt5, Tkinter</p>
-            </div>
-            <!-- Frameworks Java -->
-            <div class="bg-white p-6 shadow-lg rounded text-center hover:shadow-xl transition-shadow">
-                <i class="devicon-java-plain text-4xl text-red-500 mb-4"></i>
-                <i class="devicon-hibernate-plain text-4xl text-gray-600 mb-4"></i>
-                <h3 class="font-bold">Frameworks Java</h3>
-                <p class="text-gray-600">JEE (Java Enterprise Edition), Hibernate</p>
-            </div>
-            <!-- IA & Machine Learning -->
-            <div class="bg-white p-6 shadow-lg rounded text-center hover:shadow-xl transition-shadow">
-                <i class="devicon-python-plain text-4xl text-blue-400 mb-4"></i>
-                <h3 class="font-bold">IA & Machine Learning</h3>
-                <p class="text-gray-600">Python</p>
-            </div>
-            <!-- Modélisation et Conception -->
-            <div class="bg-white p-6 shadow-lg rounded text-center hover:shadow-xl transition-shadow">
-                <i class="fas fa-project-diagram text-4xl text-orange-500 mb-4"></i>
-                <h3 class="font-bold">Modélisation et Conception</h3>
-                <p class="text-gray-600">UML, Merise</p>
-            </div>
-            <!-- Langages proches du matériel -->
-            <div class="bg-white p-6 shadow-lg rounded text-center hover:shadow-xl transition-shadow">
-                <i class="devicon-c-plain text-4xl text-blue-500 mb-4"></i>
-                <h3 class="font-bold">Langages proches du matériel</h3>
-                <p class="text-gray-600">Assembly, C</p>
+    <section id="skills" class="py-12 bg-gradient-to-br from-gray-100 to-gray-200">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-6 text-blue-500">Compétences</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Développement Front-end -->
+                <div class="bg-white p-6 shadow-lg rounded text-center hover:shadow-xl transition-shadow">
+                    <i class="devicon-html5-plain text-4xl text-orange-500 mb-4"></i>
+                    <i class="devicon-css3-plain text-4xl text-blue-500 mb-4"></i>
+                    <i class="devicon-javascript-plain text-4xl text-yellow-500 mb-4"></i>
+                    <h3 class="font-bold">Développement Front-end</h3>
+                    <p class="text-gray-600">HTML, CSS, JavaScript, Sass, Tailwind CSS, Bootstrap</p>
+                </div>
+                <!-- Bases de données -->
+                <div class="bg-white p-6 shadow-lg rounded text-center hover:shadow-xl transition-shadow">
+                    <i class="devicon-mysql-plain text-4xl text-blue-500 mb-4"></i>
+                    <i class="devicon-sqlite-plain text-4xl text-gray-500 mb-4"></i>
+                    <h3 class="font-bold">Bases de données</h3>
+                    <p class="text-gray-600">MySQL, SQLite, phpMyAdmin</p>
+                </div>
+                <!-- Développement Back-end -->
+                <div class="bg-white p-6 shadow-lg rounded text-center hover:shadow-xl transition-shadow">
+                    <i class="devicon-java-plain text-4xl text-red-500 mb-4"></i>
+                    <i class="devicon-php-plain text-4xl text-purple-500 mb-4"></i>
+                    <i class="devicon-python-plain text-4xl text-blue-400 mb-4"></i>
+                    <h3 class="font-bold">Développement Back-end</h3>
+                    <p class="text-gray-600">Java_POO, PHP, Python</p>
+                </div>
+                <!-- Frameworks et outils Python -->
+                <div class="bg-white p-6 shadow-lg rounded text-center hover:shadow-xl transition-shadow">
+                    <i class="devicon-django-plain text-4xl text-green-500 mb-4"></i>
+                    <i class="devicon-flask-original text-4xl text-black mb-4"></i>
+                    <h3 class="font-bold">Frameworks et outils Python</h3>
+                    <p class="text-gray-600">Django, Flask, PyQt5, Tkinter</p>
+                </div>
+                <!-- Frameworks Java -->
+                <div class="bg-white p-6 shadow-lg rounded text-center hover:shadow-xl transition-shadow">
+                    <i class="devicon-java-plain text-4xl text-red-500 mb-4"></i>
+                    <i class="devicon-hibernate-plain text-4xl text-gray-600 mb-4"></i>
+                    <h3 class="font-bold">Frameworks Java</h3>
+                    <p class="text-gray-600">JEE (Java Enterprise Edition), Hibernate</p>
+                </div>
+                <!-- IA & Machine Learning -->
+                <div class="bg-white p-6 shadow-lg rounded text-center hover:shadow-xl transition-shadow">
+                    <i class="devicon-python-plain text-4xl text-blue-400 mb-4"></i>
+                    <h3 class="font-bold">IA & Machine Learning</h3>
+                    <p class="text-gray-600">Python</p>
+                </div>
+                <!-- Modélisation et Conception -->
+                <div class="bg-white p-6 shadow-lg rounded text-center hover:shadow-xl transition-shadow">
+                    <i class="fas fa-project-diagram text-4xl text-orange-500 mb-4"></i>
+                    <h3 class="font-bold">Modélisation et Conception</h3>
+                    <p class="text-gray-600">UML, Merise</p>
+                </div>
+                <!-- Langages proches du matériel -->
+                <div class="bg-white p-6 shadow-lg rounded text-center hover:shadow-xl transition-shadow">
+                    <i class="devicon-c-plain text-4xl text-blue-500 mb-4"></i>
+                    <h3 class="font-bold">Langages proches du matériel</h3>
+                    <p class="text-gray-600">Assembly, C</p>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
     <!-- Projects Section -->
     <section id="projects" class="py-12 bg-white">
         <div class="container mx-auto text-center px-4">
             <h2 class="text-4xl font-bold mb-6 text-blue-500">Projets</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 projects-grid">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Projets items -->
                 <div class="bg-gray-100 p-6 shadow-lg rounded hover:scale-105 transition-transform">
                     <h3 class="font-bold text-xl">Gestion des données scolaires</h3>
@@ -254,7 +237,7 @@
                 </div>
                 <div class="bg-gray-100 p-6 shadow-lg rounded hover:scale-105 transition-transform">
                     <h3 class="font-bold text-xl">Site éducatif full-stack</h3>
-                    Plateforme éducative full-stack combinant un design interactif (HTML, CSS, JS) et une gestion de données sécurisée (J2EE, MySQL).
+                    <p class="text-gray-600 mt-2">Plateforme éducative full-stack combinant un design interactif (HTML, CSS, JS) et une gestion de données sécurisée (J2EE, MySQL).</p>
                     <a href="projet3.html"
                         class="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600 transition">Voir Détails</a>
                 </div>
@@ -262,35 +245,9 @@
         </div>
     </section>
 
-    <!-- Contact Section -->
-    <!-- 
-    <section id="contact" class="py-12 bg-gradient-to-br from-blue-500 to-purple-600 text-white">
-        <div class="container mx-auto text-center px-4">
-            <h2 class="text-4xl font-bold mb-6">Contactez-moi</h2>
-            <form action="contact.php" method="POST" class="max-w-lg mx-auto bg-white p-6 rounded shadow text-gray-800 contact-form">
-                <div class="mb-4">
-                    <label class="block text-left font-bold">Nom</label>
-                    <input type="text" name="nom" class="w-full border-gray-300 rounded mt-2 p-2" placeholder="Votre nom" required>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-left font-bold">Email</label>
-                    <input type="email" name="email" class="w-full border-gray-300 rounded mt-2 p-2" placeholder="Votre email" required>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-left font-bold">Message</label>
-                    <textarea name="message" class="w-full border-gray-300 rounded mt-2 p-2" rows="4" placeholder="Votre message" required></textarea>
-                </div>
-                <button type="submit" class="bg-blue-500 text-white py-2 px-6 rounded hover:bg-blue-600 transition">
-                    Envoyer
-                </button>
-            </form>
-        </div>
-    </section>
-    -->
-
     <!-- Footer -->
     <footer class="bg-gray-800 text-white py-8">
-        <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left px-4 footer-grid">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left px-4">
             <div>
                 <h3 class="text-lg font-bold mb-4">À propos</h3>
                 <p class="text-gray-400 text-sm leading-relaxed">
@@ -308,9 +265,9 @@
             </div>
             <div>
                 <h3 class="text-lg font-bold mb-4">Contact</h3>
-                <p class="text-gray-400 text-sm">Email : <a href="mailto:boubker.cheyoukh@example.com"
+                <p class="text-gray-400 text-sm">Email : <a href="mailto:cheyoukheboubker@gmail.com"
                         class="hover:text-yellow-300">cheyoukheboubker@gmail.com</a></p>
-                <p class="text-gray-400 text-sm">Téléphone : <a href="tel:+212600000000"
+                <p class="text-gray-400 text-sm">Téléphone : <a href="tel:+212644435752"
                         class="hover:text-yellow-300">+212 0644-435752</a></p>
                 <div class="flex justify-center md:justify-start space-x-4 mt-4">
                     <a href="https://github.com/BOUBKERsup07" target="_blank" class="hover:text-yellow-300"><i
@@ -336,19 +293,34 @@
             const menuToggle = document.getElementById("menu-toggle");
             const menu = document.getElementById("menu");
 
-            // Ouvrir/fermer le menu au clic sur le bouton hamburger
             menuToggle.addEventListener("click", () => {
                 menu.classList.toggle("active");
             });
 
-            // Fermer le menu au clic sur un lien
             const menuLinks = document.querySelectorAll("#menu a");
             menuLinks.forEach(link => {
                 link.addEventListener("click", () => {
-                    menu.classList.remove("active"); // Fermer le menu
+                    menu.classList.remove("active");
                 });
             });
         });
+
+        function toggleDropdown() {
+            const dropdown = document.getElementById('languageDropdown');
+            dropdown.classList.toggle('hidden');
+        }
+
+        function downloadCV(language) {
+            const fileName = language === 'fr' ? 'CV_BOUBKER.pdf' : 'CV_BOUBKER_EN.pdf';
+            const link = document.createElement('a');
+            link.href = fileName;
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            toggleDropdown();
+        }
     </script>
 </body>
+
 </html>
