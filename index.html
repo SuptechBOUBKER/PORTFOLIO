@@ -111,7 +111,7 @@
                 Développeur passionné par l'<strong>intelligence artificielle</strong>, je suis actuellement en 3ème année de licence et à la recherche d'opportunités pour mettre en œuvre mes compétences en <strong>programmation</strong>, <strong>apprentissage machine</strong> et <strong>analyse de données</strong>, avec une maîtrise avancée des langages <strong>Python</strong> et <strong>Java</strong>. Je suis motivé par l'<strong>innovation</strong> et la <strong>résolution de problèmes</strong>. Mon objectif est de contribuer à des projets ambitieux exploitant le potentiel de l'<strong>IA</strong> pour développer des solutions pratiques et impactantes.
             </p>
             <!-- Profile Image -->
-            <img src="WhatsApp Image 2024-06-06 à 19.45.52_60bf46b0.jpg" alt="Boubker Cheyoukh"
+            <img src="image_cv.jpg" alt="Boubker Cheyoukh"
                 class="rounded-full mx-auto mt-8 shadow-lg hover:scale-105 transition-transform w-40 h-40 object-cover">
             <!-- Contact Information -->
             <div class="mt-6 space-y-4 text-left md:text-center">
@@ -145,7 +145,7 @@
                     <button onclick="toggleDropdown()"
                         class="bg-purple-600 text-white px-6 py-3 rounded-md shadow hover:bg-purple-700 transition duration-300">Télécharger mon CV</button>
                     <div id="languageDropdown" class="dropdown-content hidden absolute mt-2 bg-white border border-gray-300 rounded-md shadow-lg">
-                        <a href="CV_BOUBKER.pdf" onclick="downloadCV('fr')" class="block px-4 py-2 hover:bg-gray-100">Télécharger mon CV (Français)</a>
+                        <a href="CV_BOUBKER_FR.pdf" onclick="downloadCV('fr')" class="block px-4 py-2 hover:bg-gray-100">Télécharger mon CV (Français)</a>
                         <a href="CV_BOUBKER_EN.pdf" onclick="downloadCV('en')" class="block px-4 py-2 hover:bg-gray-100">Download my CV (English)</a>
                     </div>
                 </div>
@@ -311,7 +311,7 @@
         }
 
         function downloadCV(language) {
-            const fileName = language === 'fr' ? 'CV_BOUBKER.pdf' : 'CV_BOUBKER_EN.pdf';
+            const fileName = language === 'fr' ? 'CV_BOUBKER_FR.pdf' : 'CV_BOUBKER_EN.pdf';
             const link = document.createElement('a');
             link.href = fileName;
             link.download = fileName;
