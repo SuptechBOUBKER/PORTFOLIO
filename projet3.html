@@ -1,224 +1,296 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Site éducatif full-stack</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="icon" href="images/icon_projet.png">
+    <!-- TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
-        .accordion-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.2s ease-out;
+        /* Custom CSS for Accordion */
+        .accordion-button {
+            background-color: #F3F4F6; /* Couleur secondaire */
+            padding: 1rem;
+            border: 1px solid #ddd;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .accordion-button.active {
+            background-color: #10B981; /* Couleur d'accent */
+            color: white;
+        }
+
+        .accordion-body {
+            padding: 1rem;
+            border-top: 1px solid #ddd;
+            display: none;
+            background-color: #F3F4F6; /* Couleur secondaire */
+        }
+
+        /* Custom CSS for Header and Footer */
+        header,
+        footer {
+            background-color: #4F46E5; /* Couleur principale */
+            color: white;
+        }
+
+        header h1,
+        footer p {
+            margin: 0;
+        }
+
+        /* Image and Video styling */
+        img,
+        video {
+            max-height: 400px;
+            object-fit: cover;
+        }
+
+        /* Style pour le modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Style pour les flèches de navigation */
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .left-arrow {
+            left: 20px;
+        }
+
+        .right-arrow {
+            right: 20px;
+        }
+
+        .nav-arrow:hover {
+            color: #10B981; /* Couleur d'accent au survol */
+        }
+
+        /* Animation au survol des images */
+        .image {
+            transition: transform 0.3s ease;
+        }
+
+        .image:hover {
+            transform: scale(1.05); /* Légère augmentation de la taille */
         }
     </style>
 </head>
+
 <body class="bg-gray-50">
     <!-- Header -->
-    <header class="bg-indigo-600 text-white py-6 shadow-lg">
-        <div class="container mx-auto px-4">
-            <h1 class="text-2xl md:text-3xl font-bold text-center">
-                Site éducatif full-stack
-            </h1>
-        </div>
+    <header class="py-4 text-center shadow-lg">
+        <h1 class="text-2xl font-bold">Site éducatif full-stack</h1>
     </header>
 
     <!-- Main Content -->
-    <main class="flex-grow container mx-auto px-4 py-8">
+    <main class="container mx-auto py-8 px-4">
         <!-- Introduction -->
-        <section class="text-center mb-12">
-            <h2 class="text-3xl font-bold text-green-600 mb-6">
-                Détails du Projet
-            </h2>
-            <p class="text-gray-700 leading-relaxed max-w-4xl mx-auto">
+        <section class="text-center mb-6">
+            <h2 class="text-3xl font-bold text-[#10B981] mb-4">Détails du Projet</h2>
+            <p class="text-[#1F2937] leading-relaxed">
                 Site web interactif utilisant J2EE, HTML, CSS, JS, et MySQL.
             </p>
         </section>
 
-        <!-- Image Gallery -->
-        <div id="gallery" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            <!-- Images will be added by JavaScript -->
+        <!-- Modal pour afficher l'image agrandie -->
+        <div id="modal" class="modal">
+            <span class="close">&times;</span>
+            <span class="nav-arrow left-arrow">&#10094;</span> <!-- Flèche gauche -->
+            <span class="nav-arrow right-arrow">&#10095;</span> <!-- Flèche droite -->
+            <img id="modal-image" src="" alt="Image agrandie">
         </div>
 
-        <!-- Modal -->
-        <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center hidden">
-            <button id="closeModal" class="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors">
-                <i data-lucide="x" class="w-8 h-8"></i>
-            </button>
-            <button id="prevImage" class="absolute left-4 text-white hover:text-gray-300 transition-colors">
-                <i data-lucide="chevron-left" class="w-12 h-12"></i>
-            </button>
-            <button id="nextImage" class="absolute right-4 text-white hover:text-gray-300 transition-colors">
-                <i data-lucide="chevron-right" class="w-12 h-12"></i>
-            </button>
-            <img id="modalImage" src="" alt="" class="max-w-[90vw] max-h-[90vh] object-contain">
+        <!-- Media Section -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Images avec animation au survol -->
+            <img src="images/eco1.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
+            <img src="images/eco2.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
+            <img src="images/eco3.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
+            <img src="images/eco10.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
+            <img src="images/eco4.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
+            <img src="images/eco5.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
+            <img src="images/eco12.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
+            <img src="images/eco13.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
+            <img src="images/eco11.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
+            <img src="images/eco7.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
+            <img src="images/eco8.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
+            <img src="images/eco9.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
         </div>
-
+       
         <!-- Accordion Section -->
-        <section class="max-w-3xl mx-auto mb-12">
-            <!-- Technologies utilisées -->
-            <div class="mb-4">
-                <button class="accordion-btn w-full px-4 py-3 text-left font-semibold rounded-lg transition-all duration-200 bg-gray-100 text-gray-700 hover:bg-gray-200">
+        <section class="accordion mt-6" id="accordionDetails">
+            <!-- Item 1 -->
+            <div class="accordion-item">
+                <button class="accordion-button" id="buttonOne">
                     Technologies utilisées
                 </button>
-                <div class="accordion-content bg-gray-50 rounded-b-lg border-x border-b">
-                    <div class="p-4">
-                        <ul class="space-y-2">
-                            <li><strong>Langages :</strong> Html, Css, JavaScript, Sass, JEE</li>
-                            <li><strong>Frameworks :</strong> Hibernate</li>
-                            <li><strong>Outils :</strong> VS Code et Eclipse, Apache, Postman, phpMyAdmin</li>
-                        </ul>
-                    </div>
+                <div class="accordion-body" id="bodyOne">
+                    <ul>
+                        <li><strong>Langages :</strong> Html, Css, JavaScript, Sass, JEE</li>
+                        <li><strong>Frameworks :</strong> Hibernate </li>
+                        <li><strong>Outils :</strong> VS Code et Eclipse, Apache, Postman, phpMyAdmin</li>
+                    </ul>
                 </div>
             </div>
 
-            <!-- Objectifs du projet -->
-            <div class="mb-4">
-                <button class="accordion-btn w-full px-4 py-3 text-left font-semibold rounded-lg transition-all duration-200 bg-gray-100 text-gray-700 hover:bg-gray-200">
+            <!-- Item 2 -->
+            <div class="accordion-item">
+                <button class="accordion-button" id="buttonTwo">
                     Objectifs du projet
                 </button>
-                <div class="accordion-content bg-gray-50 rounded-b-lg border-x border-b">
-                    <div class="p-4">
-                        <ul class="space-y-2">
-                            <li><strong>C</strong>onçu et mis en œuvre un site web éducatif en utilisant HTML, CSS, JavaScript, Sass, J2EE et MySQL.</li>
-                            <li><strong>D</strong>éveloppé un front-end interactif pour une expérience utilisateur fluide ainsi qu'un back-end J2EE pour des fonctionnalités serveur telles que la gestion des utilisateurs et le stockage sécurisé des données.</li>
-                            <li><strong>L</strong>ivré une plateforme éducative complète en full-stack.</li>
-                        </ul>
-                    </div>
+                <div class="accordion-body" id="bodyTwo">
+                    <b>Le projet a pour but de :</b>
+                    <ul>
+                        <li><b>C</b>onçu et mis en œuvre un site web éducatif en utilisant HTML, CSS, JavaScript, Sass, J2EE et MySQL.</li>
+                        <li><b>D</b>éveloppé un front-end interactif pour une expérience utilisateur fluide ainsi qu'un back-end J2EE pour des fonctionnalités serveur telles que la gestion des utilisateurs et le stockage sécurisé des données.</li>
+                        <li><b>L</b>ivré une plateforme éducative complète en full-stack.</li>
+                    </ul>
                 </div>
             </div>
         </section>
 
         <!-- Navigation Button -->
-        <div class="text-center">
-            <a href="/" class="inline-flex items-center px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200 shadow-md">
-                <i data-lucide="home" class="mr-2 w-5 h-5"></i>
+        <div class="text-center mt-6">
+            <a href="index.html#projects" class="bg-[#4F46E5] text-white px-5 py-2 rounded shadow hover:bg-[#4338CA] transition">
                 Retour à l'accueil
             </a>
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-indigo-600 text-white py-4 mt-12">
-        <div class="container mx-auto px-4 text-center">
-            <p>&copy; 2025 Boubker Cheyoukh. Tous droits réservés.</p>
-        </div>
+    <footer class="py-4 text-center mt-8">
+        <p>&copy; 2025 Boubker Cheyoukh. Tous droits réservés.</p>
     </footer>
 
+    <!-- JavaScript for Accordion -->
     <script>
-        // Initialize Lucide icons
-        lucide.createIcons();
+        document.addEventListener("DOMContentLoaded", function () {
+            const buttons = document.querySelectorAll(".accordion-button");
+            const bodies = document.querySelectorAll(".accordion-body");
 
-        // Image gallery data
-        const images = [
-            '/images/eco1.png',
-            '/images/eco2.png',
-            '/images/eco3.png',
-            '/images/eco10.png',
-            '/images/eco4.png',
-            '/images/eco5.png',
-            '/images/eco12.png',
-            '/images/eco13.png',
-            '/images/eco11.png',
-            '/images/eco7.png',
-            '/images/eco8.png',
-            '/images/eco9.png',
-        ];
+            buttons.forEach((button, index) => {
+                button.addEventListener("click", () => {
+                    const isActive = button.classList.contains("active");
+                    // Close all sections
+                    buttons.forEach(btn => btn.classList.remove("active"));
+                    bodies.forEach(body => body.style.display = "none");
 
-        // Current image index for modal
-        let currentImageIndex = null;
-
-        // DOM elements
-        const gallery = document.getElementById('gallery');
-        const imageModal = document.getElementById('imageModal');
-        const modalImage = document.getElementById('modalImage');
-        const closeModal = document.getElementById('closeModal');
-        const prevImage = document.getElementById('prevImage');
-        const nextImage = document.getElementById('nextImage');
-        const accordionBtns = document.querySelectorAll('.accordion-btn');
-
-        // Create gallery images
-        images.forEach((src, index) => {
-            const imgContainer = document.createElement('div');
-            imgContainer.className = 'relative group cursor-pointer overflow-hidden rounded-xl shadow-lg';
-            imgContainer.onclick = () => openModal(index);
-            
-            const img = document.createElement('img');
-            img.src = src;
-            img.alt = `Screenshot ${index + 1}`;
-            img.className = 'w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110';
-            
-            const overlay = document.createElement('div');
-            overlay.className = 'absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-opacity duration-300';
-            
-            imgContainer.appendChild(img);
-            imgContainer.appendChild(overlay);
-            gallery.appendChild(imgContainer);
+                    // Toggle current section
+                    if (!isActive) {
+                        button.classList.add("active");
+                        bodies[index].style.display = "block";
+                    }
+                });
+            });
         });
+    </script>
 
-        // Open modal with selected image
-        function openModal(index) {
-            currentImageIndex = index;
-            modalImage.src = images[index];
-            modalImage.alt = `Screenshot ${index + 1}`;
-            imageModal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
+    <!-- JavaScript pour le modal d'agrandissement des images -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const images = document.querySelectorAll('.image');
+            const modal = document.getElementById('modal');
+            const modalImage = document.getElementById('modal-image');
+            const closeButton = document.querySelector('.close');
+            const leftArrow = document.querySelector('.left-arrow');
+            const rightArrow = document.querySelector('.right-arrow');
 
-        // Close modal
-        function closeImageModal() {
-            imageModal.classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        }
+            let currentImageIndex = 0;
 
-        // Navigate to previous image
-        function showPrevImage() {
-            if (currentImageIndex === null) return;
-            currentImageIndex = currentImageIndex === 0 ? images.length - 1 : currentImageIndex - 1;
-            modalImage.src = images[currentImageIndex];
-            modalImage.alt = `Screenshot ${currentImageIndex + 1}`;
-        }
+            // Ouvrir le modal et afficher l'image cliquée
+            images.forEach((image, index) => {
+                image.addEventListener('click', () => {
+                    modal.style.display = 'flex';
+                    modalImage.src = image.src;
+                    currentImageIndex = index; // Mettre à jour l'index de l'image actuelle
+                });
+            });
 
-        // Navigate to next image
-        function showNextImage() {
-            if (currentImageIndex === null) return;
-            currentImageIndex = currentImageIndex === images.length - 1 ? 0 : currentImageIndex + 1;
-            modalImage.src = images[currentImageIndex];
-            modalImage.alt = `Screenshot ${currentImageIndex + 1}`;
-        }
+            // Fermer le modal
+            closeButton.addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
 
-        // Event listeners
-        closeModal.addEventListener('click', closeImageModal);
-        prevImage.addEventListener('click', showPrevImage);
-        nextImage.addEventListener('click', showNextImage);
+            // Fermer le modal si on clique en dehors de l'image
+            modal.addEventListener('click', (event) => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
 
-        // Keyboard navigation
-        document.addEventListener('keydown', (e) => {
-            if (currentImageIndex === null) return;
-            
-            if (e.key === 'Escape') {
-                closeImageModal();
-            } else if (e.key === 'ArrowLeft') {
-                showPrevImage();
-            } else if (e.key === 'ArrowRight') {
-                showNextImage();
-            }
-        });
+            // Navigation vers l'image précédente
+            leftArrow.addEventListener('click', (event) => {
+                event.stopPropagation(); // Empêcher la fermeture du modal
+                currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+                modalImage.src = images[currentImageIndex].src;
+            });
 
-        // Accordion functionality
-        accordionBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                this.classList.toggle('bg-green-600');
-                this.classList.toggle('text-white');
-                this.classList.toggle('bg-gray-100');
-                this.classList.toggle('text-gray-700');
-                
-                const content = this.nextElementSibling;
-                if (content.style.maxHeight) {
-                    content.style.maxHeight = null;
-                } else {
-                    content.style.maxHeight = content.scrollHeight + "px";
+            // Navigation vers l'image suivante
+            rightArrow.addEventListener('click', (event) => {
+                event.stopPropagation(); // Empêcher la fermeture du modal
+                currentImageIndex = (currentImageIndex + 1) % images.length;
+                modalImage.src = images[currentImageIndex].src;
+            });
+
+            // Navigation au clavier (flèches gauche, droite et Échap)
+            document.addEventListener('keydown', (event) => {
+                if (modal.style.display === 'flex') {
+                    if (event.key === 'ArrowLeft') {
+                        // Flèche gauche : image précédente
+                        currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+                        modalImage.src = images[currentImageIndex].src;
+                    } else if (event.key === 'ArrowRight') {
+                        // Flèche droite : image suivante
+                        currentImageIndex = (currentImageIndex + 1) % images.length;
+                        modalImage.src = images[currentImageIndex].src;
+                    } else if (event.key === 'Escape') {
+                        // Touche Échap : fermer le modal
+                        modal.style.display = 'none';
+                    }
                 }
             });
         });
