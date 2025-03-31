@@ -57,11 +57,11 @@
 
     <!-- Mobile Menu -->
     <div id="mobileMenu" class="fixed inset-0 bg-white z-30 pt-20 hidden">
-        <div class="flex flex-col items-center space-y-8 p-8">
-            <a href="#home" class="text-xl font-medium text-gray-600 hover:text-purple-600">Home</a>
-            <a href="#about" class="text-xl font-medium text-gray-600 hover:text-purple-600">About</a>
-            <a href="#skills" class="text-xl font-medium text-gray-600 hover:text-purple-600">Skills</a>
-            <a href="#projects" class="text-xl font-medium text-gray-600 hover:text-purple-600">Projects</a>
+        <div class="flex flex-col items-center space-y-8 p-8" id="mobileMenuContent">
+            <a href="#home" class="menu-link text-xl font-medium text-gray-600 hover:text-purple-600">Home</a>
+            <a href="#about" class="menu-link text-xl font-medium text-gray-600 hover:text-purple-600">About</a>
+            <a href="#skills" class="menu-link text-xl font-medium text-gray-600 hover:text-purple-600">Skills</a>
+            <a href="#projects" class="menu-link text-xl font-medium text-gray-600 hover:text-purple-600">Projects</a>
         </div>
     </div>
 
@@ -477,23 +477,58 @@
     </a>
 
     <script>
-        // Initialize Lucide icons
+         // Initialize Lucide icons
         lucide.createIcons();
-        
-        // Mobile menu toggle
-        const mobileMenuButton = document.getElementById('mobileMenuButton');
-        const mobileMenu = document.getElementById('mobileMenu');
-        
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-            const icon = mobileMenuButton.querySelector('i');
-            if (mobileMenu.classList.contains('hidden')) {
-                icon.setAttribute('data-lucide', 'menu');
-            } else {
-                icon.setAttribute('data-lucide', 'x');
-            }
-            lucide.createIcons();
-        });
+
+// Initialize Lucide icons
+lucide.createIcons();
+
+// Elements
+const mobileMenuButton = document.getElementById('mobileMenuButton');
+const mobileMenu = document.getElementById('mobileMenu');
+const mobileMenuContent = document.getElementById('mobileMenuContent');
+const menuLinks = document.querySelectorAll('.menu-link');
+
+function toggleMenu() {
+    mobileMenu.classList.toggle('hidden');
+    updateIcon();
+}
+
+function closeMenu() {
+    if (!mobileMenu.classList.contains('hidden')) {
+        mobileMenu.classList.add('hidden');
+        updateIcon();
+    }
+}
+
+function updateIcon() {
+    const icon = mobileMenuButton.querySelector('[data-lucide]');
+    if (icon) {
+        icon.setAttribute('data-lucide', mobileMenu.classList.contains('hidden') ? 'menu' : 'x');
+        lucide.createIcons(); // Met à jour l'icône
+    }
+}
+
+// Toggle menu on button click
+mobileMenuButton.addEventListener('click', (event) => {
+    event.stopPropagation(); // Empêche la fermeture immédiate après l'ouverture
+    toggleMenu();
+});
+
+// Prevent closing when clicking inside the menu
+mobileMenuContent.addEventListener('click', (event) => {
+    event.stopPropagation();
+});
+
+// Close menu when clicking outside
+document.addEventListener('click', () => {
+    closeMenu();
+});
+
+// Close menu when clicking on a link
+menuLinks.forEach(link => {
+    link.addEventListener('click', closeMenu);
+});
         
         // CV dropdown toggle
         const cvDropdownButton = document.getElementById('cvDropdownButton');
@@ -549,7 +584,6 @@
             document.body.removeChild(link);
             toggleDropdown();
         }
-
     </script>
 </body>
 </html>
