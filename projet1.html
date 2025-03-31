@@ -114,18 +114,32 @@
         // Initialize Lucide icons
         lucide.createIcons();
 
-        // Image gallery data
+        // Image gallery data with proper paths
         const images = [
-            '/images/TKINTER7.png',
-            '/images/TKINTER10.png',
-            '/images/TKINTER9.png',
-            '/images/TKINTER8.png',
-            '/images/TKINTER2.png',
-            '/images/TKINTER5.png',
-            '/images/TKINTER3.png',
-            '/images/TKINTER4.png',
-            '/images/TKINTER6.png',
-            '/images/TKINTER1.png',
+            'images/tkinter7.png',
+            'images/tkinter10.png',
+            'images/tkinter9.png',
+            'images/tkinter8.png',
+            'images/tkinter2.png',
+            'images/tkinter5.png',
+            'images/tkinter3.png',
+            'images/tkinter4.png',
+            'images/tkinter6.png',
+            'images/tkinter1.png',
+        ];
+
+        // Image descriptions for accessibility
+        const imageDescriptions = [
+            "Interface principale de l'application",
+            "Gestion des utilisateurs",
+            "Tableau de bord statistique",
+            "Export des données",
+            "Formulaire de saisie",
+            "Visualisation des résultats",
+            "Configuration du système",
+            "Gestion des classes",
+            "Rapports d'activité",
+            "Menu principal"
         ];
 
         // Current image index for modal
@@ -148,8 +162,9 @@
             
             const img = document.createElement('img');
             img.src = src;
-            img.alt = `Screenshot ${index + 1}`;
+            img.alt = imageDescriptions[index] || `Capture d'écran ${index + 1}`;
             img.className = 'w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110';
+            img.loading = 'lazy'; // Optimisation du chargement
             
             const overlay = document.createElement('div');
             overlay.className = 'absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-opacity duration-300';
@@ -163,7 +178,7 @@
         function openModal(index) {
             currentImageIndex = index;
             modalImage.src = images[index];
-            modalImage.alt = `Screenshot ${index + 1}`;
+            modalImage.alt = imageDescriptions[index] || `Capture détaillée ${index + 1}`;
             imageModal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
         }
@@ -178,16 +193,20 @@
         function showPrevImage() {
             if (currentImageIndex === null) return;
             currentImageIndex = currentImageIndex === 0 ? images.length - 1 : currentImageIndex - 1;
-            modalImage.src = images[currentImageIndex];
-            modalImage.alt = `Screenshot ${currentImageIndex + 1}`;
+            updateModalImage();
         }
 
         // Navigate to next image
         function showNextImage() {
             if (currentImageIndex === null) return;
             currentImageIndex = currentImageIndex === images.length - 1 ? 0 : currentImageIndex + 1;
+            updateModalImage();
+        }
+
+        // Update modal image
+        function updateModalImage() {
             modalImage.src = images[currentImageIndex];
-            modalImage.alt = `Screenshot ${currentImageIndex + 1}`;
+            modalImage.alt = imageDescriptions[currentImageIndex] || `Capture détaillée ${currentImageIndex + 1}`;
         }
 
         // Event listeners
@@ -222,6 +241,18 @@
                 } else {
                     content.style.maxHeight = content.scrollHeight + "px";
                 }
+            });
+        });
+
+        // Check for image loading errors
+        document.addEventListener('DOMContentLoaded', () => {
+            const imgElements = document.querySelectorAll('#gallery img');
+            imgElements.forEach(img => {
+                img.onerror = () => {
+                    console.error(`Image failed to load: ${img.src}`);
+                    // You could add a placeholder image here if desired
+                    // img.src = 'images/placeholder.png';
+                };
             });
         });
     </script>
