@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,52 +7,93 @@
     <link rel="icon" href="images/icon_projet.png">
     <!-- TailwindCSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* Custom CSS for Accordion */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #4F46E5 0%, #10B981 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .accordion-item {
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
         .accordion-button {
-            background-color: #F3F4F6; /* Couleur secondaire */
-            padding: 1rem;
-            border: 1px solid #ddd;
+            background-color: white;
+            padding: 16px 24px;
             width: 100%;
             text-align: left;
+            border: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s, color 0.3s;
+            transition: all 0.3s ease;
         }
-
+        
+        .accordion-button:hover {
+            background-color: #f9fafb;
+        }
+        
         .accordion-button.active {
-            background-color: #10B981; /* Couleur d'accent */
-            color: white;
+            background-color: #f3f4f6;
+            color: #4F46E5;
         }
-
+        
+        .accordion-button::after {
+            content: '+';
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+            color: #4F46E5;
+        }
+        
+        .accordion-button.active::after {
+            content: '-';
+        }
+        
         .accordion-body {
-            padding: 1rem;
-            border-top: 1px solid #ddd;
-            display: none;
-            background-color: #F3F4F6; /* Couleur secondaire */
+            padding: 0;
+            background-color: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
         }
-
-        /* Custom CSS for Header and Footer */
-        header,
-        footer {
-            background-color: #4F46E5; /* Couleur principale */
-            color: white;
+        
+        .accordion-body-content {
+            padding: 16px 24px;
         }
-
-        header h1,
-        footer p {
-            margin: 0;
-        }
-
-        /* Image and Video styling */
-        img,
-        video {
-            max-height: 400px;
+        
+        .gallery-item {
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            overflow: hidden;
+            height: 220px;
             object-fit: cover;
         }
-
-        /* Style pour le modal */
+        
+        .gallery-item:hover {
+            transform: scale(1.03);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Modal styles */
         .modal {
             display: none;
             position: fixed;
@@ -65,231 +105,374 @@
             background-color: rgba(0, 0, 0, 0.9);
             justify-content: center;
             align-items: center;
+            opacity: 0;
             transition: opacity 0.3s ease;
         }
-
-        .modal img {
+        
+        .modal.open {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .modal-content {
+            position: relative;
             max-width: 90%;
             max-height: 90%;
-            border-radius: 8px;
-            transition: transform 0.3s ease;
         }
-
+        
+        .modal img {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 8px;
+            display: block;
+            animation: zoomIn 0.3s ease;
+        }
+        
+        @keyframes zoomIn {
+            from { transform: scale(0.8); }
+            to { transform: scale(1); }
+        }
+        
         .close {
             position: absolute;
-            top: 20px;
-            right: 35px;
+            top: -40px;
+            right: 0;
             color: white;
-            font-size: 40px;
+            font-size: 2rem;
             font-weight: bold;
             cursor: pointer;
+            transition: color 0.3s ease;
         }
-
-        /* Style pour les flèches de navigation */
+        
+        .close:hover {
+            color: #10B981;
+        }
+        
         .nav-arrow {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
             color: white;
-            font-size: 40px;
+            font-size: 2rem;
             font-weight: bold;
             cursor: pointer;
+            padding: 0 20px;
             user-select: none;
+            transition: color 0.3s ease;
         }
-
+        
         .left-arrow {
-            left: 20px;
+            left: 0;
         }
-
+        
         .right-arrow {
-            right: 20px;
+            right: 0;
         }
-
+        
         .nav-arrow:hover {
-            color: #10B981; /* Couleur d'accent au survol */
+            color: #10B981;
         }
-
-        /* Animation au survol des images */
-        .image {
-            transition: transform 0.3s ease;
+        
+        .tech-badge {
+            display: inline-block;
+            background-color: #e0e7ff;
+            color: #4F46E5;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-right: 8px;
+            margin-bottom: 8px;
         }
-
-        .image:hover {
-            transform: scale(1.05); /* Légère augmentation de la taille */
+        
+        .feature-card {
+            border-left: 4px solid #4F46E5;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateX(5px);
         }
     </style>
 </head>
 
 <body class="bg-gray-50">
     <!-- Header -->
-    <header class="py-4 text-center shadow-lg">
-        <h1 class="text-2xl font-bold">Site éducatif full-stack</h1>
+    <header class="gradient-bg py-12 text-center shadow-lg">
+        <div class="container mx-auto px-4">
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-3">Site éducatif full-stack</h1>
+            <p class="text-white opacity-90 max-w-2xl mx-auto">Plateforme complète développée avec J2EE, HTML, CSS et JavaScript</p>
+        </div>
     </header>
 
     <!-- Main Content -->
-    <main class="container mx-auto py-8 px-4">
-        <!-- Introduction -->
-        <section class="text-center mb-6">
-            <h2 class="text-3xl font-bold text-[#10B981] mb-4">Détails du Projet</h2>
-            <p class="text-[#1F2937] leading-relaxed">
-                Site web interactif utilisant J2EE, HTML, CSS, JS, et MySQL.
-            </p>
-        </section>
-
-        <!-- Modal pour afficher l'image agrandie -->
-        <div id="modal" class="modal">
-            <span class="close">&times;</span>
-            <span class="nav-arrow left-arrow">&#10094;</span> <!-- Flèche gauche -->
-            <span class="nav-arrow right-arrow">&#10095;</span> <!-- Flèche droite -->
-            <img id="modal-image" src="" alt="Image agrandie">
-        </div>
-
-        <!-- Media Section -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <!-- Images avec animation au survol -->
-            <img src="images/eco1.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
-            <img src="images/eco2.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
-            <img src="images/eco3.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
-            <img src="images/eco10.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
-            <img src="images/eco4.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
-            <img src="images/eco5.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
-            <img src="images/eco12.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
-            <img src="images/eco13.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
-            <img src="images/eco11.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
-            <img src="images/eco7.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
-            <img src="images/eco8.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
-            <img src="images/eco9.png" alt="Image du projet" class="image rounded-lg shadow-lg w-full h-48 object-cover cursor-pointer transition-transform hover:scale-105">
-        </div>
-       
-        <!-- Accordion Section -->
-        <section class="accordion mt-6" id="accordionDetails">
-            <!-- Item 1 -->
-            <div class="accordion-item">
-                <button class="accordion-button" id="buttonOne">
-                    Technologies utilisées
-                </button>
-                <div class="accordion-body" id="bodyOne">
-                    <ul>
-                        <li><strong>Langages :</strong> Html, Css, JavaScript, Sass, JEE</li>
-                        <li><strong>Frameworks :</strong> Hibernate </li>
-                        <li><strong>Outils :</strong> VS Code et Eclipse, Apache, Postman, phpMyAdmin</li>
-                    </ul>
+    <main class="container mx-auto py-12 px-4">
+        <!-- Project Overview -->
+        <section class="mb-16">
+            <div class="flex flex-col lg:flex-row gap-12 items-center">
+                <div class="lg:w-1/2">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Aperçu du projet</h2>
+                    <p class="text-gray-600 leading-relaxed mb-6">
+                        Un site web éducatif interactif développé en full-stack utilisant J2EE pour le back-end et les technologies modernes 
+                        (HTML, CSS, JavaScript, Sass) pour le front-end. Cette plateforme offre une expérience d'apprentissage complète 
+                        avec une interface intuitive et des fonctionnalités serveur robustes.
+                    </p>
+                    <div class="grid grid-cols-2 gap-4 mb-8">
+                        <div class="bg-white p-6 rounded-xl shadow-md card-hover">
+                            <h3 class="font-semibold text-gray-800 mb-2">Technologies clés</h3>
+                            <div>
+                                <span class="tech-badge">J2EE</span>
+                                <span class="tech-badge">Hibernate</span>
+                                <span class="tech-badge">MySQL</span>
+                                <span class="tech-badge">Sass</span>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-md card-hover">
+                            <h3 class="font-semibold text-gray-800 mb-2">Fonctionnalités</h3>
+                            <ul class="list-disc list-inside text-gray-600">
+                                <li>Interface interactive</li>
+                                <li>Gestion des utilisateurs</li>
+                                <li>Stockage sécurisé</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-            </div>
-
-            <!-- Item 2 -->
-            <div class="accordion-item">
-                <button class="accordion-button" id="buttonTwo">
-                    Objectifs du projet
-                </button>
-                <div class="accordion-body" id="bodyTwo">
-                    <b>Le projet a pour but de :</b>
-                    <ul>
-                        <li><b>C</b>onçu et mis en œuvre un site web éducatif en utilisant HTML, CSS, JavaScript, Sass, J2EE et MySQL.</li>
-                        <li><b>D</b>éveloppé un front-end interactif pour une expérience utilisateur fluide ainsi qu'un back-end J2EE pour des fonctionnalités serveur telles que la gestion des utilisateurs et le stockage sécurisé des données.</li>
-                        <li><b>L</b>ivré une plateforme éducative complète en full-stack.</li>
-                    </ul>
+                <div class="lg:w-1/2">
+                    <img src="images/eco1.png" alt="Interface du projet" class="rounded-xl shadow-lg w-full h-auto object-cover border border-gray-200">
                 </div>
             </div>
         </section>
 
-        <!-- Navigation Button -->
-        <div class="text-center mt-6">
-            <a href="index.html#projects" class="bg-[#4F46E5] text-white px-5 py-2 rounded shadow hover:bg-[#4338CA] transition">
-                Retour à l'accueil
+        <!-- Gallery Section -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold text-center text-gray-800 mb-8">Galerie du projet</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <img src="images/eco1.png" alt="Capture d'écran 1" class="gallery-item cursor-pointer">
+                <img src="images/eco2.png" alt="Capture d'écran 2" class="gallery-item cursor-pointer">
+                <img src="images/eco3.png" alt="Capture d'écran 3" class="gallery-item cursor-pointer">
+                <img src="images/eco10.png" alt="Capture d'écran 4" class="gallery-item cursor-pointer">
+                <img src="images/eco4.png" alt="Capture d'écran 5" class="gallery-item cursor-pointer">
+                <img src="images/eco5.png" alt="Capture d'écran 6" class="gallery-item cursor-pointer">
+                <img src="images/eco12.png" alt="Capture d'écran 7" class="gallery-item cursor-pointer">
+                <img src="images/eco13.png" alt="Capture d'écran 8" class="gallery-item cursor-pointer">
+                <img src="images/eco11.png" alt="Capture d'écran 9" class="gallery-item cursor-pointer">
+            </div>
+        </section>
+
+        <!-- Details Section -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold text-center text-gray-800 mb-8">Détails techniques</h2>
+            
+            <div class="max-w-3xl mx-auto">
+                <div class="accordion-item">
+                    <button class="accordion-button">
+                        <span>Technologies utilisées</span>
+                    </button>
+                    <div class="accordion-body">
+                        <div class="accordion-body-content">
+                            <div class="mb-4">
+                                <h3 class="font-semibold text-gray-800 mb-2">Front-end</h3>
+                                <div>
+                                    <span class="tech-badge">HTML5</span>
+                                    <span class="tech-badge">CSS3</span>
+                                    <span class="tech-badge">JavaScript</span>
+                                    <span class="tech-badge">Sass</span>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <h3 class="font-semibold text-gray-800 mb-2">Back-end</h3>
+                                <div>
+                                    <span class="tech-badge">J2EE</span>
+                                    <span class="tech-badge">Hibernate</span>
+                                    <span class="tech-badge">MySQL</span>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-800 mb-2">Outils</h3>
+                                <div>
+                                    <span class="tech-badge">VS Code</span>
+                                    <span class="tech-badge">Eclipse</span>
+                                    <span class="tech-badge">Apache</span>
+                                    <span class="tech-badge">Postman</span>
+                                    <span class="tech-badge">phpMyAdmin</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <button class="accordion-button">
+                        <span>Objectifs et réalisations</span>
+                    </button>
+                    <div class="accordion-body">
+                        <div class="accordion-body-content">
+                            <ul class="space-y-3">
+                                <li class="flex items-start">
+                                    <span class="text-[#10B981] mr-2 mt-1">✓</span>
+                                    <span>Conception et mise en œuvre d'un site web éducatif complet en full-stack</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-[#10B981] mr-2 mt-1">✓</span>
+                                    <span>Développement d'une interface front-end interactive et responsive</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-[#10B981] mr-2 mt-1">✓</span>
+                                    <span>Implémentation d'un back-end robuste avec J2EE et Hibernate</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-[#10B981] mr-2 mt-1">✓</span>
+                                    <span>Création d'une base de données sécurisée avec MySQL</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <button class="accordion-button">
+                        <span>Fonctionnalités principales</span>
+                    </button>
+                    <div class="accordion-body">
+                        <div class="accordion-body-content">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="bg-white p-4 rounded-lg feature-card shadow-sm">
+                                    <h4 class="font-medium text-gray-800 mb-2">Interface éducative</h4>
+                                    <p class="text-gray-600 text-sm">Design intuitif optimisé pour l'apprentissage</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg feature-card shadow-sm">
+                                    <h4 class="font-medium text-gray-800 mb-2">Gestion des utilisateurs</h4>
+                                    <p class="text-gray-600 text-sm">Système complet d'authentification et de profils</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg feature-card shadow-sm">
+                                    <h4 class="font-medium text-gray-800 mb-2">Contenu dynamique</h4>
+                                    <p class="text-gray-600 text-sm">Affichage et gestion des ressources éducatives</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg feature-card shadow-sm">
+                                    <h4 class="font-medium text-gray-800 mb-2">Base de données</h4>
+                                    <p class="text-gray-600 text-sm">Stockage sécurisé des données avec MySQL</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="text-center">
+            <a href="index.html#projects" class="inline-block gradient-bg text-white px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 font-medium">
+                Retour aux projets
             </a>
-        </div>
+        </section>
     </main>
 
+    <!-- Modal pour afficher l'image agrandie -->
+    <div id="modal" class="modal">
+        <span class="close">&times;</span>
+        <span class="nav-arrow left-arrow">&#10094;</span>
+        <span class="nav-arrow right-arrow">&#10095;</span>
+        <div class="modal-content">
+            <img id="modal-image" src="" alt="Image agrandie">
+        </div>
+    </div>
+
     <!-- Footer -->
-    <footer class="py-4 text-center mt-8">
-        <p>&copy; 2025 Boubker Cheyoukh. Tous droits réservés.</p>
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2025 Boubker Cheyoukh. Tous droits réservés.</p>
+        </div>
     </footer>
 
-    <!-- JavaScript for Accordion -->
+    <!-- JavaScript -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const buttons = document.querySelectorAll(".accordion-button");
-            const bodies = document.querySelectorAll(".accordion-body");
-
-            buttons.forEach((button, index) => {
+            // Accordion functionality
+            const accordionButtons = document.querySelectorAll(".accordion-button");
+            
+            accordionButtons.forEach(button => {
                 button.addEventListener("click", () => {
                     const isActive = button.classList.contains("active");
-                    // Close all sections
-                    buttons.forEach(btn => btn.classList.remove("active"));
-                    bodies.forEach(body => body.style.display = "none");
-
-                    // Toggle current section
+                    const accordionBody = button.nextElementSibling;
+                    
+                    // Close all accordions first
+                    document.querySelectorAll(".accordion-body").forEach(body => {
+                        body.style.maxHeight = null;
+                    });
+                    document.querySelectorAll(".accordion-button").forEach(btn => {
+                        btn.classList.remove("active");
+                    });
+                    
+                    // Open current one if it was closed
                     if (!isActive) {
                         button.classList.add("active");
-                        bodies[index].style.display = "block";
+                        accordionBody.style.maxHeight = accordionBody.scrollHeight + "px";
                     }
                 });
             });
-        });
-    </script>
+            
+            // Open first accordion by default
+            if (accordionButtons.length > 0) {
+                accordionButtons[0].classList.add("active");
+                accordionButtons[0].nextElementSibling.style.maxHeight = 
+                    accordionButtons[0].nextElementSibling.scrollHeight + "px";
+            }
 
-    <!-- JavaScript pour le modal d'agrandissement des images -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const images = document.querySelectorAll('.image');
+            // Gallery modal functionality
+            const images = document.querySelectorAll('.gallery-item');
             const modal = document.getElementById('modal');
             const modalImage = document.getElementById('modal-image');
             const closeButton = document.querySelector('.close');
             const leftArrow = document.querySelector('.left-arrow');
             const rightArrow = document.querySelector('.right-arrow');
-
+            
             let currentImageIndex = 0;
-
-            // Ouvrir le modal et afficher l'image cliquée
+            
+            // Open modal with clicked image
             images.forEach((image, index) => {
                 image.addEventListener('click', () => {
-                    modal.style.display = 'flex';
+                    modal.classList.add('open');
                     modalImage.src = image.src;
-                    currentImageIndex = index; // Mettre à jour l'index de l'image actuelle
+                    currentImageIndex = index;
                 });
             });
-
-            // Fermer le modal
+            
+            // Close modal
             closeButton.addEventListener('click', () => {
-                modal.style.display = 'none';
+                modal.classList.remove('open');
             });
-
-            // Fermer le modal si on clique en dehors de l'image
-            modal.addEventListener('click', (event) => {
-                if (event.target === modal) {
-                    modal.style.display = 'none';
+            
+            // Close when clicking outside image
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('open');
                 }
             });
-
-            // Navigation vers l'image précédente
-            leftArrow.addEventListener('click', (event) => {
-                event.stopPropagation(); // Empêcher la fermeture du modal
+            
+            // Navigation arrows
+            leftArrow.addEventListener('click', (e) => {
+                e.stopPropagation();
                 currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
                 modalImage.src = images[currentImageIndex].src;
             });
-
-            // Navigation vers l'image suivante
-            rightArrow.addEventListener('click', (event) => {
-                event.stopPropagation(); // Empêcher la fermeture du modal
+            
+            rightArrow.addEventListener('click', (e) => {
+                e.stopPropagation();
                 currentImageIndex = (currentImageIndex + 1) % images.length;
                 modalImage.src = images[currentImageIndex].src;
             });
-
-            // Navigation au clavier (flèches gauche, droite et Échap)
-            document.addEventListener('keydown', (event) => {
-                if (modal.style.display === 'flex') {
-                    if (event.key === 'ArrowLeft') {
-                        // Flèche gauche : image précédente
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (modal.classList.contains('open')) {
+                    if (e.key === 'Escape') {
+                        modal.classList.remove('open');
+                    } else if (e.key === 'ArrowLeft') {
                         currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
                         modalImage.src = images[currentImageIndex].src;
-                    } else if (event.key === 'ArrowRight') {
-                        // Flèche droite : image suivante
+                    } else if (e.key === 'ArrowRight') {
                         currentImageIndex = (currentImageIndex + 1) % images.length;
                         modalImage.src = images[currentImageIndex].src;
-                    } else if (event.key === 'Escape') {
-                        // Touche Échap : fermer le modal
-                        modal.style.display = 'none';
                     }
                 }
             });
