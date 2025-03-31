@@ -539,17 +539,17 @@
             });
         });
         
-        function downloadCV(lang) {
-            const fileName = lang === 'fr' ? 'CV_BOUBKER_FR.pdf' : 'CV_BOUBKER_EN.pdf';
-            
+        function downloadCV(language) {
+            const fileName = language === 'fr' ? 'CV_BOUBKER_FR.pdf' : 'CV_BOUBKER_EN.pdf';
             const link = document.createElement('a');
+            link.href = fileName;
             link.download = fileName;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            
-            cvDropdown.classList.add('hidden');
+            toggleDropdown();
         }
+
     </script>
 </body>
 </html>
