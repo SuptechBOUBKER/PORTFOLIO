@@ -8,14 +8,30 @@
     <meta name="keywords" content="Boubker Cheyoukh, développeur, IA, Machine Learning, Portfolio">
     <title>Portfolio - Boubker Cheyoukh</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                        },
+                        dark: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" href="portfolio.png" type="image/png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css">
     <style>
         .fade-in {
             animation: fadeIn 1s ease-in;
@@ -26,29 +42,41 @@
         }
     </style>
 </head>
-<body class="font-['Inter'] bg-gray-50">
+<body class="font-['Inter'] bg-gray-50 dark:bg-dark-900">
     <!-- Progress Bar -->
-    <div id="progressBar" class="fixed top-0 left-0 h-1 bg-purple-600 z-50 transition-all duration-300" style="width: 0%"></div>
+    <div id="progressBar" class="fixed top-0 left-0 h-1 bg-primary-600 z-40 transition-all duration-300" style="width: 0%"></div>
 
     <!-- Navigation -->
-    <nav class="fixed w-full bg-white/80 backdrop-blur-md shadow-sm z-40">
+    <nav class="fixed w-full bg-white/80 dark:bg-dark-800/80 backdrop-blur-md shadow-sm z-30">
         <div class="container mx-auto px-4 py-3 flex items-center justify-between">
-            <a href="#home" class="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-500 text-transparent bg-clip-text">
+            <a href="#home" class="text-2xl font-bold bg-gradient-to-r from-primary-600 to-blue-500 text-transparent bg-clip-text">
                 BC
             </a>
             
-            <div class="hidden md:flex space-x-8">
-                <a href="#home" class="text-sm font-medium transition-colors duration-300 text-purple-600">Home</a>
-                <a href="#about" class="text-sm font-medium transition-colors duration-300 text-gray-600 hover:text-purple-600">About</a>
-                <a href="#skills" class="text-sm font-medium transition-colors duration-300 text-gray-600 hover:text-purple-600">Skills</a>
-                <a href="#projects" class="text-sm font-medium transition-colors duration-300 text-gray-600 hover:text-purple-600">Projects</a>
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#home" class="text-sm font-medium transition-colors duration-300 text-primary-600 dark:text-primary-400">Home</a>
+                <a href="#about" class="text-sm font-medium transition-colors duration-300 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">About</a>
+                <a href="#skills" class="text-sm font-medium transition-colors duration-300 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Skills</a>
+                <a href="#projects" class="text-sm font-medium transition-colors duration-300 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Projects</a>
+                
+                <!-- Dark Mode Toggle (Desktop) -->
+                <button id="darkModeToggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                    <i id="darkModeIcon" data-lucide="moon" class="w-5 h-5"></i>
+                </button>
             </div>
-
+            
+            <!-- Mobile Menu Button -->
             <div class="flex items-center space-x-4 md:hidden">
-                <button id="mobileMenuButton" class="text-gray-600">
+                <!-- Dark Mode Toggle (Mobile) -->
+                <button id="darkModeToggleMobile" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                    <i id="darkModeIconMobile" data-lucide="moon" class="w-5 h-5"></i>
+                </button>
+                
+                <button id="mobileMenuButton" class="text-gray-600 dark:text-gray-300">
                     <i data-lucide="menu" class="w-6 h-6"></i>
                 </button>
-                <a href="https://wa.me/212644435752" target="_blank" rel="noopener noreferrer" class="text-gray-600">
+                <a href="https://wa.me/212644435752" target="_blank" rel="noopener noreferrer" class="text-gray-600 dark:text-gray-300">
                     <i class="fab fa-whatsapp text-2xl"></i>
                 </a>
             </div>
@@ -56,12 +84,12 @@
     </nav>
 
     <!-- Mobile Menu -->
-    <div id="mobileMenu" class="fixed inset-0 bg-white z-30 pt-20 hidden">
+    <div id="mobileMenu" class="fixed inset-0 bg-white dark:bg-dark-800 z-20 pt-20 hidden">
         <div class="flex flex-col items-center space-y-8 p-8" id="mobileMenuContent">
-            <a href="#home" class="menu-link text-xl font-medium text-gray-600 hover:text-purple-600">Home</a>
-            <a href="#about" class="menu-link text-xl font-medium text-gray-600 hover:text-purple-600">About</a>
-            <a href="#skills" class="menu-link text-xl font-medium text-gray-600 hover:text-purple-600">Skills</a>
-            <a href="#projects" class="menu-link text-xl font-medium text-gray-600 hover:text-purple-600">Projects</a>
+            <a href="#home" class="menu-link text-xl font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Home</a>
+            <a href="#about" class="menu-link text-xl font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">About</a>
+            <a href="#skills" class="menu-link text-xl font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Skills</a>
+            <a href="#projects" class="menu-link text-xl font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Projects</a>
         </div>
     </div>
 
@@ -70,27 +98,27 @@
         <div class="container mx-auto max-w-6xl">
             <div class="grid md:grid-cols-2 gap-12 items-center">
                 <div class="space-y-6">
-                    <h1 class="text-5xl md:text-6xl font-bold leading-tight">
+                    <h1 class="text-5xl md:text-6xl font-bold leading-tight dark:text-white">
                         Boubker
-                        <span class="bg-gradient-to-r from-purple-600 to-blue-500 text-transparent bg-clip-text">
+                        <span class="bg-gradient-to-r from-primary-600 to-blue-500 text-transparent bg-clip-text">
                             Cheyoukh
                         </span>
                     </h1>
-                    <p class="text-xl text-gray-600">
+                    <p class="text-xl text-gray-600 dark:text-gray-300">
                         Développeur passionné par l'IA et l'innovation technologique
                     </p>
                     <div class="flex flex-wrap gap-4">
-                        <a href="#projects" class="inline-flex items-center px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300">
+                        <a href="#projects" class="inline-flex items-center px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors duration-300">
                             Voir mes projets
                             <i data-lucide="chevron-right" class="ml-2 w-5 h-5"></i>
                         </a>
-                        <a href="#contact" class="inline-flex items-center px-6 py-3 border-2 border-purple-600 text-purple-600 rounded-lg hover:bg-purple-50 transition-colors duration-300">
+                        <a href="#contact" class="inline-flex items-center px-6 py-3 border-2 border-primary-600 text-primary-600 dark:text-primary-400 rounded-lg hover:bg-purple-50 dark:hover:bg-dark-700 transition-colors duration-300">
                             Contact
                         </a>
                     </div>
                 </div>
                 <div class="relative">
-                    <div class="aspect-square rounded-full bg-gradient-to-br from-purple-600 to-blue-500 opacity-20 absolute inset-0 blur-3xl"></div>
+                    <div class="aspect-square rounded-full bg-gradient-to-br from-primary-600 to-blue-500 opacity-20 absolute inset-0 blur-3xl"></div>
                     <img src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&q=80" alt="Portfolio" class="rounded-2xl shadow-2xl relative z-10 w-full h-auto">
                 </div>
             </div>
@@ -98,56 +126,48 @@
     </section>
 
     <!-- About Section -->
-    <section id="about" class="py-20 bg-white fade-in">
+    <section id="about" class="py-20 bg-white dark:bg-dark-800 fade-in">
         <div class="container mx-auto max-w-6xl px-4 text-center">
-            <h2 class="text-4xl font-bold mb-6 text-purple-600">À propos de moi</h2>
-            <p class="text-gray-700 text-lg max-w-3xl mx-auto leading-relaxed mb-6">
-                Développeur passionné par l'<strong>intelligence artificielle</strong>, je suis actuellement en 3ème année de licence et à la recherche d'opportunités pour mettre en œuvre mes compétences en <strong>programmation</strong>, <strong>apprentissage machine</strong> et <strong>analyse de données</strong>, avec une maîtrise avancée des langages <strong>Python</strong> et <strong>Java</strong>. Je suis motivé par l'<strong>innovation</strong> et la <strong>résolution de problèmes</strong>. Mon objectif est de contribuer à des projets ambitieux exploitant le potentiel de l'<strong>IA</strong> pour développer des solutions pratiques et impactantes.
+            <h2 class="text-4xl font-bold mb-6 text-primary-600 dark:text-primary-400">À propos de moi</h2>
+            <p class="text-gray-700 dark:text-gray-300 text-lg max-w-3xl mx-auto leading-relaxed mb-6">
+                Développeur passionné par l'<strong class="dark:text-white">intelligence artificielle</strong>, je suis actuellement en 3ème année de licence et à la recherche d'opportunités pour mettre en œuvre mes compétences en <strong class="dark:text-white">programmation</strong>, <strong class="dark:text-white">apprentissage machine</strong> et <strong class="dark:text-white">analyse de données</strong>, avec une maîtrise avancée des langages <strong class="dark:text-white">Python</strong> et <strong class="dark:text-white">Java</strong>. Je suis motivé par l'<strong class="dark:text-white">innovation</strong> et la <strong class="dark:text-white">résolution de problèmes</strong>. Mon objectif est de contribuer à des projets ambitieux exploitant le potentiel de l'<strong class="dark:text-white">IA</strong> pour développer des solutions pratiques et impactantes.
             </p>
-            
-            <!-- Profile Image -->
             <img src="image_cv.jpg" alt="Boubker Cheyoukh" class="rounded-full mx-auto mt-8 shadow-lg hover:scale-105 transition-transform w-40 h-40 object-cover">
-            
-            <!-- Contact Information -->
             <div class="mt-6 space-y-4 text-left md:text-center">
-                <p class="flex items-center justify-center text-gray-800">
-                    <i data-lucide="mail" class="text-purple-600 mr-3 w-5 h-5"></i>
+                <p class="flex items-center justify-center text-gray-800 dark:text-gray-200">
+                    <i data-lucide="mail" class="text-primary-600 dark:text-primary-400 mr-3 w-5 h-5"></i>
                     <a href="mailto:cheyoukheboubker@gmail.com" class="hover:underline">cheyoukheboubker@gmail.com</a>
                 </p>
-                <p class="flex items-center justify-center text-gray-800">
-                    <i data-lucide="phone" class="text-purple-600 mr-3 w-5 h-5"></i>
+                <p class="flex items-center justify-center text-gray-800 dark:text-gray-200">
+                    <i data-lucide="phone" class="text-primary-600 dark:text-primary-400 mr-3 w-5 h-5"></i>
                     +212 6 44 43 57 52
                 </p>
-                <p class="flex items-center justify-center text-gray-800">
-                    <i data-lucide="github" class="text-purple-600 mr-3 w-5 h-5"></i>
+                <p class="flex items-center justify-center text-gray-800 dark:text-gray-200">
+                    <i data-lucide="github" class="text-primary-600 dark:text-primary-400 mr-3 w-5 h-5"></i>
                     <a href="https://github.com/BOUBKERsup07" target="_blank" rel="noopener noreferrer" class="hover:underline">github.com/BOUBKERsup07</a>
                 </p>
-                <p class="flex items-center justify-center text-gray-800">
-                    <i data-lucide="linkedin" class="text-purple-600 mr-3 w-5 h-5"></i>
+                <p class="flex items-center justify-center text-gray-800 dark:text-gray-200">
+                    <i data-lucide="linkedin" class="text-primary-600 dark:text-primary-400 mr-3 w-5 h-5"></i>
                     <a href="https://www.linkedin.com/in/boubker-cheyoukh-4696a4276/" target="_blank" rel="noopener noreferrer" class="hover:underline">linkedin.com/in/boubker-cheyoukh</a>
                 </p>
             </div>
-
-            <!-- Buttons -->
             <div class="mt-8 flex flex-col sm:flex-row justify-center gap-4">
-                <a href="#projects" class="inline-flex items-center justify-center px-6 py-3 bg-purple-600 text-white rounded-md shadow hover:bg-purple-700 transition duration-300">
+                <a href="#projects" class="inline-flex items-center justify-center px-6 py-3 bg-primary-600 text-white rounded-md shadow hover:bg-primary-700 transition duration-300">
                     Voir mes projets
                 </a>
-                <a href="https://wa.me/212644435752" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-6 py-3 bg-gray-900 text-white rounded-md shadow hover:bg-gray-800 transition duration-300">
+                <a href="https://wa.me/212644435752" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-6 py-3 bg-gray-900 dark:bg-gray-700 text-white rounded-md shadow hover:bg-gray-800 dark:hover:bg-gray-600 transition duration-300">
                     Contactez-moi
                 </a>
-                
-                <!-- CV download with language selection -->
                 <div class="relative inline-block">
-                    <button id="cvDropdownButton" class="inline-flex items-center justify-center px-6 py-3 bg-purple-600 text-white rounded-md shadow hover:bg-purple-700 transition duration-300">
+                    <button id="cvDropdownButton" class="inline-flex items-center justify-center px-6 py-3 bg-primary-600 text-white rounded-md shadow hover:bg-primary-700 transition duration-300">
                         <i data-lucide="download" class="mr-2 w-5 h-5"></i>
                         Télécharger mon CV
                     </button>
-                    <div id="cvDropdown" class="absolute mt-2 bg-white border border-gray-300 rounded-md shadow-lg z-50 hidden">
-                        <button onclick="downloadCV('fr')" class="block w-full text-left px-4 py-2 hover:bg-gray-100">
+                    <div id="cvDropdown" class="absolute mt-2 bg-white dark:bg-dark-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg z-50 hidden">
+                        <button onclick="downloadCV('fr')" class="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-dark-600">
                             Télécharger mon CV (Français)
                         </button>
-                        <button onclick="downloadCV('en')" class="block w-full text-left px-4 py-2 hover:bg-gray-100">
+                        <button onclick="downloadCV('en')" class="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-dark-600">
                             Download my CV (English)
                         </button>
                     </div>
@@ -155,235 +175,284 @@
             </div>
         </div>
     </section>
-          
-       <!-- Skills Section -->
-    <section id="skills" class="py-20 bg-gradient-to-br from-gray-100 to-gray-200">
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-20 bg-gray-50 dark:bg-dark-900 fade-in">
         <div class="container mx-auto max-w-6xl px-4">
-            <h2 class="text-4xl font-bold mb-6 text-center text-blue-500">Compétences</h2>
-            
-        <!-- Progress Bars -->
-        <div class="grid gap-6 mb-12">
-            <div class="space-y-2">
-                <div class="flex justify-between">
-                    <span class="font-medium">Intelligence Artificielle</span>
-                    <span class="text-gray-600">40%</span>
+            <h2 class="text-4xl font-bold mb-12 text-center text-primary-600 dark:text-primary-400">Mes Compétences</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- Frontend -->
+                <div class="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
+                    <div class="flex justify-center space-x-4 mb-4">
+                        <div class="flex flex-col items-center">
+                            <i class="fab fa-html5 text-orange-500 text-4xl"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">HTML5</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fab fa-css3-alt text-blue-500 text-4xl"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">CSS3</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fab fa-js text-yellow-500 text-4xl"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">JS</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fab fa-react text-blue-400 text-4xl"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">React</span>
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-lg mb-3 text-gray-700 dark:text-gray-200">Frontend</h3>
+                    <ul class="text-gray-600 dark:text-gray-300 text-sm space-y-2">
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <span>Développement d'interfaces modernes avec React/Angular</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <span>Responsive design avec Tailwind/Bootstrap</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <span>Single Page Applications (SPA)</span>
+                        </li>
+                    </ul>
                 </div>
-                <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <div class="h-full bg-gradient-to-r from-purple-600 to-blue-500 transition-all duration-1000" style="width: 50%"></div>
+
+                <!-- Backend -->
+                <div class="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
+                    <div class="flex justify-center space-x-4 mb-4">
+                        <div class="flex flex-col items-center">
+                            <i class="fab fa-java text-red-500 text-4xl"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">Java</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fab fa-python text-blue-400 text-4xl"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">Python</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="devicon-spring-plain text-green-500 text-4xl"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">Spring</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fas fa-server text-primary-500 text-4xl"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">API</span>
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-lg mb-3 text-primary-600 dark:text-primary-400">Backend</h3>
+                    <ul class="text-gray-600 dark:text-gray-300 text-sm space-y-2">
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <span>Spring Boot (REST APIs, Microservices)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <span>Django/Python pour le backend</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <span>Authentification JWT/OAuth2</span>
+                        </li>
+                    </ul>
                 </div>
-            </div>
-            <div class="space-y-2">
-                <div class="flex justify-between">
-                    <span class="font-medium">Python</span>
-                    <span class="text-gray-600">85%</span>
+
+                <!-- Databases -->
+                <div class="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
+                    <div class="flex justify-center space-x-4 mb-4">
+                        <div class="flex flex-col items-center">
+                            <i class="fas fa-database text-blue-500 text-4xl"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">SQL</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="devicon-postgresql-plain text-blue-600 text-4xl"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">PostgreSQL</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fas fa-fire text-orange-500 text-4xl"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">NoSQL</span>
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-lg mb-3 text-gray-700 dark:text-gray-200">Bases de Données</h3>
+                    <ul class="text-gray-600 dark:text-gray-300 text-sm space-y-2">
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <span>MySQL, PostgreSQL, SQLite</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <span>Hibernate, Django ORM, JPA</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <span>Optimisation des requêtes SQL</span>
+                        </li>
+                    </ul>
                 </div>
-                <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <div class="h-full bg-gradient-to-r from-purple-600 to-blue-500 transition-all duration-1000" style="width: 85%"></div>
+
+                <!-- Frameworks -->
+                <div class="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
+                    <div class="flex justify-center space-x-4 mb-4">
+                        <div class="flex flex-col items-center">
+                            <i class="devicon-spring-plain text-green-500 text-4xl"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">Spring</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fab fa-python text-green-500 text-4xl"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">Django</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fab fa-laravel text-red-500 text-4xl"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">Laravel</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fas fa-cubes text-primary-500 text-4xl"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">Maven</span>
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-lg mb-3 text-primary-600 dark:text-primary-400">Frameworks</h3>
+                    <ul class="text-gray-600 dark:text-gray-300 text-sm space-y-2">
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <span>Spring Boot, Spring Security, Spring Data</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <span>Django REST Framework</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <span>Gestion des dépendances (Maven, Pip)</span>
+                        </li>
+                    </ul>
                 </div>
-            </div>
-            <div class="space-y-2">
-                <div class="flex justify-between">
-                    <span class="font-medium">Java</span>
-                    <span class="text-gray-600">80%</span>
+
+                <!-- AI/ML -->
+                <div class="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
+                    <div class="flex justify-center space-x-4 mb-4">
+                        <div class="flex flex-col items-center">
+                            <i class="fas fa-brain text-primary-500 text-4xl"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">ML</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fas fa-chart-line text-green-500 text-4xl"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">Data</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fas fa-robot text-blue-400 text-4xl"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">AI</span>
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-lg mb-3 text-gray-700 dark:text-gray-200">Data Science & IA</h3>
+                    <ul class="text-gray-600 dark:text-gray-300 text-sm space-y-2">
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <span>Machine Learning (TensorFlow)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <span>Traitement de données (Pandas, NumPy)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <span>Visualisation (Matplotlib)</span>
+                        </li>
+                    </ul>
                 </div>
-                <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <div class="h-full bg-gradient-to-r from-purple-600 to-blue-500 transition-all duration-1000" style="width: 80%"></div>
-                </div>
-            </div>
-            <div class="space-y-2">
-                <div class="flex justify-between">
-                    <span class="font-medium">Machine Learning</span>
-                    <span class="text-gray-600">30%</span>
-                </div>
-                <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <div class="h-full bg-gradient-to-r from-purple-600 to-blue-500 transition-all duration-1000" style="width: 40%"></div>
-                </div>
-            </div>
-            <div class="space-y-2">
-                <div class="flex justify-between">
-                    <span class="font-medium">Web Development</span>
-                    <span class="text-gray-600">85%</span>
-                </div>
-                <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <div class="h-full bg-gradient-to-r from-purple-600 to-blue-500 transition-all duration-1000" style="width: 85%"></div>
+
+                <!-- DevOps -->
+                <div class="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
+                    <div class="flex justify-center space-x-4 mb-4">
+                        <div class="flex flex-col items-center">
+                            <i class="fab fa-docker text-blue-400 text-4xl"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">Docker</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fab fa-git-alt text-red-500 text-4xl"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">Git</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fas fa-project-diagram text-orange-500 text-4xl"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">UML</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fas fa-bolt text-yellow-500 text-4xl"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">CI/CD</span>
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-lg mb-3 text-primary-600 dark:text-primary-400">Outils & Méthodes</h3>
+                    <ul class="text-gray-600 dark:text-gray-300 text-sm space-y-2">
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <span>Conteneurisation (Docker)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <span>Git, GitHub Actions, CI/CD</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <span>Méthodologies Agile/Scrum</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
-        
-        <!-- Skill Categories -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <!-- Développement Front-end -->
-            <div class="bg-white p-6 shadow-lg rounded text-center hover:shadow-xl transition-shadow">
-                <div class="flex justify-center space-x-4 mb-4">
-                    <div class="flex flex-col items-center">
-                        <i class="fab fa-html5 text-orange-500 text-4xl"></i>
-                        <span class="text-xs mt-1">HTML5</span>
-                    </div>
-                    <div class="flex flex-col items-center">
-                        <i class="fab fa-css3-alt text-blue-500 text-4xl"></i>
-                        <span class="text-xs mt-1">CSS3</span>
-                    </div>
-                    <div class="flex flex-col items-center">
-                        <i class="fab fa-js text-yellow-500 text-4xl"></i>
-                        <span class="text-xs mt-1">JavaScript</span>
-                    </div>
-                </div>
-                <h3 class="font-bold">Développement Front-end</h3>
-                <p class="text-gray-600 text-sm">HTML, CSS, JavaScript, Sass, Tailwind CSS, Bootstrap</p>
-            </div>
-
-            <!-- Bases de données -->
-            <div class="bg-white p-6 shadow-lg rounded text-center hover:shadow-xl transition-shadow">
-                <div class="flex justify-center space-x-4 mb-4">
-                    <div class="flex flex-col items-center">
-                        <i class="fas fa-database text-blue-500 text-4xl"></i>
-                        <span class="text-xs mt-1">MySQL</span>
-                    </div>
-                    <div class="flex flex-col items-center">
-                        <i class="fas fa-database text-gray-500 text-4xl"></i>
-                        <span class="text-xs mt-1">SQLite</span>
-                    </div>
-                </div>
-                <h3 class="font-bold">Bases de données</h3>
-                <p class="text-gray-600 text-sm">MySQL, SQLite, phpMyAdmin</p>
-            </div>
-
-            <!-- Développement Back-end -->
-            <div class="bg-white p-6 shadow-lg rounded text-center hover:shadow-xl transition-shadow">
-                <div class="flex justify-center space-x-4 mb-4">
-                    <div class="flex flex-col items-center">
-                        <i class="fab fa-java text-red-500 text-4xl"></i>
-                        <span class="text-xs mt-1">Java</span>
-                    </div>
-                    <div class="flex flex-col items-center">
-                        <i class="fab fa-php text-purple-500 text-4xl"></i>
-                        <span class="text-xs mt-1">PHP</span>
-                    </div>
-                    <div class="flex flex-col items-center">
-                        <i class="fab fa-python text-blue-400 text-4xl"></i>
-                        <span class="text-xs mt-1">Python</span>
-                    </div>
-                </div>
-                <h3 class="font-bold">Développement Back-end</h3>
-                <p class="text-gray-600 text-sm">Java_POO, PHP, Python</p>
-            </div>
-
-            <!-- Frameworks et outils Python -->
-            <div class="bg-white p-6 shadow-lg rounded text-center hover:shadow-xl transition-shadow">
-                <div class="flex justify-center space-x-6 mb-4">
-                    <div class="flex flex-col items-center">
-                        <i class="fab fa-python text-green-500 text-4xl"></i>
-                        <span class="text-xs mt-1">Django</span>
-                    </div>
-                    <div class="flex flex-col items-center">
-                        <i class="devicon-flask-original text-4xl text-black" style="height: 2.25rem; width: 2.25rem;"></i>
-                        <span class="text-xs mt-1">Flask</span>
-                    </div>
-                </div>
-                <h3 class="font-bold">Frameworks et outils Python</h3>
-                <p class="text-gray-600 text-sm">Django, Flask, PyQt5, Tkinter</p>
-            </div>
-
-            <!-- Frameworks Java -->
-            <div class="bg-white p-6 shadow-lg rounded text-center hover:shadow-xl transition-shadow">
-                <div class="flex justify-center space-x-4 mb-4">
-                    <div class="flex flex-col items-center">
-                        <i class="fab fa-java text-red-500 text-4xl"></i>
-                        <span class="text-xs mt-1">Java</span>
-                    </div>
-                    <div class="flex flex-col items-center">
-                        <i class="fas fa-layer-group text-gray-600 text-4xl"></i>
-                        <span class="text-xs mt-1">Hibernate</span>
-                    </div>
-                </div>
-                <h3 class="font-bold">Frameworks Java</h3>
-                <p class="text-gray-600 text-sm">JEE (Java Enterprise Edition), Hibernate</p>
-            </div>
-
-            <!-- IA & Machine Learning -->
-            <div class="bg-white p-6 shadow-lg rounded text-center hover:shadow-xl transition-shadow">
-                <div class="flex justify-center space-x-4 mb-4">
-                    <div class="flex flex-col items-center">
-                        <i class="fab fa-python text-blue-400 text-4xl"></i>
-                        <span class="text-xs mt-1">Python</span>
-                    </div>
-                </div>
-                <h3 class="font-bold">IA & Machine Learning</h3>
-                <p class="text-gray-600 text-sm">Python</p>
-            </div>
-
-            <!-- Modélisation et Conception -->
-            <div class="bg-white p-6 shadow-lg rounded text-center hover:shadow-xl transition-shadow">
-                <div class="flex justify-center space-x-4 mb-4">
-                    <div class="flex flex-col items-center">
-                        <i class="fas fa-project-diagram text-orange-500 text-4xl"></i>
-                        <span class="text-xs mt-1">UML</span>
-                    </div>
-                </div>
-                <h3 class="font-bold">Modélisation et Conception</h3>
-                <p class="text-gray-600 text-sm">UML, Merise</p>
-            </div>
-
-            <!-- Langages proches du matériel -->
-            <div class="bg-white p-6 shadow-lg rounded text-center hover:shadow-xl transition-shadow">
-                <div class="flex justify-center space-x-4 mb-4">
-                    <div class="flex flex-col items-center">
-                        <i class="fas fa-code text-blue-500 text-4xl"></i>
-                        <span class="text-xs mt-1">C</span>
-                    </div>
-                    <div class="flex flex-col items-center">
-                        <i class="fas fa-microchip text-gray-600 text-4xl"></i>
-                        <span class="text-xs mt-1">Assembly</span>
-                    </div>
-                </div>
-                <h3 class="font-bold">Langages proches du matériel</h3>
-                <p class="text-gray-600 text-sm">Assembly, C</p>
-            </div>
-        </div>
-    </div>
-</section>
+    </section>
 
     <!-- Projects Section -->
-    <section id="projects" class="py-20 bg-gray-50">
+    <section id="projects" class="py-20 bg-gray-50 dark:bg-dark-900">
         <div class="container mx-auto max-w-6xl px-4">
-            <h2 class="text-4xl font-bold mb-12 text-center text-purple-600">
+            <h2 class="text-4xl font-bold mb-12 text-center text-primary-600 dark:text-primary-400">
                 Mes Projets
             </h2>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="group relative overflow-hidden rounded-xl bg-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                <div class="group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                     <div class="aspect-video overflow-hidden">
                         <img src="images/TKINTER7.png" alt="Gestion des données scolaires" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
                     </div>
                     <div class="p-6">
-                        <h3 class="text-xl font-semibold mb-2">Gestion des données scolaires</h3>
-                        <p class="text-gray-600">Outils Python pour manipuler et analyser les données des écoles.</p>
-                        <a href="projet1.html" class="inline-flex items-center mt-4 text-purple-600 hover:text-purple-700">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">Gestion des données scolaires</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Outils Python pour manipuler et analyser les données des écoles.</p>
+                        <a href="projet1.html" class="inline-flex items-center mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-500">
                             En savoir plus
                             <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
                         </a>
                     </div>
                 </div>
-                <div class="group relative overflow-hidden rounded-xl bg-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                <div class="group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                     <div class="aspect-video overflow-hidden">
                         <img src="images/resto1.png" alt="Gestion des restaurants" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
                     </div>
                     <div class="p-6">
-                        <h3 class="text-xl font-semibold mb-2">Gestion des restaurants</h3>
-                        <p class="text-gray-600">Plateforme de gestion des restaurants pour améliorer l'expérience client.</p>
-                        <a href="projet2.html" class="inline-flex items-center mt-4 text-purple-600 hover:text-purple-700">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">Gestion des restaurants</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Plateforme de gestion des restaurants pour améliorer l'expérience client.</p>
+                        <a href="projet2.html" class="inline-flex items-center mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-500">
                             En savoir plus
                             <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
                         </a>
                     </div>
                 </div>
-                <div class="group relative overflow-hidden rounded-xl bg-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                <div class="group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                     <div class="aspect-video overflow-hidden">
                         <img src="images/eco1.png" alt="Site éducatif full-stack" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
                     </div>
                     <div class="p-6">
-                        <h3 class="text-xl font-semibold mb-2">Site éducatif full-stack</h3>
-                        <p class="text-gray-600">Plateforme éducative avec design interactif et gestion de données sécurisée.</p>
-                        <a href="projet3.html" class="inline-flex items-center mt-4 text-purple-600 hover:text-purple-700">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">Site éducatif full-stack</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Plateforme éducative avec design interactif et gestion de données sécurisée.</p>
+                        <a href="projet3.html" class="inline-flex items-center mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-500">
+                            En savoir plus
+                            <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                    <div class="aspect-video overflow-hidden">
+                        <img src="images/NextStepJob/NextstepJob4.png" alt="NextStepJobs" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">NextStepJobs</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Plateforme de recrutement en ligne avec Spring Boot et React.</p>
+                        <a href="projet4.html" class="inline-flex items-center mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-500">
                             En savoir plus
                             <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
                         </a>
@@ -394,38 +463,38 @@
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="py-20 bg-white">
+    <section id="contact" class="py-20 bg-white dark:bg-dark-800">
         <div class="container mx-auto max-w-6xl px-4">
-            <h2 class="text-3xl font-bold mb-12 text-center">Contact</h2>
+            <h2 class="text-3xl font-bold mb-12 text-center dark:text-white">Contact</h2>
             <div class="grid md:grid-cols-2 gap-12">
                 <div class="space-y-6">
                     <div class="flex items-center space-x-4">
-                        <i data-lucide="mail" class="text-purple-600 w-6 h-6"></i>
-                        <a href="mailto:cheyoukheboubker@gmail.com" class="hover:text-purple-600">
+                        <i data-lucide="mail" class="text-primary-600 dark:text-primary-400 w-6 h-6"></i>
+                        <a href="mailto:cheyoukheboubker@gmail.com" class="hover:underline dark:text-gray-300">
                             cheyoukheboubker@gmail.com
                         </a>
                     </div>
                     <div class="flex items-center space-x-4">
-                        <i data-lucide="phone" class="text-purple-600 w-6 h-6"></i>
-                        <a href="tel:+212644435752" class="hover:text-purple-600">
+                        <i data-lucide="phone" class="text-primary-600 dark:text-primary-400 w-6 h-6"></i>
+                        <a href="tel:+212644435752" class="hover:underline dark:text-gray-300">
                             +212 6 44 43 57 52
                         </a>
                     </div>
                     <div class="flex space-x-4">
-                        <a href="https://github.com/BOUBKERsup07" target="_blank" rel="noopener noreferrer" class="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
-                            <i data-lucide="github" class="w-6 h-6"></i>
+                        <a href="https://github.com/BOUBKERsup07" target="_blank" rel="noopener noreferrer" class="p-2 rounded-full bg-gray-100 dark:bg-dark-700 hover:bg-gray-200 dark:hover:bg-dark-600 transition-colors">
+                            <i data-lucide="github" class="w-6 h-6 dark:text-gray-300"></i>
                         </a>
-                        <a href="https://www.linkedin.com/in/boubker-cheyoukh-4696a4276/" target="_blank" rel="noopener noreferrer" class="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
-                            <i data-lucide="linkedin" class="w-6 h-6"></i>
+                        <a href="https://www.linkedin.com/in/boubker-cheyoukh-4696a4276/" target="_blank" rel="noopener noreferrer" class="p-2 rounded-full bg-gray-100 dark:bg-dark-700 hover:bg-gray-200 dark:hover:bg-dark-600 transition-colors">
+                            <i data-lucide="linkedin" class="w-6 h-6 dark:text-gray-300"></i>
                         </a>
                     </div>
                 </div>
                 <div class="space-y-4">
-                    <button onclick="downloadCV('fr')" class="w-full flex items-center justify-center px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300">
+                    <button onclick="downloadCV('fr')" class="w-full flex items-center justify-center px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors duration-300">
                         <i data-lucide="download" class="mr-2 w-5 h-5"></i>
                         Télécharger CV (FR)
                     </button>
-                    <button onclick="downloadCV('en')" class="w-full flex items-center justify-center px-6 py-3 border-2 border-purple-600 text-purple-600 rounded-lg hover:bg-purple-50 transition-colors duration-300">
+                    <button onclick="downloadCV('en')" class="w-full flex items-center justify-center px-6 py-3 border-2 border-primary-600 text-primary-600 dark:text-primary-400 rounded-lg hover:bg-purple-50 dark:hover:bg-dark-700 transition-colors duration-300">
                         <i data-lucide="download" class="mr-2 w-5 h-5"></i>
                         Download CV (EN)
                     </button>
@@ -435,39 +504,39 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-8">
+    <footer class="bg-gray-900 dark:bg-dark-800 text-white py-8">
         <div class="container mx-auto max-w-6xl px-4 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
             <div>
-                <h3 class="text-lg font-bold mb-4">À propos</h3>
+                <h3 class="text-lg font-bold mb-4 dark:text-white">À propos</h3>
                 <p class="text-gray-400 text-sm leading-relaxed">
                     Développeur passionné par l'intelligence artificielle et le développement d'applications.
                 </p>
             </div>
             <div>
-                <h3 class="text-lg font-bold mb-4">Liens utiles</h3>
+                <h3 class="text-lg font-bold mb-4 dark:text-white">Liens utiles</h3>
                 <ul class="space-y-2">
-                    <li><a href="#about" class="text-gray-400 hover:text-yellow-300 transition">À propos</a></li>
-                    <li><a href="#skills" class="text-gray-400 hover:text-yellow-300 transition">Compétences</a></li>
-                    <li><a href="#projects" class="text-gray-400 hover:text-yellow-300 transition">Projets</a></li>
-                    <li><a href="#contact" class="text-gray-400 hover:text-yellow-300 transition">Contact</a></li>
+                    <li><a href="#about" class="text-gray-400 hover:text-primary-400 transition">À propos</a></li>
+                    <li><a href="#skills" class="text-gray-400 hover:text-primary-400 transition">Compétences</a></li>
+                    <li><a href="#projects" class="text-gray-400 hover:text-primary-400 transition">Projets</a></li>
+                    <li><a href="#contact" class="text-gray-400 hover:text-primary-400 transition">Contact</a></li>
                 </ul>
             </div>
             <div>
-                <h3 class="text-lg font-bold mb-4">Contact</h3>
-                <p class="text-gray-400 text-sm">Email : <a href="mailto:cheyoukheboubker@gmail.com" class="hover:text-yellow-300">cheyoukheboubker@gmail.com</a></p>
-                <p class="text-gray-400 text-sm">Téléphone : <a href="tel:+212644435752" class="hover:text-yellow-300">+212 6 44 43 57 52</a></p>
+                <h3 class="text-lg font-bold mb-4 dark:text-white">Contact</h3>
+                <p class="text-gray-400 text-sm">Email : <a href="mailto:cheyoukheboubker@gmail.com" class="hover:text-primary-400">cheyoukheboubker@gmail.com</a></p>
+                <p class="text-gray-400 text-sm">Téléphone : <a href="tel:+212644435752" class="hover:text-primary-400">+212 6 44 43 57 52</a></p>
                 <div class="flex justify-center md:justify-start space-x-4 mt-4">
-                    <a href="https://github.com/BOUBKERsup07" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-yellow-300">
+                    <a href="https://github.com/BOUBKERsup07" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary-400">
                         <i data-lucide="github" class="w-5 h-5"></i>
                     </a>
-                    <a href="https://www.linkedin.com/in/boubker-cheyoukh-4696a4276/" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-yellow-300">
+                    <a href="https://www.linkedin.com/in/boubker-cheyoukh-4696a4276/" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary-400">
                         <i data-lucide="linkedin" class="w-5 h-5"></i>
                     </a>
                 </div>
             </div>
         </div>
-        <div class="border-t border-gray-700 mt-8 pt-4 text-gray-400 text-sm text-center">
-            <p>&copy; 2025 Boubker Cheyoukh. Tous droits réservés.</p>
+        <div class="border-t border-gray-700 dark:border-gray-600 mt-8 pt-4 text-gray-400 text-sm text-center">
+            <p>© 2025 Boubker Cheyoukh. Tous droits réservés.</p>
         </div>
     </footer>
 
@@ -477,84 +546,124 @@
     </a>
 
     <script>
-         // Initialize Lucide icons
-        lucide.createIcons();
-
-// Initialize Lucide icons
-lucide.createIcons();
-
-// Elements
-const mobileMenuButton = document.getElementById('mobileMenuButton');
-const mobileMenu = document.getElementById('mobileMenu');
-const mobileMenuContent = document.getElementById('mobileMenuContent');
-const menuLinks = document.querySelectorAll('.menu-link');
-
-function toggleMenu() {
-    mobileMenu.classList.toggle('hidden');
-    updateIcon();
-}
-
-function closeMenu() {
-    if (!mobileMenu.classList.contains('hidden')) {
-        mobileMenu.classList.add('hidden');
-        updateIcon();
-    }
-}
-
-function updateIcon() {
-    const icon = mobileMenuButton.querySelector('[data-lucide]');
-    if (icon) {
-        icon.setAttribute('data-lucide', mobileMenu.classList.contains('hidden') ? 'menu' : 'x');
-        lucide.createIcons(); // Met à jour l'icône
-    }
-}
-
-// Toggle menu on button click
-mobileMenuButton.addEventListener('click', (event) => {
-    event.stopPropagation(); // Empêche la fermeture immédiate après l'ouverture
-    toggleMenu();
-});
-
-// Prevent closing when clicking inside the menu
-mobileMenuContent.addEventListener('click', (event) => {
-    event.stopPropagation();
-});
-
-// Close menu when clicking outside
-document.addEventListener('click', () => {
-    closeMenu();
-});
-
-// Close menu when clicking on a link
-menuLinks.forEach(link => {
-    link.addEventListener('click', closeMenu);
-});
+         lucide.createIcons();
         
-        // CV dropdown toggle
+        // Dark Mode Toggle
+        const setupDarkModeToggle = (toggleButton, iconElement) => {
+            toggleButton.addEventListener('click', () => {
+                document.documentElement.classList.toggle('dark');
+                const isDark = document.documentElement.classList.contains('dark');
+                localStorage.setItem('darkMode', isDark);
+                
+                if (isDark) {
+                    iconElement.setAttribute('data-lucide', 'sun');
+                } else {
+                    iconElement.setAttribute('data-lucide', 'moon');
+                }
+                lucide.createIcons();
+            });
+        };
+
+        // Initialize dark mode
+        const initializeDarkMode = () => {
+            const darkModeIcon = document.getElementById('darkModeIcon');
+            const darkModeIconMobile = document.getElementById('darkModeIconMobile');
+            
+            // Check for saved user preference or use system preference
+            if (localStorage.getItem('darkMode') === 'true' || 
+                (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                darkModeIcon.setAttribute('data-lucide', 'sun');
+                darkModeIconMobile.setAttribute('data-lucide', 'sun');
+            } else {
+                document.documentElement.classList.remove('dark');
+                darkModeIcon.setAttribute('data-lucide', 'moon');
+                darkModeIconMobile.setAttribute('data-lucide', 'moon');
+            }
+            lucide.createIcons();
+            
+            // Setup toggle buttons
+            setupDarkModeToggle(
+                document.getElementById('darkModeToggle'),
+                darkModeIcon
+            );
+            
+            setupDarkModeToggle(
+                document.getElementById('darkModeToggleMobile'),
+                darkModeIconMobile
+            );
+        };
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initializeDarkMode);
+
+        // Mobile menu functionality
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileMenuContent = document.getElementById('mobileMenuContent');
+        const menuLinks = document.querySelectorAll('.menu-link');
+
+        function toggleMenu() {
+            mobileMenu.classList.toggle('hidden');
+            updateIcon();
+        }
+
+        function closeMenu() {
+            if (!mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.add('hidden');
+                updateIcon();
+            }
+        }
+
+        function updateIcon() {
+            const icon = mobileMenuButton.querySelector('[data-lucide]');
+            if (icon) {
+                icon.setAttribute('data-lucide', mobileMenu.classList.contains('hidden') ? 'menu' : 'x');
+                lucide.createIcons();
+            }
+        }
+
+        mobileMenuButton.addEventListener('click', (event) => {
+            event.stopPropagation();
+            toggleMenu();
+        });
+
+        mobileMenuContent.addEventListener('click', (event) => {
+            event.stopPropagation();
+        });
+
+        document.addEventListener('click', () => {
+            closeMenu();
+        });
+
+        menuLinks.forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+
+        // CV Dropdown
         const cvDropdownButton = document.getElementById('cvDropdownButton');
         const cvDropdown = document.getElementById('cvDropdown');
-        
+
         cvDropdownButton.addEventListener('click', () => {
             cvDropdown.classList.toggle('hidden');
         });
-        
-        // Close dropdown when clicking outside
+
         document.addEventListener('click', (event) => {
             if (!cvDropdownButton.contains(event.target) && !cvDropdown.contains(event.target)) {
                 cvDropdown.classList.add('hidden');
             }
         });
-        
+
         // Scroll progress bar
         window.addEventListener('scroll', () => {
             const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
             const progress = (window.scrollY / totalScroll) * 100;
             document.getElementById('progressBar').style.width = `${progress}%`;
-            
-            // Update active section in navigation
+
+            // Update active nav link
             const sections = ['home', 'about', 'skills', 'projects', 'contact'];
             const navLinks = document.querySelectorAll('nav a');
-            
+
             sections.forEach(section => {
                 const element = document.getElementById(section);
                 if (element) {
@@ -562,18 +671,19 @@ menuLinks.forEach(link => {
                     if (rect.top <= 100 && rect.bottom >= 100) {
                         navLinks.forEach(link => {
                             if (link.getAttribute('href') === `#${section}`) {
-                                link.classList.add('text-purple-600');
-                                link.classList.remove('text-gray-600');
+                                link.classList.add('text-primary-600', 'dark:text-primary-400');
+                                link.classList.remove('text-gray-600', 'dark:text-gray-300');
                             } else if (link.getAttribute('href').startsWith('#')) {
-                                link.classList.add('text-gray-600');
-                                link.classList.remove('text-purple-600');
+                                link.classList.add('text-gray-600', 'dark:text-gray-300');
+                                link.classList.remove('text-primary-600', 'dark:text-primary-400');
                             }
                         });
                     }
                 }
             });
         });
-        
+
+        // Download CV function
         function downloadCV(language) {
             const fileName = language === 'fr' ? 'CV_BOUBKER_FR.pdf' : 'CV_BOUBKER_EN.pdf';
             const link = document.createElement('a');
@@ -582,7 +692,7 @@ menuLinks.forEach(link => {
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            toggleDropdown();
+            cvDropdown.classList.add('hidden');
         }
     </script>
 </body>
