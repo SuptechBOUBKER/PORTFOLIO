@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="EventHub - Plateforme de gestion d'événements développée avec React et Laravel">
+    <meta name="author" content="Boubker Cheyoukh">
+    <meta name="keywords" content="EventHub, React, Laravel, gestion événements, portfolio">
+    <title>EventHub - Boubker Cheyoukh</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                        },
+                        dark: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="/images/icon/event.png" type="image/png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .fade-in {
+            animation: fadeIn 1s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .tech-badge {
+            transition: all 0.3s ease;
+        }
+        .tech-badge:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body class="font-['Inter'] bg-gray-50 dark:bg-dark-900">
+    <!-- Progress Bar -->
+    <div id="progressBar" class="fixed top-0 left-0 h-1 bg-primary-600 z-40 transition-all duration-300" style="width: 0%"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-white/80 dark:bg-dark-800/80 backdrop-blur-md shadow-sm z-30">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <a href="index.html" class="text-2xl font-bold bg-gradient-to-r from-primary-600 to-blue-500 text-transparent bg-clip-text">
+                BC
+            </a>
+            
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="index.html" class="text-sm font-medium transition-colors duration-300 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Accueil</a>
+                <a href="index.html#projects" class="text-sm font-medium transition-colors duration-300 text-primary-600 dark:text-primary-400">Projets</a>
+                <a href="index.html#contact" class="text-sm font-medium transition-colors duration-300 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Contact</a>
+                
+                <!-- Dark Mode Toggle (Desktop) -->
+                <button id="darkModeToggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                    <i id="darkModeIcon" data-lucide="moon" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <!-- Mobile Menu Button -->
+            <div class="flex items-center space-x-4 md:hidden">
+                <!-- Dark Mode Toggle (Mobile) -->
+                <button id="darkModeToggleMobile" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                    <i id="darkModeIconMobile" data-lucide="moon" class="w-5 h-5"></i>
+                </button>
+                
+                <button id="mobileMenuButton" class="text-gray-600 dark:text-gray-300">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="fixed inset-0 bg-white dark:bg-dark-800 z-20 pt-20 hidden">
+        <div class="flex flex-col items-center space-y-8 p-8" id="mobileMenuContent">
+            <a href="index.html" class="menu-link text-xl font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Accueil</a>
+            <a href="index.html#projects" class="menu-link text-xl font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Projets</a>
+            <a href="index.html#contact" class="menu-link text-xl font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Contact</a>
+        </div>
+    </div>
+
+    <!-- Project Header -->
+    <section class="pt-32 pb-10 px-4 bg-gradient-to-b from-purple-50 to-white dark:from-dark-900 dark:to-dark-800">
+        <div class="container mx-auto max-w-6xl">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+                <div class="space-y-4 md:w-1/2">
+                    <h1 class="text-4xl md:text-5xl font-bold leading-tight dark:text-white">
+                        <span class="bg-gradient-to-r from-primary-600 to-blue-500 text-transparent bg-clip-text">
+                            EventHub
+                        </span>
+                    </h1>
+                    <p class="text-xl text-gray-600 dark:text-gray-300">
+                        Plateforme de gestion d'événements
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 rounded-full text-sm font-medium">React</span>
+                        <span class="px-3 py-1 bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 rounded-full text-sm font-medium">Laravel</span>
+                        <span class="px-3 py-1 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 rounded-full text-sm font-medium">MySQL</span>
+                        <span class="px-3 py-1 bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200 rounded-full text-sm font-medium">Tailwind CSS</span>
+                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 rounded-full text-sm font-medium">TypeScript</span>
+                    </div>
+                </div>
+                <div class="md:w-1/2">
+                    <img src="images/EventHub/Eventhub.png" alt="EventHub Dashboard" class="rounded-xl shadow-lg w-full">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Overview -->
+    <section class="py-16 px-4 bg-white dark:bg-dark-800">
+        <div class="container mx-auto max-w-6xl">
+            <div class="grid md:grid-cols-2 gap-12 items-start">
+                <div class="space-y-6">
+                    <h2 class="text-3xl font-bold text-gray-800 dark:text-white">Aperçu du projet</h2>
+                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                        <strong>EventHub</strong> est une application web moderne développée avec <strong>React</strong> pour le front-end et <strong>Laravel</strong> pour le back-end. Elle permet la <strong>gestion, la planification et la consultation d'événements</strong> dans un cadre professionnel ou communautaire.
+                    </p>
+                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                        L'application offre une interface intuitive pour créer, modifier et consulter des événements, gérer les inscriptions des participants et les informations logistiques (lieu, date, intervenants…). Elle permet également un accès en temps réel aux informations sur les événements via une API Laravel et fournit un tableau de bord interactif pour les utilisateurs et les organisateurs.
+                    </p>
+                    <div class="flex flex-wrap gap-4 pt-4">
+                        <a href="https://github.com/BOUBKERsup07/EventHub" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-300">
+                            <i class="fab fa-github mr-2"></i>
+                            Code source
+                        </a>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white">Objectifs du projet</h3>
+                    <ul class="space-y-3 text-gray-600 dark:text-gray-300">
+                        <li class="flex items-start">
+                            <i data-lucide="check-circle" class="text-green-500 mr-2 mt-0.5 w-5 h-5"></i>
+                            <span>Offrir une interface intuitive pour <strong>créer, modifier et consulter des événements</strong>.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check-circle" class="text-green-500 mr-2 mt-0.5 w-5 h-5"></i>
+                            <span>Gérer les inscriptions des participants et les informations logistiques (lieu, date, intervenants…).</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check-circle" class="text-green-500 mr-2 mt-0.5 w-5 h-5"></i>
+                            <span>Permettre un accès en temps réel aux informations sur les événements via une API Laravel.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check-circle" class="text-green-500 mr-2 mt-0.5 w-5 h-5"></i>
+                            <span>Fournir un tableau de bord interactif pour les utilisateurs et les organisateurs.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technologies Used -->
+    <section class="py-16 px-4 bg-gray-50 dark:bg-dark-900">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-3xl font-bold mb-12 text-center text-gray-800 dark:text-white">Technologies utilisées</h2>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-8">
+                <div class="tech-badge flex flex-col items-center p-6 bg-white dark:bg-dark-800 rounded-xl shadow-md">
+                    <i class="fab fa-react text-blue-400 text-5xl mb-4"></i>
+                    <h3 class="font-bold text-gray-800 dark:text-white">React</h3>
+                    <p class="text-sm text-center text-gray-600 dark:text-gray-300 mt-2">Interface utilisateur</p>
+                </div>
+                <div class="tech-badge flex flex-col items-center p-6 bg-white dark:bg-dark-800 rounded-xl shadow-md">
+                    <i class="fab fa-laravel text-red-500 text-5xl mb-4"></i>
+                    <h3 class="font-bold text-gray-800 dark:text-white">Laravel</h3>
+                    <p class="text-sm text-center text-gray-600 dark:text-gray-300 mt-2">Backend & API</p>
+                </div>
+                <div class="tech-badge flex flex-col items-center p-6 bg-white dark:bg-dark-800 rounded-xl shadow-md">
+                    <i class="fas fa-database text-blue-600 text-5xl mb-4"></i>
+                    <h3 class="font-bold text-gray-800 dark:text-white">MySQL</h3>
+                    <p class="text-sm text-center text-gray-600 dark:text-gray-300 mt-2">Base de données</p>
+                </div>
+                <div class="tech-badge flex flex-col items-center p-6 bg-white dark:bg-dark-800 rounded-xl shadow-md">
+                    <i class="fab fa-css3-alt text-blue-500 text-5xl mb-4"></i>
+                    <h3 class="font-bold text-gray-800 dark:text-white">Tailwind</h3>
+                    <p class="text-sm text-center text-gray-600 dark:text-gray-300 mt-2">Styling</p>
+                </div>
+                <div class="tech-badge flex flex-col items-center p-6 bg-white dark:bg-dark-800 rounded-xl shadow-md">
+                    <i class="fab fa-js text-yellow-500 text-5xl mb-4"></i>
+                    <h3 class="font-bold text-gray-800 dark:text-white">TypeScript</h3>
+                    <p class="text-sm text-center text-gray-600 dark:text-gray-300 mt-2">Type Safety</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="py-16 px-4 bg-white dark:bg-dark-800">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-3xl font-bold mb-12 text-center text-gray-800 dark:text-white">Fonctionnalités principales</h2>
+            <div class="grid md:grid-cols-2 gap-12">
+                <div class="space-y-8">
+                    <div class="flex">
+                        <div class="flex-shrink-0 mt-1">
+                            <div class="flex items-center justify-center h-12 w-12 rounded-md bg-primary-600 text-white">
+                                <i data-lucide="calendar" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-xl font-medium text-gray-800 dark:text-white">Gestion d'événements</h3>
+                            <p class="mt-2 text-gray-600 dark:text-gray-300">
+                                Création et gestion d'événements avec formulaire détaillé incluant titre, description, date, lieu, capacité et options avancées.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex">
+                        <div class="flex-shrink-0 mt-1">
+                            <div class="flex items-center justify-center h-12 w-12 rounded-md bg-primary-600 text-white">
+                                <i data-lucide="search" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-xl font-medium text-gray-800 dark:text-white">Recherche et filtres</h3>
+                            <p class="mt-2 text-gray-600 dark:text-gray-300">
+                                Système de recherche avancé avec filtres par catégorie, date, lieu et statut pour trouver rapidement les événements pertinents.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex">
+                        <div class="flex-shrink-0 mt-1">
+                            <div class="flex items-center justify-center h-12 w-12 rounded-md bg-primary-600 text-white">
+                                <i data-lucide="user-check" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-xl font-medium text-gray-800 dark:text-white">Authentification et rôles</h3>
+                            <p class="mt-2 text-gray-600 dark:text-gray-300">
+                                Système d'authentification sécurisé avec gestion des rôles (utilisateur, organisateur) et permissions spécifiques.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-8">
+                    <div class="flex">
+                        <div class="flex-shrink-0 mt-1">
+                            <div class="flex items-center justify-center h-12 w-12 rounded-md bg-primary-600 text-white">
+                                <i data-lucide="users" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-xl font-medium text-gray-800 dark:text-white">Gestion des inscriptions</h3>
+                            <p class="mt-2 text-gray-600 dark:text-gray-300">
+                                Système d'inscription aux événements avec notifications, emails de confirmation et génération de QR codes pour la validation à l'entrée.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex">
+                        <div class="flex-shrink-0 mt-1">
+                            <div class="flex items-center justify-center h-12 w-12 rounded-md bg-primary-600 text-white">
+                                <i data-lucide="bar-chart-2" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-xl font-medium text-gray-800 dark:text-white">Tableau de bord utilisateur</h3>
+                            <p class="mt-2 text-gray-600 dark:text-gray-300">
+                                Interface d'administration complète avec statistiques de participation, gestion des utilisateurs et suivi des événements en temps réel.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex">
+                        <div class="flex-shrink-0 mt-1">
+                            <div class="flex items-center justify-center h-12 w-12 rounded-md bg-primary-600 text-white">
+                                <i data-lucide="bell" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-xl font-medium text-gray-800 dark:text-white">Notifications en temps réel</h3>
+                            <p class="mt-2 text-gray-600 dark:text-gray-300">
+                                Système de notifications pour informer les utilisateurs des modifications d'événements, rappels et nouvelles inscriptions.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture -->
+    <section class="py-16 px-4 bg-gray-50 dark:bg-dark-900">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-3xl font-bold mb-12 text-center text-gray-800 dark:text-white">Architecture du projet</h2>
+            <div class="bg-white dark:bg-dark-800 p-8 rounded-xl shadow-lg">
+                <div class="flex flex-col items-center mb-8">
+                    <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">Architecture simplifiée</h3>
+                    <div class="flex flex-col md:flex-row items-center justify-center w-full gap-4 md:gap-8">
+                        <div class="bg-blue-100 dark:bg-blue-900 p-4 rounded-lg text-center min-w-[150px]">
+                            <p class="font-medium text-blue-800 dark:text-blue-200">Frontend (React)</p>
+                        </div>
+                        <div class="hidden md:block">
+                            <i data-lucide="arrow-right" class="w-6 h-6 text-gray-400"></i>
+                        </div>
+                        <div class="md:hidden">
+                            <i data-lucide="arrow-down" class="w-6 h-6 text-gray-400"></i>
+                        </div>
+                        <div class="bg-green-100 dark:bg-green-900 p-4 rounded-lg text-center min-w-[150px]">
+                            <p class="font-medium text-green-800 dark:text-green-200">API REST</p>
+                        </div>
+                        <div class="hidden md:block">
+                            <i data-lucide="arrow-right" class="w-6 h-6 text-gray-400"></i>
+                        </div>
+                        <div class="md:hidden">
+                            <i data-lucide="arrow-down" class="w-6 h-6 text-gray-400"></i>
+                        </div>
+                        <div class="bg-red-100 dark:bg-red-900 p-4 rounded-lg text-center min-w-[150px]">
+                            <p class="font-medium text-red-800 dark:text-red-200">Backend (Laravel)</p>
+                        </div>
+                        <div class="hidden md:block">
+                            <i data-lucide="arrow-right" class="w-6 h-6 text-gray-400"></i>
+                        </div>
+                        <div class="md:hidden">
+                            <i data-lucide="arrow-down" class="w-6 h-6 text-gray-400"></i>
+                        </div>
+                        <div class="bg-blue-100 dark:bg-blue-900 p-4 rounded-lg text-center min-w-[150px]">
+                            <p class="font-medium text-blue-800 dark:text-blue-200">Base de données</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="text-lg font-semibold mb-4 text-gray-800 dark:text-white">Frontend (React + TypeScript)</h4>
+                        <ul class="space-y-2 text-gray-600 dark:text-gray-300">
+                            <li class="flex items-start">
+                                <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                                <span>Composants React réutilisables pour l'interface utilisateur</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                                <span>Gestion d'état avec React Context et hooks</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                                <span>Axios pour les requêtes API</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                                <span>Tailwind CSS pour le design responsive</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold mb-4 text-gray-800 dark:text-white">Backend (Laravel)</h4>
+                        <ul class="space-y-2 text-gray-600 dark:text-gray-300">
+                            <li class="flex items-start">
+                                <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                                <span>API RESTful avec Laravel</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                                <span>Authentification JWT pour sécuriser l'API</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                                <span>Eloquent ORM pour les interactions avec la base de données</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                                <span>Système de notifications et d'emails</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screenshots -->
+    <section class="py-16 px-4 bg-white dark:bg-dark-800">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-3xl font-bold mb-12 text-center text-gray-800 dark:text-white">Captures d'écran</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="space-y-2">
+                    <img src="images/EventHub/Eventhub14.png" alt="Dashboard EventHub" class="rounded-xl shadow-lg w-full">
+                    <p class="text-sm text-gray-500 dark:text-gray-400 text-center">Tableau de bord utilisateur</p>
+                </div>
+                <div class="space-y-2">
+                    <img src="images/EventHub/Eventhub8.png" alt="Liste des événements" class="rounded-xl shadow-lg w-full">
+                    <p class="text-sm text-gray-500 dark:text-gray-400 text-center">Liste des événements avec filtres</p>
+                </div>
+                <div class="space-y-2">
+                    <img src="images/EventHub/Eventhub9.png" alt="Création d'événement" class="rounded-xl shadow-lg w-full">
+                    <p class="text-sm text-gray-500 dark:text-gray-400 text-center">Formulaire de création d'événement</p>
+                </div>
+                <div class="space-y-2">
+                    <img src="images/EventHub/Eventhub15.png" alt="Détail d'un événement" class="rounded-xl shadow-lg w-full">
+                    <p class="text-sm text-gray-500 dark:text-gray-400 text-center">Page de détail d'un événement</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Challenges and Solutions -->
+    <section class="py-16 px-4 bg-gray-50 dark:bg-dark-900">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-3xl font-bold mb-12 text-center text-gray-800 dark:text-white">Défis et solutions</h2>
+            <div class="grid md:grid-cols-2 gap-12">
+                <div class="bg-white dark:bg-dark-800 p-6 rounded-xl shadow-lg">
+                    <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">Défis rencontrés</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <i data-lucide="alert-circle" class="text-red-500 mr-2 mt-0.5 w-5 h-5"></i>
+                            <div>
+                                <p class="font-medium text-gray-800 dark:text-white">Gestion des inscriptions en temps réel</p>
+                                <p class="text-gray-600 dark:text-gray-300 text-sm mt-1">
+                                    Difficulté à synchroniser les inscriptions et à gérer les places disponibles en temps réel.
+                                </p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="alert-circle" class="text-red-500 mr-2 mt-0.5 w-5 h-5"></i>
+                            <div>
+                                <p class="font-medium text-gray-800 dark:text-white">Authentification sécurisée</p>
+                                <p class="text-gray-600 dark:text-gray-300 text-sm mt-1">
+                                    Mise en place d'un système d'authentification robuste avec gestion des rôles et permissions.
+                                </p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="alert-circle" class="text-red-500 mr-2 mt-0.5 w-5 h-5"></i>
+                            <div>
+                                <p class="font-medium text-gray-800 dark:text-white">Génération de QR codes</p>
+                                <p class="text-gray-600 dark:text-gray-300 text-sm mt-1">
+                                    Intégration d'un système de génération et validation de QR codes pour les billets d'événements.
+                                </p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="bg-white dark:bg-dark-800 p-6 rounded-xl shadow-lg">
+                    <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">Solutions implémentées</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <i data-lucide="check-circle" class="text-green-500 mr-2 mt-0.5 w-5 h-5"></i>
+                            <div>
+                                <p class="font-medium text-gray-800 dark:text-white">WebSockets pour les mises à jour en temps réel</p>
+                                <p class="text-gray-600 dark:text-gray-300 text-sm mt-1">
+                                    Utilisation de Laravel Echo et Pusher pour synchroniser les inscriptions et mettre à jour les places disponibles instantanément.
+                                </p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check-circle" class="text-green-500 mr-2 mt-0.5 w-5 h-5"></i>
+                            <div>
+                                <p class="font-medium text-gray-800 dark:text-white">JWT et Sanctum pour l'authentification</p>
+                                <p class="text-gray-600 dark:text-gray-300 text-sm mt-1">
+                                    Implémentation de JWT pour l'API et Laravel Sanctum pour la gestion des sessions et des tokens d'API.
+                                </p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check-circle" class="text-green-500 mr-2 mt-0.5 w-5 h-5"></i>
+                            <div>
+                                <p class="font-medium text-gray-800 dark:text-white">Bibliothèque QR Code</p>
+                                <p class="text-gray-600 dark:text-gray-300 text-sm mt-1">
+                                    Intégration de la bibliothèque QR Code JS côté client et Simple QR Code côté serveur pour générer et valider les codes.
+                                </p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What I Learned -->
+    <section class="py-16 px-4 bg-white dark:bg-dark-800">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-3xl font-bold mb-12 text-center text-gray-800 dark:text-white">Ce que j'ai appris</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-gray-50 dark:bg-dark-900 p-6 rounded-xl shadow-md">
+                    <div class="flex items-center justify-center h-16 w-16 rounded-full bg-primary-600 text-white mx-auto mb-6">
+                        <i data-lucide="code" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-center text-gray-800 dark:text-white">Développement Full-Stack</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-center">
+                        Amélioration de mes compétences en développement full-stack en intégrant React et Laravel dans une architecture cohérente et performante.
+                    </p>
+                </div>
+                <div class="bg-gray-50 dark:bg-dark-900 p-6 rounded-xl shadow-md">
+                    <div class="flex items-center justify-center h-16 w-16 rounded-full bg-primary-600 text-white mx-auto mb-6">
+                        <i data-lucide="shield" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-center text-gray-800 dark:text-white">Sécurité des applications</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-center">
+                        Approfondissement des connaissances en sécurité web, notamment l'authentification JWT, la protection CSRF et la validation des données.
+                    </p>
+                </div>
+                <div class="bg-gray-50 dark:bg-dark-900 p-6 rounded-xl shadow-md">
+                    <div class="flex items-center justify-center h-16 w-16 rounded-full bg-primary-600 text-white mx-auto mb-6">
+                        <i data-lucide="zap" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-center text-gray-800 dark:text-white">Performance et optimisation</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-center">
+                        Techniques d'optimisation pour améliorer les performances de l'application, comme le lazy loading, la mise en cache et l'indexation de base de données.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Code Snippets -->
+    <section class="py-16 px-4 bg-gray-50 dark:bg-dark-900">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-3xl font-bold mb-12 text-center text-gray-800 dark:text-white">Extraits de code</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white dark:bg-dark-800 rounded-xl shadow-lg overflow-hidden">
+                    <div class="bg-gray-100 dark:bg-dark-700 px-4 py-2 border-b border-gray-200 dark:border-gray-600">
+                        <p class="font-mono text-sm text-gray-600 dark:text-gray-300">EventController.php (Laravel)</p>
+                    </div>
+                    <pre class="p-4 overflow-x-auto text-sm">
+<code class="language-php text-gray-800 dark:text-gray-200">
+public function store(EventRequest $request)
+{
+    $validated = $request->validated();
+    
+    $event = new Event();
+    $event->title = $validated['title'];
+    $event->description = $validated['description'];
+    $event->start_date = $validated['start_date'];
+    $event->end_date = $validated['end_date'];
+    $event->location = $validated['location'];
+    $event->capacity = $validated['capacity'];
+    $event->user_id = auth()->id();
+    $event->save();
+    
+    // Generate QR code for the event
+    $qrCode = QrCode::size(300)
+        ->generate(route('events.show', $event->id));
+    
+    // Trigger real-time notification
+    event(new EventCreated($event));
+    
+    return response()->json([
+        'message' => 'Event created successfully',
+        'event' => new EventResource($event),
+        'qr_code' => base64_encode($qrCode)
+    ], 201);
+}
+</code>
+                    </pre>
+                </div>
+                <div class="bg-white dark:bg-dark-800 rounded-xl shadow-lg overflow-hidden">
+                    <div class="bg-gray-100 dark:bg-dark-700 px-4 py-2 border-b border-gray-200 dark:border-gray-600">
+                        <p class="font-mono text-sm text-gray-600 dark:text-gray-300">EventList.tsx (React)</p>
+                    </div>
+                    <pre class="p-4 overflow-x-auto text-sm">
+<code class="language-typescript text-gray-800 dark:text-gray-200">
+import React, { useState, useEffect } from 'react';
+import { useEventsContext } from '../contexts/EventsContext';
+import EventCard from './EventCard';
+import EventFilter from './EventFilter';
+import { Event } from '../types';
+
+const EventList: React.FC = () => {
+  const { events, loading, fetchEvents } = useEventsContext();
+  const [filteredEvents, setFilteredEvents] = useState<Event[]>([]);
+  const [filters, setFilters] = useState({
+    category: '',
+    date: '',
+    location: '',
+  });
+
+  useEffect(() => {
+    fetchEvents();
+  }, [fetchEvents]);
+
+  useEffect(() => {
+    // Apply filters
+    let result = [...events];
+    
+    if (filters.category) {
+      result = result.filter(event => 
+        event.category === filters.category
+      );
+    }
+    
+    if (filters.location) {
+      result = result.filter(event => 
+        event.location.includes(filters.location)
+      );
+    }
+    
+    if (filters.date) {
+      const selectedDate = new Date(filters.date);
+      result = result.filter(event => {
+        const eventDate = new Date(event.start_date);
+        return eventDate.toDateString() === selectedDate.toDateString();
+      });
+    }
+    
+    setFilteredEvents(result);
+  }, [events, filters]);
+
+  const handleFilterChange = (newFilters) => {
+    setFilters({ ...filters, ...newFilters });
+  };
+
+  if (loading) return <div>Loading events...</div>;
+
+  return (
+    <div className="space-y-6">
+      <EventFilter onFilterChange={handleFilterChange} />
+      
+      {filteredEvents.length === 0 ? (
+        <p>No events found matching your criteria.</p>
+      ) : (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredEvents.map(event => (
+            <EventCard key={event.id} event={event} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default EventList;
+</code>
+                    </pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Conclusion -->
+    <section class="py-16 px-4 bg-white dark:bg-dark-800">
+        <div class="container mx-auto max-w-6xl">
+            <div class="max-w-3xl mx-auto text-center">
+                <h2 class="text-3xl font-bold mb-6 text-gray-800 dark:text-white">Conclusion</h2>
+                <p class="text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
+                    EventHub représente une application complète qui démontre ma capacité à concevoir et développer des solutions full-stack modernes. Ce projet m'a permis d'approfondir mes connaissances en React et Laravel, tout en relevant des défis techniques comme la gestion des événements en temps réel et l'authentification sécurisée.
+                </p>
+                <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                    Les compétences acquises lors du développement d'EventHub sont directement applicables à d'autres projets web complexes, notamment en matière d'architecture d'application, de sécurité et d'expérience utilisateur.
+                </p>
+                <div class="mt-10 flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="https://github.com/BOUBKERsup07/EventHub" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-300">
+                        <i class="fab fa-github mr-2"></i>
+                        Voir le code source
+                    </a>
+                    <a href="index.html#projects" class="inline-flex items-center px-6 py-3 border-2 border-primary-600 text-primary-600 dark:text-primary-400 rounded-lg hover:bg-purple-50 dark:hover:bg-dark-700 transition-colors duration-300">
+                        <i data-lucide="arrow-left" class="mr-2 w-5 h-5"></i>
+                        Retour aux projets
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 dark:bg-dark-800 text-white py-8">
+        <div class="container mx-auto max-w-6xl px-4 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+            <div>
+                <h3 class="text-lg font-bold mb-4 dark:text-white">À propos</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    Développeur passionné par l'intelligence artificielle et le développement d'applications.
+                </p>
+            </div>
+            <div>
+                <h3 class="text-lg font-bold mb-4 dark:text-white">Liens utiles</h3>
+                <ul class="space-y-2">
+                    <li><a href="index.html#about" class="text-gray-400 hover:text-primary-400 transition">À propos</a></li>
+                    <li><a href="index.html#skills" class="text-gray-400 hover:text-primary-400 transition">Compétences</a></li>
+                    <li><a href="index.html#projects" class="text-gray-400 hover:text-primary-400 transition">Projets</a></li>
+                    <li><a href="index.html#contact" class="text-gray-400 hover:text-primary-400 transition">Contact</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-lg font-bold mb-4 dark:text-white">Contact</h3>
+                <p class="text-gray-400 text-sm">Email : <a href="mailto:cheyoukheboubker@gmail.com" class="hover:text-primary-400">cheyoukheboubker@gmail.com</a></p>
+                <p class="text-gray-400 text-sm">Téléphone : <a href="tel:+212644435752" class="hover:text-primary-400">+212 6 44 43 57 52</a></p>
+                <div class="flex justify-center md:justify-start space-x-4 mt-4">
+                    <a href="https://github.com/BOUBKERsup07" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary-400">
+                        <i data-lucide="github" class="w-5 h-5"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/boubker-cheyoukh-4696a4276/" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary-400">
+                        <i data-lucide="linkedin" class="w-5 h-5"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-gray-700 dark:border-gray-600 mt-8 pt-4 text-gray-400 text-sm text-center">
+            <p>© 2025 Boubker Cheyoukh. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Icon -->
+    <a href="https://wa.me/212644435752" target="_blank" rel="noopener noreferrer" class="fixed bottom-6 right-6 bg-green-500 text-white rounded-full p-4 shadow-lg hover:bg-green-600 transition-colors duration-300 z-40">
+        <i class="fab fa-whatsapp text-2xl"></i>
+    </a>
+
+    <script>
+        lucide.createIcons();
+        
+        // Dark Mode Toggle
+        const setupDarkModeToggle = (toggleButton, iconElement) => {
+            toggleButton.addEventListener('click', () => {
+                document.documentElement.classList.toggle('dark');
+                const isDark = document.documentElement.classList.contains('dark');
+                localStorage.setItem('darkMode', isDark);
+                
+                if (isDark) {
+                    iconElement.setAttribute('data-lucide', 'sun');
+                } else {
+                    iconElement.setAttribute('data-lucide', 'moon');
+                }
+                lucide.createIcons();
+            });
+        };
+
+        // Initialize dark mode
+        const initializeDarkMode = () => {
+            const darkModeIcon = document.getElementById('darkModeIcon');
+            const darkModeIconMobile = document.getElementById('darkModeIconMobile');
+            
+            // Check for saved user preference or use system preference
+            if (localStorage.getItem('darkMode') === 'true' || 
+                (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                darkModeIcon.setAttribute('data-lucide', 'sun');
+                darkModeIconMobile.setAttribute('data-lucide', 'sun');
+            } else {
+                document.documentElement.classList.remove('dark');
+                darkModeIcon.setAttribute('data-lucide', 'moon');
+                darkModeIconMobile.setAttribute('data-lucide', 'moon');
+            }
+            lucide.createIcons();
+            
+            // Setup toggle buttons
+            setupDarkModeToggle(
+                document.getElementById('darkModeToggle'),
+                darkModeIcon
+            );
+            
+            setupDarkModeToggle(
+                document.getElementById('darkModeToggleMobile'),
+                darkModeIconMobile
+            );
+        };
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initializeDarkMode);
+
+        // Mobile menu functionality
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileMenuContent = document.getElementById('mobileMenuContent');
+        const menuLinks = document.querySelectorAll('.menu-link');
+
+        function toggleMenu() {
+            mobileMenu.classList.toggle('hidden');
+            updateIcon();
+        }
+
+        function closeMenu() {
+            if (!mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.add('hidden');
+                updateIcon();
+            }
+        }
+
+        function updateIcon() {
+            const icon = mobileMenuButton.querySelector('[data-lucide]');
+            if (icon) {
+                icon.setAttribute('data-lucide', mobileMenu.classList.contains('hidden') ? 'menu' : 'x');
+                lucide.createIcons();
+            }
+        }
+
+        mobileMenuButton.addEventListener('click', (event) => {
+            event.stopPropagation();
+            toggleMenu();
+        });
+
+        mobileMenuContent.addEventListener('click', (event) => {
+            event.stopPropagation();
+        });
+
+        document.addEventListener('click', () => {
+            closeMenu();
+        });
+
+        menuLinks.forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+
+        // Scroll progress bar
+        window.addEventListener('scroll', () => {
+            const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (window.scrollY / totalScroll) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+        });
+    </script>
+</body>
+</html>
