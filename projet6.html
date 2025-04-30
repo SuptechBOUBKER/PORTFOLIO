@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Projet JavaFX - Échecs Pokémon, un jeu d'échecs innovant basé sur les Pokémons">
+    <meta name="author" content="Boubker Cheyoukh">
+    <meta name="keywords" content="JavaFX, Échecs Pokémon, jeu, portfolio, Boubker Cheyoukh">
+    <title>Projet JavaFX - Échecs Pokémon</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            400: '#a78bfa', /* Ajout de primary-400 pour dark hover */
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                        },
+                        dark: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="images/icon/chess.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .dark-mode {
+            background-color: #1f2937;
+            color: #f9fafb;
+        }
+        .dark-mode .bg-gray-50 {
+            background-color: #111827;
+        }
+        .dark-mode .bg-white {
+            background-color: #1f2937;
+        }
+        .dark-mode .text-gray-800 {
+            color: #f9fafb;
+        }
+        .dark-mode .text-gray-600 {
+            color: #d1d5db;
+        }
+        .dark .bg-white {
+            background-color: #1f2937;
+        }
+        .dark .text-gray-800 {
+            color: #f9fafb;
+        }
+        .dark .text-gray-600 {
+            color: #d1d5db;
+        }
+        nav {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 1000 !important;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #4f46e5 0%, #10b981 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .tech-badge {
+            display: inline-block;
+            background-color: #e0e7ff;
+            color: #4f46e5;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+        .dark-mode .tech-badge {
+            background-color: #3730a3;
+            color: #e0e7ff;
+        }
+        .feature-card {
+            border-left: 4px solid #4F46E5;
+        }
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            aspect-ratio: 19/9;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            background-color: #000;
+        }
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+        @media (max-width: 768px) {
+            .video-container {
+                aspect-ratio: 4/3;
+            }
+        }
+    </style>
+</head>
+<body class="font-['Inter'] bg-gray-50 dark:bg-dark-900">
+    <!-- Progress Bar -->
+    <div id="progressBar" class="fixed top-0 left-0 h-1 bg-primary-600 z-40 transition-all duration-300" style="width: 0%"></div>
+
+<!-- Navigation -->
+<nav class="fixed top-0 left-0 right-0 w-full bg-white/80 dark:bg-dark-800/80 backdrop-blur-md shadow-sm z-30">
+    <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+        <a href="index.html" class="text-2xl font-bold bg-gradient-to-r from-primary-600 to-blue-500 text-transparent bg-clip-text">
+            BC
+        </a>
+        
+        <!-- Desktop Navigation -->
+        <div class="hidden md:flex items-center space-x-8">
+            <a href="index.html" class="text-sm font-medium transition-colors duration-300 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Accueil</a>
+            <a href="index.html#projects" class="text-sm font-medium transition-colors duration-300 text-primary-600 dark:text-primary-400">Projets</a>
+            <a href="index.html#contact" class="text-sm font-medium transition-colors duration-300 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Contact</a>
+            
+            <!-- Dark Mode Toggle (Desktop) -->
+            <button id="darkModeToggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                <i id="darkModeIcon" class="w-5 h-5"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Menu Button -->
+        <div class="flex items-center space-x-4 md:hidden">
+            <!-- Dark Mode Toggle (Mobile) -->
+            <button id="darkModeToggleMobile" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                <i id="darkModeIconMobile" class="w-5 h-5"></i>
+            </button>
+            
+            <button id="mobileMenuButton" class="text-gray-600 dark:text-gray-300">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+        </div>
+    </div>
+</nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="fixed inset-0 bg-white dark:bg-dark-800 z-20 pt-20 hidden">
+        <div class="flex flex-col items-center space-y-8 p-8" id="mobileMenuContent">
+            <a href="index.html" class="menu-link text-xl font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Accueil</a>
+            <a href="index.html#projects" class="menu-link text-xl font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Projets</a>
+            <a href="index.html#contact" class="menu-link text-xl font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Contact</a>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <header class="gradient-bg py-20 px-4 text-white mt-16">
+        <div class="container mx-auto max-w-5xl">
+            <h1 class="text-4xl md:text-5xl font-bold mb-6">Projet JavaFX - Échecs Pokémon</h1>
+            <p class="text-xl md:text-2xl mb-8 max-w-3xl">Un jeu d'échecs innovant basé sur les Pokémons développé avec JavaFX</p>
+            <div class="flex flex-wrap gap-4">
+                <a href="#video" class="bg-white text-primary-600 hover:bg-gray-100 px-6 py-3 rounded-lg font-medium transition-colors shadow-md">Voir la vidéo</a>
+                <a href="#features" class="bg-transparent border-2 border-white text-white hover:bg-white hover:text-primary-600 px-6 py-3 rounded-lg font-medium transition-colors">Caractéristiques</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto max-w-6xl px-4 py-12 dark:text-white">
+        <!-- Video Section -->
+        <section id="video" class="mb-20">
+            <h2 class="text-3xl font-bold mb-8 text-center text-gray-800 dark:text-white">Présentation du Projet</h2>
+            <div class="video-container mb-8">
+                <video controls poster="images/Pokemon/Pokemon.png" preload="metadata">
+                    <source src="video/Enregistrement 2025-04-30 011820.mp4" type="video/mp4">
+                    Votre navigateur ne supporte pas la lecture de vidéos HTML5.
+                </video>
+            </div>
+            <div class="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-md">
+                <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">À propos de ce projet</h3>
+                <p class="text-gray-600 dark:text-gray-300 mb-4">Cette vidéo présente un aperçu détaillé du jeu d'échecs Pokémon, développé dans le cadre du projet LPDIM. Le jeu se déroule sur un plateau de 9x9 cases où les Pokémons sont placés sur les 3 premières lignes en début de partie.</p>
+                <p class="text-gray-600 dark:text-gray-300 mb-4">Le jeu se joue en tour par tour. À chaque tour, un joueur peut soit déplacer un Pokémon d'une case dans toutes les directions, soit attaquer un Pokémon adverse situé sur une case voisine.</p>
+                <p class="text-gray-600 dark:text-gray-300">L'objectif est de vaincre le Mewtwo adverse pour remporter la partie. Une fonctionnalité supplémentaire permet aux joueurs de personnaliser leur équipe de Pokémons au début de la partie.</p>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="mb-20">
+            <h2 class="text-3xl font-bold mb-12 text-center text-gray-800 dark:text-white">Caractéristiques Principales</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-md feature-card">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Système de Combat Pokémon</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Un moteur de combat Pokémon complet qui permet des affrontements stratégiques entre les joueurs, avec des attaques et des statistiques fidèles à l'univers Pokémon.</p>
+                </div>
+                <div class="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-md feature-card">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Plateau de Jeu 9x9</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Un plateau d'échecs modifié de 9x9 cases permettant des déplacements stratégiques et des combats entre Pokémons, offrant une nouvelle dimension au jeu d'échecs classique.</p>
+                </div>
+                <div class="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-md feature-card">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Personnalisation des Équipes</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Possibilité pour les joueurs de personnaliser leur équipe de Pokémons au début de la partie, soit via l'interface utilisateur, soit via un fichier de configuration.</p>
+                </div>
+                <div class="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-md feature-card">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Tour par Tour Stratégique</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Un système de jeu au tour par tour qui permet aux joueurs de réfléchir à leur stratégie, en choisissant entre déplacer leurs Pokémons ou attaquer les Pokémons adverses.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technologies Section -->
+        <section id="tech" class="mb-20">
+            <h2 class="text-3xl font-bold mb-12 text-center text-gray-800 dark:text-white">Technologies Utilisées</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-8 mb-12">
+                <div class="flex flex-col items-center p-6 bg-white dark:bg-dark-800 rounded-xl shadow-md">
+                    <i class="fab fa-java text-red-500 text-5xl mb-4"></i>
+                    <h3 class="font-bold text-gray-800 dark:text-white">Java</h3>
+                    <p class="text-sm text-center text-gray-600 dark:text-gray-300 mt-2">Langage principal</p>
+                </div>
+                <div class="flex flex-col items-center p-6 bg-white dark:bg-dark-800 rounded-xl shadow-md">
+                    <i class="fas fa-desktop text-blue-500 text-5xl mb-4"></i>
+                    <h3 class="font-bold text-gray-800 dark:text-white">JavaFX</h3>
+                    <p class="text-sm text-center text-gray-600 dark:text-gray-300 mt-2">Interface graphique</p>
+                </div>
+                <div class="flex flex-col items-center p-6 bg-white dark:bg-dark-800 rounded-xl shadow-md">
+                    <i class="fas fa-gamepad text-green-500 text-5xl mb-4"></i>
+                    <h3 class="font-bold text-gray-800 dark:text-white">MG2D</h3>
+                    <p class="text-sm text-center text-gray-600 dark:text-gray-300 mt-2">Moteur graphique 2D</p>
+                </div>
+            </div>
+            
+            <div class="bg-white dark:bg-dark-800 p-8 rounded-lg shadow-md">
+                <div class="flex flex-wrap mb-6">
+                    <span class="tech-badge dark:bg-dark-900 dark:text-white">Java</span>
+                    <span class="tech-badge dark:bg-dark-900 dark:text-white">JavaFX</span>
+                    <span class="tech-badge dark:bg-dark-900 dark:text-white">MG2D</span>
+                    <span class="tech-badge dark:bg-dark-900 dark:text-white">OOP</span>
+                    <span class="tech-badge dark:bg-dark-900 dark:text-white">Git</span>
+                </div>
+                <p class="text-gray-600 dark:text-gray-300 mb-6">Ce projet a été développé en utilisant JavaFX, une plateforme d'application client riche pour Java, permettant de créer des interfaces graphiques modernes et interactives, ainsi que MG2D, une bibliothèque graphique 2D pour faciliter le développement de jeux.</p>
+                <ul class="space-y-3 text-gray-600 dark:text-gray-300">
+                    <li class="flex items-start">
+                        <i data-lucide="check-circle" class="text-green-500 mr-2 mt-0.5 w-5 h-5"></i>
+                        <span>Interface graphique développée avec JavaFX pour une expérience utilisateur fluide</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i data-lucide="check-circle" class="text-green-500 mr-2 mt-0.5 w-5 h-5"></i>
+                        <span>Utilisation de MG2D pour la gestion des graphismes 2D et des animations du jeu</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i data-lucide="check-circle" class="text-green-500 mr-2 mt-0.5 w-5 h-5"></i>
+                        <span>Architecture orientée objet pour une modélisation efficace des Pokémons et du plateau de jeu</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i data-lucide="check-circle" class="text-green-500 mr-2 mt-0.5 w-5 h-5"></i>
+                        <span>Système de combat Pokémon implémenté avec des algorithmes de jeu au tour par tour</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i data-lucide="check-circle" class="text-green-500 mr-2 mt-0.5 w-5 h-5"></i>
+                        <span>Gestion de fichiers pour la configuration et la personnalisation des équipes de Pokémons</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+        
+        <!-- MG2D Section -->
+        <section id="mg2d" class="mb-20">
+            <h2 class="text-3xl font-bold mb-8 text-center text-gray-800 dark:text-white">Focus sur MG2D</h2>
+            <div class="bg-white dark:bg-dark-800 p-8 rounded-lg shadow-md">
+                <p class="text-gray-600 dark:text-gray-300 mb-6">MG2D (Moteur Graphique 2D) est une bibliothèque Java spécialement conçue pour faciliter le développement de jeux et d'applications graphiques 2D. Dans ce projet, MG2D a joué un rôle crucial pour :</p>
+                
+                <div class="grid md:grid-cols-2 gap-8 mb-6">
+                    <div class="bg-gray-50 dark:bg-dark-900 p-6 rounded-lg">
+                        <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Rendu graphique</h3>
+                        <p class="text-gray-600 dark:text-gray-300">MG2D a permis de créer un plateau de jeu visuellement attrayant avec des sprites Pokémon et des animations fluides lors des déplacements et des combats.</p>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-dark-900 p-6 rounded-lg">
+                        <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Gestion des collisions</h3>
+                        <p class="text-gray-600 dark:text-gray-300">La bibliothèque offre des fonctionnalités intégrées pour détecter les collisions entre les Pokémons sur le plateau, simplifiant la logique de jeu.</p>
+                    </div>
+                </div>
+                
+                <p class="text-gray-600 dark:text-gray-300">L'intégration de MG2D avec JavaFX a permis de combiner la puissance d'un moteur graphique dédié aux jeux avec les fonctionnalités avancées d'interface utilisateur de JavaFX, créant ainsi une expérience de jeu complète et immersive.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 dark:bg-dark-800 text-white py-8">
+        <div class="container mx-auto max-w-6xl px-4 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+            <div>
+                <h3 class="text-lg font-bold mb-4 dark:text-white">À propos</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    Développeur passionné par l'intelligence artificielle et le développement d'applications.
+                </p>
+            </div>
+            <div>
+                <h3 class="text-lg font-bold mb-4 dark:text-white">Liens utiles</h3>
+                <ul class="space-y-2">
+                    <li><a href="#about" class="text-gray-400 hover:text-primary-400 transition">À propos</a></li>
+                    <li><a href="#skills" class="text-gray-400 hover:text-primary-400 transition">Compétences</a></li>
+                    <li><a href="#projects" class="text-gray-400 hover:text-primary-400 transition">Projets</a></li>
+                    <li><a href="#contact" class="text-gray-400 hover:text-primary-400 transition">Contact</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-lg font-bold mb-4 dark:text-white">Contact</h3>
+                <p class="text-gray-400 text-sm">Email : <a href="mailto:cheyoukheboubker@gmail.com" class="hover:text-primary-400">cheyoukheboubker@gmail.com</a></p>
+                <p class="text-gray-400 text-sm">Téléphone : <a href="tel:+212644435752" class="hover:text-primary-400">+212 6 44 43 57 52</a></p>
+                <div class="flex justify-center md:justify-start space-x-4 mt-4">
+                    <a href="https://github.com/BOUBKERsup07" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary-400">
+                        <i data-lucide="github" class="w-5 h-5"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/boubker-cheyoukh-4696a4276/" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary-400">
+                        <i data-lucide="linkedin" class="w-5 h-5"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-gray-700 dark:border-gray-600 mt-8 pt-4 text-gray-400 text-sm text-center">
+            <p>© 2025 Boubker Cheyoukh. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Progress bar
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+        });
+
+        // Dark Mode Toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const darkModeToggleMobile = document.getElementById('darkModeToggleMobile');
+        const htmlElement = document.documentElement;
+        const darkModeIcon = document.getElementById('darkModeIcon');
+        const darkModeIconMobile = document.getElementById('darkModeIconMobile');
+        
+        // Fonction pour initialiser les icônes Lucide
+        function initLucideIcons() {
+            lucide.createIcons();
+        }
+        
+        // Check for saved theme preference or use preferred color scheme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            htmlElement.classList.add('dark');
+            darkModeIcon.setAttribute('data-lucide', 'sun');
+            darkModeIconMobile.setAttribute('data-lucide', 'sun');
+        } else {
+            darkModeIcon.setAttribute('data-lucide', 'moon');
+            darkModeIconMobile.setAttribute('data-lucide', 'moon');
+        }
+        
+        // Toggle dark mode (desktop)
+        darkModeToggle.addEventListener('click', () => {
+            htmlElement.classList.toggle('dark');
+            const isDark = htmlElement.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            darkModeIcon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
+            initLucideIcons();
+        });
+        
+        // Toggle dark mode (mobile)
+        darkModeToggleMobile.addEventListener('click', () => {
+            htmlElement.classList.toggle('dark');
+            const isDark = htmlElement.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            darkModeIconMobile.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
+            initLucideIcons();
+        });
+        
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileMenuContent = document.getElementById('mobileMenuContent');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('.menu-link').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Initialize Lucide icons when document is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            initLucideIcons();
+            
+            // Optimize video loading
+            const video = document.querySelector('video');
+            if (video) {
+                // Load video metadata only
+                video.preload = 'metadata';
+                
+                // Play video when it comes into view
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            video.load();
+                        }
+                    });
+                }, { threshold: 0.1 });
+                
+                observer.observe(video);
+            }
+        });
+    </script>
+</body>
+</html>
