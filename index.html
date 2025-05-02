@@ -40,11 +40,33 @@
             from { opacity: 0; }
             to { opacity: 1; }
         }
+        .progress-bar {
+            transition: width 1.5s ease-in-out;
+        }
+        .skill-progress {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .skill-progress.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Ajout pour améliorer l'accessibilité */
+        :focus {
+            outline: 2px solid #7c3aed;
+            outline-offset: 2px;
+        }
+        /* Correction pour les images responsives */
+        img {
+            max-width: 100%;
+            height: auto;
+        }
     </style>
 </head>
 <body class="font-['Inter'] bg-gray-50 dark:bg-dark-900">
     <!-- Progress Bar -->
-    <div id="progressBar" class="fixed top-0 left-0 h-1 bg-primary-600 z-40 transition-all duration-300" style="width: 0%"></div>
+    <div id="progressBar" class="fixed top-0 left-0 h-1 bg-primary-600 z-40 transition-all duration-300" style="width: 0%" aria-hidden="true"></div>
 
     <!-- Navigation -->
     <nav class="fixed w-full bg-white/80 dark:bg-dark-800/80 backdrop-blur-md shadow-sm z-30">
@@ -55,13 +77,13 @@
             
             <!-- Desktop Navigation -->
             <div class="hidden md:flex items-center space-x-8">
-                <a href="#home" class="text-sm font-medium transition-colors duration-300 text-primary-600 dark:text-primary-400">Home</a>
-                <a href="#about" class="text-sm font-medium transition-colors duration-300 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">About</a>
-                <a href="#skills" class="text-sm font-medium transition-colors duration-300 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Skills</a>
-                <a href="#projects" class="text-sm font-medium transition-colors duration-300 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Projects</a>
+                <a href="#home" class="text-sm font-medium transition-colors duration-300 text-primary-600 dark:text-primary-400">Accueil</a>
+                <a href="#about" class="text-sm font-medium transition-colors duration-300 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">À propos</a>
+                <a href="#skills" class="text-sm font-medium transition-colors duration-300 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Compétences</a>
+                <a href="#projects" class="text-sm font-medium transition-colors duration-300 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Projets</a>
                 
                 <!-- Dark Mode Toggle (Desktop) -->
-                <button id="darkModeToggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                <button id="darkModeToggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200" aria-label="Basculer mode sombre">
                     <i id="darkModeIcon" data-lucide="moon" class="w-5 h-5"></i>
                 </button>
             </div>
@@ -69,14 +91,14 @@
             <!-- Mobile Menu Button -->
             <div class="flex items-center space-x-4 md:hidden">
                 <!-- Dark Mode Toggle (Mobile) -->
-                <button id="darkModeToggleMobile" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                <button id="darkModeToggleMobile" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200" aria-label="Basculer mode sombre">
                     <i id="darkModeIconMobile" data-lucide="moon" class="w-5 h-5"></i>
                 </button>
                 
-                <button id="mobileMenuButton" class="text-gray-600 dark:text-gray-300">
+                <button id="mobileMenuButton" class="text-gray-600 dark:text-gray-300" aria-label="Menu mobile" aria-expanded="false" aria-controls="mobileMenu">
                     <i data-lucide="menu" class="w-6 h-6"></i>
                 </button>
-                <a href="https://wa.me/212644435752" target="_blank" rel="noopener noreferrer" class="text-gray-600 dark:text-gray-300">
+                <a href="https://wa.me/212644435752" target="_blank" rel="noopener noreferrer" class="text-gray-600 dark:text-gray-300" aria-label="Contact WhatsApp">
                     <i class="fab fa-whatsapp text-2xl"></i>
                 </a>
             </div>
@@ -86,10 +108,10 @@
     <!-- Mobile Menu -->
     <div id="mobileMenu" class="fixed inset-0 bg-white dark:bg-dark-800 z-20 pt-20 hidden">
         <div class="flex flex-col items-center space-y-8 p-8" id="mobileMenuContent">
-            <a href="#home" class="menu-link text-xl font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Home</a>
-            <a href="#about" class="menu-link text-xl font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">About</a>
-            <a href="#skills" class="menu-link text-xl font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Skills</a>
-            <a href="#projects" class="menu-link text-xl font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Projects</a>
+            <a href="#home" class="menu-link text-xl font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Accueil</a>
+            <a href="#about" class="menu-link text-xl font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">À propos</a>
+            <a href="#skills" class="menu-link text-xl font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Compétences</a>
+            <a href="#projects" class="menu-link text-xl font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Projets</a>
         </div>
     </div>
 
@@ -118,8 +140,8 @@
                     </div>
                 </div>
                 <div class="relative">
-                    <div class="aspect-square rounded-full bg-gradient-to-br from-primary-600 to-blue-500 opacity-20 absolute inset-0 blur-3xl"></div>
-                    <img src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&q=80" alt="Portfolio" class="rounded-2xl shadow-2xl relative z-10 w-full h-auto">
+                    <div class="aspect-square rounded-full bg-gradient-to-br from-primary-600 to-blue-500 opacity-20 absolute inset-0 blur-3xl" aria-hidden="true"></div>
+                    <img src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&q=80" alt="Photo de Boubker Cheyoukh" class="rounded-2xl shadow-2xl relative z-10 w-full h-auto">
                 </div>
             </div>
         </div>
@@ -159,17 +181,162 @@
                     Contactez-moi
                 </a>
                 <div class="relative inline-block">
-                    <button id="cvDropdownButton" class="inline-flex items-center justify-center px-6 py-3 bg-primary-600 text-white rounded-md shadow hover:bg-primary-700 transition duration-300">
+                    <button id="cvDropdownButton" class="inline-flex items-center justify-center px-6 py-3 bg-primary-600 text-white rounded-md shadow hover:bg-primary-700 transition duration-300" aria-expanded="false" aria-haspopup="true" aria-controls="cvDropdown">
                         <i data-lucide="download" class="mr-2 w-5 h-5"></i>
                         Télécharger mon CV
                     </button>
-                    <div id="cvDropdown" class="absolute mt-2 bg-white dark:bg-dark-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg z-50 hidden">
-                        <button onclick="downloadCV('fr')" class="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-dark-600">
+                    <div id="cvDropdown" class="absolute mt-2 bg-white dark:bg-dark-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg z-50 hidden" role="menu" aria-labelledby="cvDropdownButton">
+                        <button onclick="downloadCV('fr')" class="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-dark-600" role="menuitem">
                             Télécharger mon CV (Français)
                         </button>
-                        <button onclick="downloadCV('en')" class="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-dark-600">
+                        <button onclick="downloadCV('en')" class="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-dark-600" role="menuitem">
                             Download my CV (English)
                         </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Expertise Section -->
+    <section id="expertise" class="py-20 bg-gray-50 dark:bg-dark-900 fade-in">
+        <div class="container mx-auto max-w-6xl px-4">
+            <h2 class="text-4xl font-bold mb-12 text-center text-primary-600 dark:text-primary-400">Niveaux d'Expertise</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div class="space-y-8">
+                    <!-- Langages de programmation -->
+                    <h3 class="text-2xl font-semibold mb-6 dark:text-white">Langages de programmation</h3>
+                    
+                    <div class="skill-progress space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium text-gray-700 dark:text-gray-300">Python</span>
+                            <span class="text-primary-600 dark:text-primary-400 font-medium">90%</span>
+                        </div>
+                        <div class="h-2.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <div class="progress-bar h-full bg-gradient-to-r from-primary-600 to-primary-400 rounded-full" data-percent="90" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="skill-progress space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium text-gray-700 dark:text-gray-300">Java</span>
+                            <span class="text-primary-600 dark:text-primary-400 font-medium">85%</span>
+                        </div>
+                        <div class="h-2.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <div class="progress-bar h-full bg-gradient-to-r from-primary-600 to-primary-400 rounded-full" data-percent="85" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="skill-progress space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium text-gray-700 dark:text-gray-300">JavaScript</span>
+                            <span class="text-primary-600 dark:text-primary-400 font-medium">80%</span>
+                        </div>
+                        <div class="h-2.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <div class="progress-bar h-full bg-gradient-to-r from-primary-600 to-primary-400 rounded-full" data-percent="80" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="skill-progress space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium text-gray-700 dark:text-gray-300">PHP</span>
+                            <span class="text-primary-600 dark:text-primary-400 font-medium">75%</span>
+                        </div>
+                        <div class="h-2.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <div class="progress-bar h-full bg-gradient-to-r from-primary-600 to-primary-400 rounded-full" data-percent="75" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Frameworks -->
+                    <h3 class="text-2xl font-semibold mb-6 dark:text-white">Frameworks</h3>
+                    
+                    <div class="skill-progress space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium text-gray-700 dark:text-gray-300">Spring Boot</span>
+                            <span class="text-primary-600 dark:text-primary-400 font-medium">85%</span>
+                        </div>
+                        <div class="h-2.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <div class="progress-bar h-full bg-gradient-to-r from-primary-600 to-primary-400 rounded-full" data-percent="85" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="skill-progress space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium text-gray-700 dark:text-gray-300">Django</span>
+                            <span class="text-primary-600 dark:text-primary-400 font-medium">80%</span>
+                        </div>
+                        <div class="h-2.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <div class="progress-bar h-full bg-gradient-to-r from-primary-600 to-primary-400 rounded-full" data-percent="80" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-8">
+                    <!-- Front-end -->
+                    <h3 class="text-2xl font-semibold mb-6 dark:text-white">Front-end</h3>
+                    
+                    <div class="skill-progress space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium text-gray-700 dark:text-gray-300">HTML/CSS</span>
+                            <span class="text-primary-600 dark:text-primary-400 font-medium">90%</span>
+                        </div>
+                        <div class="h-2.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <div class="progress-bar h-full bg-gradient-to-r from-primary-600 to-primary-400 rounded-full" data-percent="90" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="skill-progress space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium text-gray-700 dark:text-gray-300">React</span>
+                            <span class="text-primary-600 dark:text-primary-400 font-medium">75%</span>
+                        </div>
+                        <div class="h-2.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <div class="progress-bar h-full bg-gradient-to-r from-primary-600 to-primary-400 rounded-full" data-percent="75" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="skill-progress space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium text-gray-700 dark:text-gray-300">Tailwind CSS</span>
+                            <span class="text-primary-600 dark:text-primary-400 font-medium">85%</span>
+                        </div>
+                        <div class="h-2.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <div class="progress-bar h-full bg-gradient-to-r from-primary-600 to-primary-400 rounded-full" data-percent="85" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- IA & Data Science -->
+                    <h3 class="text-2xl font-semibold mb-6 dark:text-white">IA & Data Science</h3>
+                    
+                    <div class="skill-progress space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium text-gray-700 dark:text-gray-300">ML (TensorFlow/Scikit-learn)</span>
+                            <span class="text-primary-600 dark:text-primary-400 font-medium">55%</span>
+                        </div>
+                        <div class="h-2.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <div class="progress-bar h-full bg-gradient-to-r from-primary-600 to-primary-400 rounded-full" data-percent="75" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="skill-progress space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium text-gray-700 dark:text-gray-300">Data Analysis (Pandas/NumPy)</span>
+                            <span class="text-primary-600 dark:text-primary-400 font-medium">40%</span>
+                        </div>
+                        <div class="h-2.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <div class="progress-bar h-full bg-gradient-to-r from-primary-600 to-primary-400 rounded-full" data-percent="85" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="skill-progress space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium text-gray-700 dark:text-gray-300">Visualisation (Matplotlib/Seaborn)</span>
+                            <span class="text-primary-600 dark:text-primary-400 font-medium">50%</span>
+                        </div>
+                        <div class="h-2.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <div class="progress-bar h-full bg-gradient-to-r from-primary-600 to-primary-400 rounded-full" data-percent="80" style="width: 0%"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -186,34 +353,34 @@
                 <div class="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
                     <div class="flex justify-center space-x-4 mb-4">
                         <div class="flex flex-col items-center">
-                            <i class="fab fa-html5 text-orange-500 text-4xl"></i>
+                            <i class="fab fa-html5 text-orange-500 text-4xl" aria-hidden="true"></i>
                             <span class="text-xs mt-1 dark:text-gray-300">HTML5</span>
                         </div>
                         <div class="flex flex-col items-center">
-                            <i class="fab fa-css3-alt text-blue-500 text-4xl"></i>
+                            <i class="fab fa-css3-alt text-blue-500 text-4xl" aria-hidden="true"></i>
                             <span class="text-xs mt-1 dark:text-gray-300">CSS3</span>
                         </div>
                         <div class="flex flex-col items-center">
-                            <i class="fab fa-js text-yellow-500 text-4xl"></i>
+                            <i class="fab fa-js text-yellow-500 text-4xl" aria-hidden="true"></i>
                             <span class="text-xs mt-1 dark:text-gray-300">JS</span>
                         </div>
                         <div class="flex flex-col items-center">
-                            <i class="fab fa-react text-blue-400 text-4xl"></i>
+                            <i class="fab fa-react text-blue-400 text-4xl" aria-hidden="true"></i>
                             <span class="text-xs mt-1 dark:text-gray-300">React</span>
                         </div>
                     </div>
                     <h3 class="font-bold text-lg mb-3 text-gray-700 dark:text-gray-200">Frontend</h3>
                     <ul class="text-gray-600 dark:text-gray-300 text-sm space-y-2">
                         <li class="flex items-start">
-                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
                             <span>Développement d'interfaces modernes avec React/Angular</span>
                         </li>
                         <li class="flex items-start">
-                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
                             <span>Responsive design avec Tailwind/Bootstrap</span>
                         </li>
                         <li class="flex items-start">
-                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
                             <span>Single Page Applications (SPA)</span>
                         </li>
                     </ul>
@@ -223,34 +390,34 @@
                 <div class="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
                     <div class="flex justify-center space-x-4 mb-4">
                         <div class="flex flex-col items-center">
-                            <i class="fab fa-java text-red-500 text-4xl"></i>
+                            <i class="fab fa-java text-red-500 text-4xl" aria-hidden="true"></i>
                             <span class="text-xs mt-1 dark:text-gray-300">Java</span>
                         </div>
                         <div class="flex flex-col items-center">
-                            <i class="fab fa-python text-blue-400 text-4xl"></i>
+                            <i class="fab fa-python text-blue-400 text-4xl" aria-hidden="true"></i>
                             <span class="text-xs mt-1 dark:text-gray-300">Python</span>
                         </div>
                         <div class="flex flex-col items-center">
-                            <i class="devicon-spring-plain text-green-500 text-4xl"></i>
+                            <i class="devicon-spring-plain text-green-500 text-4xl" aria-hidden="true"></i>
                             <span class="text-xs mt-1 dark:text-gray-300">Spring</span>
                         </div>
                         <div class="flex flex-col items-center">
-                            <i class="fas fa-server text-primary-500 text-4xl"></i>
+                            <i class="fas fa-server text-primary-500 text-4xl" aria-hidden="true"></i>
                             <span class="text-xs mt-1 dark:text-gray-300">API</span>
                         </div>
                     </div>
                     <h3 class="font-bold text-lg mb-3 text-primary-600 dark:text-primary-400">Backend</h3>
                     <ul class="text-gray-600 dark:text-gray-300 text-sm space-y-2">
                         <li class="flex items-start">
-                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
                             <span>Spring Boot (REST APIs, Microservices)</span>
                         </li>
                         <li class="flex items-start">
-                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
                             <span>Django/Python pour le backend</span>
                         </li>
                         <li class="flex items-start">
-                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
                             <span>Authentification JWT/OAuth2</span>
                         </li>
                     </ul>
@@ -260,30 +427,30 @@
                 <div class="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
                     <div class="flex justify-center space-x-4 mb-4">
                         <div class="flex flex-col items-center">
-                            <i class="fas fa-database text-blue-500 text-4xl"></i>
+                            <i class="fas fa-database text-blue-500 text-4xl" aria-hidden="true"></i>
                             <span class="text-xs mt-1 dark:text-gray-300">SQL</span>
                         </div>
                         <div class="flex flex-col items-center">
-                            <i class="devicon-postgresql-plain text-blue-600 text-4xl"></i>
+                            <i class="devicon-postgresql-plain text-blue-600 text-4xl" aria-hidden="true"></i>
                             <span class="text-xs mt-1 dark:text-gray-300">PostgreSQL</span>
                         </div>
                         <div class="flex flex-col items-center">
-                            <i class="fas fa-fire text-orange-500 text-4xl"></i>
+                            <i class="fas fa-fire text-orange-500 text-4xl" aria-hidden="true"></i>
                             <span class="text-xs mt-1 dark:text-gray-300">NoSQL</span>
                         </div>
                     </div>
                     <h3 class="font-bold text-lg mb-3 text-gray-700 dark:text-gray-200">Bases de Données</h3>
                     <ul class="text-gray-600 dark:text-gray-300 text-sm space-y-2">
                         <li class="flex items-start">
-                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
                             <span>MySQL, PostgreSQL, SQLite</span>
                         </li>
                         <li class="flex items-start">
-                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
                             <span>Hibernate, Django ORM, JPA</span>
                         </li>
                         <li class="flex items-start">
-                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
                             <span>Optimisation des requêtes SQL</span>
                         </li>
                     </ul>
@@ -293,34 +460,34 @@
                 <div class="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
                     <div class="flex justify-center space-x-4 mb-4">
                         <div class="flex flex-col items-center">
-                            <i class="devicon-spring-plain text-green-500 text-4xl"></i>
+                            <i class="devicon-spring-plain text-green-500 text-4xl" aria-hidden="true"></i>
                             <span class="text-xs mt-1 dark:text-gray-300">Spring</span>
                         </div>
                         <div class="flex flex-col items-center">
-                            <i class="fab fa-python text-green-500 text-4xl"></i>
+                            <i class="fab fa-python text-green-500 text-4xl" aria-hidden="true"></i>
                             <span class="text-xs mt-1 dark:text-gray-300">Django</span>
                         </div>
                         <div class="flex flex-col items-center">
-                            <i class="fab fa-laravel text-red-500 text-4xl"></i>
+                            <i class="fab fa-laravel text-red-500 text-4xl" aria-hidden="true"></i>
                             <span class="text-xs mt-1 dark:text-gray-300">Laravel</span>
                         </div>
                         <div class="flex flex-col items-center">
-                            <i class="fas fa-cubes text-primary-500 text-4xl"></i>
+                            <i class="fas fa-cubes text-primary-500 text-4xl" aria-hidden="true"></i>
                             <span class="text-xs mt-1 dark:text-gray-300">Maven</span>
                         </div>
                     </div>
                     <h3 class="font-bold text-lg mb-3 text-primary-600 dark:text-primary-400">Frameworks</h3>
                     <ul class="text-gray-600 dark:text-gray-300 text-sm space-y-2">
                         <li class="flex items-start">
-                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
                             <span>Spring Boot, Spring Security, Spring Data</span>
                         </li>
                         <li class="flex items-start">
-                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
                             <span>Django REST Framework</span>
                         </li>
                         <li class="flex items-start">
-                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
                             <span>Gestion des dépendances (Maven, Pip)</span>
                         </li>
                     </ul>
@@ -330,30 +497,30 @@
                 <div class="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
                     <div class="flex justify-center space-x-4 mb-4">
                         <div class="flex flex-col items-center">
-                            <i class="fas fa-brain text-primary-500 text-4xl"></i>
+                            <i class="fas fa-brain text-primary-500 text-4xl" aria-hidden="true"></i>
                             <span class="text-xs mt-1 dark:text-gray-300">ML</span>
                         </div>
                         <div class="flex flex-col items-center">
-                            <i class="fas fa-chart-line text-green-500 text-4xl"></i>
+                            <i class="fas fa-chart-line text-green-500 text-4xl" aria-hidden="true"></i>
                             <span class="text-xs mt-1 dark:text-gray-300">Data</span>
                         </div>
                         <div class="flex flex-col items-center">
-                            <i class="fas fa-robot text-blue-400 text-4xl"></i>
+                            <i class="fas fa-robot text-blue-400 text-4xl" aria-hidden="true"></i>
                             <span class="text-xs mt-1 dark:text-gray-300">AI</span>
                         </div>
                     </div>
                     <h3 class="font-bold text-lg mb-3 text-gray-700 dark:text-gray-200">Data Science & IA</h3>
                     <ul class="text-gray-600 dark:text-gray-300 text-sm space-y-2">
                         <li class="flex items-start">
-                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
                             <span>Machine Learning (TensorFlow)</span>
                         </li>
                         <li class="flex items-start">
-                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
                             <span>Traitement de données (Pandas, NumPy)</span>
                         </li>
                         <li class="flex items-start">
-                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
                             <span>Visualisation (Matplotlib)</span>
                         </li>
                     </ul>
@@ -363,34 +530,34 @@
                 <div class="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
                     <div class="flex justify-center space-x-4 mb-4">
                         <div class="flex flex-col items-center">
-                            <i class="fab fa-docker text-blue-400 text-4xl"></i>
+                            <i class="fab fa-docker text-blue-400 text-4xl" aria-hidden="true"></i>
                             <span class="text-xs mt-1 dark:text-gray-300">Docker</span>
                         </div>
                         <div class="flex flex-col items-center">
-                            <i class="fab fa-git-alt text-red-500 text-4xl"></i>
+                            <i class="fab fa-git-alt text-red-500 text-4xl" aria-hidden="true"></i>
                             <span class="text-xs mt-1 dark:text-gray-300">Git</span>
                         </div>
                         <div class="flex flex-col items-center">
-                            <i class="fas fa-project-diagram text-orange-500 text-4xl"></i>
+                            <i class="fas fa-project-diagram text-orange-500 text-4xl" aria-hidden="true"></i>
                             <span class="text-xs mt-1 dark:text-gray-300">UML</span>
                         </div>
                         <div class="flex flex-col items-center">
-                            <i class="fas fa-bolt text-yellow-500 text-4xl"></i>
+                            <i class="fas fa-bolt text-yellow-500 text-4xl" aria-hidden="true"></i>
                             <span class="text-xs mt-1 dark:text-gray-300">CI/CD</span>
                         </div>
                     </div>
                     <h3 class="font-bold text-lg mb-3 text-primary-600 dark:text-primary-400">Outils & Méthodes</h3>
                     <ul class="text-gray-600 dark:text-gray-300 text-sm space-y-2">
                         <li class="flex items-start">
-                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
                             <span>Conteneurisation (Docker)</span>
                         </li>
                         <li class="flex items-start">
-                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
                             <span>Git, GitHub Actions, CI/CD</span>
                         </li>
                         <li class="flex items-start">
-                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
                             <span>Méthodologies Agile/Scrum</span>
                         </li>
                     </ul>
@@ -408,7 +575,7 @@
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <div class="group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                     <div class="aspect-video overflow-hidden">
-                        <img src="images/TKINTER7.png" alt="Gestion des données scolaires" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                        <img src="images/TKINTER7.png" alt="Capture d'écran du projet de gestion des données scolaires" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
                     </div>
                     <div class="p-6">
                         <h3 class="text-xl font-semibold mb-2 dark:text-white">Gestion des données scolaires</h3>
@@ -421,7 +588,7 @@
                 </div>
                 <div class="group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                     <div class="aspect-video overflow-hidden">
-                        <img src="images/resto1.png" alt="Gestion des restaurants" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                        <img src="images/resto1.png" alt="Capture d'écran du projet de gestion des restaurants" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
                     </div>
                     <div class="p-6">
                         <h3 class="text-xl font-semibold mb-2 dark:text-white">Gestion des restaurants</h3>
@@ -434,7 +601,7 @@
                 </div>
                 <div class="group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                     <div class="aspect-video overflow-hidden">
-                        <img src="images/eco1.png" alt="Site éducatif full-stack" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                        <img src="images/eco1.png" alt="Capture d'écran du site éducatif full-stack" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
                     </div>
                     <div class="p-6">
                         <h3 class="text-xl font-semibold mb-2 dark:text-white">Site éducatif full-stack</h3>
@@ -447,7 +614,7 @@
                 </div>
                 <div class="group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                     <div class="aspect-video overflow-hidden">
-                        <img src="images/NextStepJob/NextstepJob4.png" alt="NextStepJobs" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                        <img src="images/NextStepJob/NextstepJob4.png" alt="Capture d'écran de NextStepJobs" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
                     </div>
                     <div class="p-6">
                         <h3 class="text-xl font-semibold mb-2 dark:text-white">NextStepJobs</h3>
@@ -461,7 +628,7 @@
 
                 <div class="group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                     <div class="aspect-video overflow-hidden">
-                        <img src="images/Eventhub/Eventhub.png" alt="Eventhub" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                        <img src="images/Eventhub/Eventhub.png" alt="Capture d'écran de Eventhub" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
                     </div>
                     <div class="p-6">
                         <h3 class="text-xl font-semibold mb-2 dark:text-white">Eventhub</h3>
@@ -475,7 +642,7 @@
 
                 <div class="group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                     <div class="aspect-video overflow-hidden">
-                        <img src="images/Pokemon/Pokemon.png" alt="Échecs Pokémon" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                        <img src="images/Pokemon/Pokemon.png" alt="Capture d'écran du jeu Échecs Pokémon" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
                     </div>
                     <div class="p-6">
                         <h3 class="text-xl font-semibold mb-2 dark:text-white">Échecs Pokémon</h3>
@@ -497,33 +664,33 @@
             <div class="grid md:grid-cols-2 gap-12">
                 <div class="space-y-6">
                     <div class="flex items-center space-x-4">
-                        <i data-lucide="mail" class="text-primary-600 dark:text-primary-400 w-6 h-6"></i>
+                        <i data-lucide="mail" class="text-primary-600 dark:text-primary-400 w-6 h-6" aria-hidden="true"></i>
                         <a href="mailto:cheyoukheboubker@gmail.com" class="hover:underline dark:text-gray-300">
                             cheyoukheboubker@gmail.com
                         </a>
                     </div>
                     <div class="flex items-center space-x-4">
-                        <i data-lucide="phone" class="text-primary-600 dark:text-primary-400 w-6 h-6"></i>
+                        <i data-lucide="phone" class="text-primary-600 dark:text-primary-400 w-6 h-6" aria-hidden="true"></i>
                         <a href="tel:+212644435752" class="hover:underline dark:text-gray-300">
                             +212 6 44 43 57 52
                         </a>
                     </div>
                     <div class="flex space-x-4">
-                        <a href="https://github.com/BOUBKERsup07" target="_blank" rel="noopener noreferrer" class="p-2 rounded-full bg-gray-100 dark:bg-dark-700 hover:bg-gray-200 dark:hover:bg-dark-600 transition-colors">
+                        <a href="https://github.com/BOUBKERsup07" target="_blank" rel="noopener noreferrer" class="p-2 rounded-full bg-gray-100 dark:bg-dark-700 hover:bg-gray-200 dark:hover:bg-dark-600 transition-colors" aria-label="Profil GitHub">
                             <i data-lucide="github" class="w-6 h-6 dark:text-gray-300"></i>
                         </a>
-                        <a href="https://www.linkedin.com/in/boubker-cheyoukh-4696a4276/" target="_blank" rel="noopener noreferrer" class="p-2 rounded-full bg-gray-100 dark:bg-dark-700 hover:bg-gray-200 dark:hover:bg-dark-600 transition-colors">
+                        <a href="https://www.linkedin.com/in/boubker-cheyoukh-4696a4276/" target="_blank" rel="noopener noreferrer" class="p-2 rounded-full bg-gray-100 dark:bg-dark-700 hover:bg-gray-200 dark:hover:bg-dark-600 transition-colors" aria-label="Profil LinkedIn">
                             <i data-lucide="linkedin" class="w-6 h-6 dark:text-gray-300"></i>
                         </a>
                     </div>
                 </div>
                 <div class="space-y-4">
                     <button onclick="downloadCV('fr')" class="w-full flex items-center justify-center px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors duration-300">
-                        <i data-lucide="download" class="mr-2 w-5 h-5"></i>
+                        <i data-lucide="download" class="mr-2 w-5 h-5" aria-hidden="true"></i>
                         Télécharger CV (FR)
                     </button>
                     <button onclick="downloadCV('en')" class="w-full flex items-center justify-center px-6 py-3 border-2 border-primary-600 text-primary-600 dark:text-primary-400 rounded-lg hover:bg-purple-50 dark:hover:bg-dark-700 transition-colors duration-300">
-                        <i data-lucide="download" class="mr-2 w-5 h-5"></i>
+                        <i data-lucide="download" class="mr-2 w-5 h-5" aria-hidden="true"></i>
                         Download CV (EN)
                     </button>
                 </div>
@@ -554,10 +721,10 @@
                 <p class="text-gray-400 text-sm">Email : <a href="mailto:cheyoukheboubker@gmail.com" class="hover:text-primary-400">cheyoukheboubker@gmail.com</a></p>
                 <p class="text-gray-400 text-sm">Téléphone : <a href="tel:+212644435752" class="hover:text-primary-400">+212 6 44 43 57 52</a></p>
                 <div class="flex justify-center md:justify-start space-x-4 mt-4">
-                    <a href="https://github.com/BOUBKERsup07" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary-400">
+                    <a href="https://github.com/BOUBKERsup07" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary-400" aria-label="Profil GitHub">
                         <i data-lucide="github" class="w-5 h-5"></i>
                     </a>
-                    <a href="https://www.linkedin.com/in/boubker-cheyoukh-4696a4276/" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary-400">
+                    <a href="https://www.linkedin.com/in/boubker-cheyoukh-4696a4276/" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary-400" aria-label="Profil LinkedIn">
                         <i data-lucide="linkedin" class="w-5 h-5"></i>
                     </a>
                 </div>
@@ -569,12 +736,41 @@
     </footer>
 
     <!-- WhatsApp Icon -->
-    <a href="https://wa.me/212644435752" target="_blank" rel="noopener noreferrer" class="fixed bottom-6 right-6 bg-green-500 text-white rounded-full p-4 shadow-lg hover:bg-green-600 transition-colors duration-300 z-40">
+    <a href="https://wa.me/212644435752" target="_blank" rel="noopener noreferrer" class="fixed bottom-6 right-6 bg-green-500 text-white rounded-full p-4 shadow-lg hover:bg-green-600 transition-colors duration-300 z-40" aria-label="Contact WhatsApp">
         <i class="fab fa-whatsapp text-2xl"></i>
     </a>
 
     <script>
-         lucide.createIcons();
+        // Initialisation des icônes Lucide
+        lucide.createIcons();
+        
+        // Fonction pour animer les barres de progression
+        function animateProgressBars() {
+            const progressBars = document.querySelectorAll('.progress-bar');
+            const skillElements = document.querySelectorAll('.skill-progress');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const progressBar = entry.target.querySelector('.progress-bar');
+                        const percent = progressBar.getAttribute('data-percent');
+                        
+                        // Animation de la barre de progression
+                        progressBar.style.width = `${percent}%`;
+                        
+                        // Animation d'apparition
+                        entry.target.classList.add('visible');
+                        
+                        // Ne plus observer cet élément
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            skillElements.forEach(skill => {
+                observer.observe(skill);
+            });
+        }
         
         // Dark Mode Toggle
         const setupDarkModeToggle = (toggleButton, iconElement) => {
@@ -622,9 +818,6 @@
             );
         };
 
-        // Initialize when DOM is loaded
-        document.addEventListener('DOMContentLoaded', initializeDarkMode);
-
         // Mobile menu functionality
         const mobileMenuButton = document.getElementById('mobileMenuButton');
         const mobileMenu = document.getElementById('mobileMenu');
@@ -632,13 +825,15 @@
         const menuLinks = document.querySelectorAll('.menu-link');
 
         function toggleMenu() {
-            mobileMenu.classList.toggle('hidden');
+            const isHidden = mobileMenu.classList.toggle('hidden');
+            mobileMenuButton.setAttribute('aria-expanded', !isHidden);
             updateIcon();
         }
 
         function closeMenu() {
             if (!mobileMenu.classList.contains('hidden')) {
                 mobileMenu.classList.add('hidden');
+                mobileMenuButton.setAttribute('aria-expanded', 'false');
                 updateIcon();
             }
         }
@@ -672,13 +867,16 @@
         const cvDropdownButton = document.getElementById('cvDropdownButton');
         const cvDropdown = document.getElementById('cvDropdown');
 
-        cvDropdownButton.addEventListener('click', () => {
-            cvDropdown.classList.toggle('hidden');
+        cvDropdownButton.addEventListener('click', (event) => {
+            event.stopPropagation();
+            const isHidden = cvDropdown.classList.toggle('hidden');
+            cvDropdownButton.setAttribute('aria-expanded', !isHidden);
         });
 
         document.addEventListener('click', (event) => {
             if (!cvDropdownButton.contains(event.target) && !cvDropdown.contains(event.target)) {
                 cvDropdown.classList.add('hidden');
+                cvDropdownButton.setAttribute('aria-expanded', 'false');
             }
         });
 
@@ -721,7 +919,30 @@
             link.click();
             document.body.removeChild(link);
             cvDropdown.classList.add('hidden');
+            cvDropdownButton.setAttribute('aria-expanded', 'false');
         }
+
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeDarkMode();
+            animateProgressBars();
+            
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
     </script>
 </body>
 </html>
