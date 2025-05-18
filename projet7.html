@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Exam Platform - Application Web d'Examen développée avec Spring Boot et Angular">
+    <meta name="author" content="Boubker Cheyoukh">
+    <meta name="keywords" content="Exam Platform, Spring Boot, Angular, gestion examens, portfolio">
+    <title>Exam Platform - Cahier des charges</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            400: '#a78bfa', /* Pour dark hover */
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                        },
+                        dark: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="images/icon/speech-bubble.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .image-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+        .image-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .section-title {
+            border-bottom: 2px solid #7c3aed;
+            padding-bottom: 0.5rem;
+        }
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.9);
+            padding-top: 60px;
+        }
+        .tech-badge {
+            transition: all 0.3s ease;
+        }
+        .tech-badge:hover {
+            transform: translateY(-5px);
+        }
+        .feature-card {
+            border-left: 4px solid #7c3aed;
+        }
+        .fade-in {
+            animation: fadeIn 1s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 90%;
+            max-height: 90%;
+        }
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            z-index: 1001;
+        }
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .modal-caption {
+            margin: auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+            text-align: center;
+            color: #ccc;
+            padding: 10px 0;
+            height: 150px;
+        }
+    </style>
+</head>
+<body class="font-['Inter'] bg-gray-50 dark:bg-dark-900">
+    <!-- Progress Bar -->
+    <div id="progressBar" class="fixed top-0 left-0 h-1 bg-primary-600 z-40 transition-all duration-300" style="width: 0%"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-white/80 dark:bg-dark-800/80 backdrop-blur-md shadow-sm z-30">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <a href="index.html" class="text-2xl font-bold bg-gradient-to-r from-primary-600 to-blue-500 text-transparent bg-clip-text">
+                BC
+            </a>
+            
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="index.html" class="text-sm font-medium transition-colors duration-300 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Accueil</a>
+                <a href="index.html#projects" class="text-sm font-medium transition-colors duration-300 text-primary-600 dark:text-primary-400">Projets</a>
+                <a href="index.html#contact" class="text-sm font-medium transition-colors duration-300 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Contact</a>
+                
+                <!-- Dark Mode Toggle (Desktop) -->
+                <button id="darkModeToggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                    <i id="darkModeIcon" data-lucide="moon" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <!-- Mobile Menu Button -->
+            <div class="flex items-center space-x-4 md:hidden">
+                <!-- Dark Mode Toggle (Mobile) -->
+                <button id="darkModeToggleMobile" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                    <i id="darkModeIconMobile" data-lucide="moon" class="w-5 h-5"></i>
+                </button>
+                
+                <button id="mobileMenuButton" class="text-gray-600 dark:text-gray-300">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="fixed inset-0 bg-white dark:bg-dark-800 z-20 pt-20 hidden">
+        <div class="flex flex-col items-center space-y-8 p-8" id="mobileMenuContent">
+            <a href="index.html" class="menu-link text-xl font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Accueil</a>
+            <a href="index.html#projects" class="menu-link text-xl font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Projets</a>
+            <a href="index.html#contact" class="menu-link text-xl font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Contact</a>
+        </div>
+    </div>
+
+    <!-- Project Header -->
+    <section class="pt-32 pb-10 px-4 bg-gradient-to-b from-purple-50 to-white dark:from-dark-900 dark:to-dark-800">
+        <div class="container mx-auto max-w-6xl">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+                <div class="space-y-4 md:w-1/2">
+                    <h1 class="text-4xl md:text-5xl font-bold leading-tight dark:text-white">
+                        <span class="bg-gradient-to-r from-primary-600 to-blue-500 text-transparent bg-clip-text">
+                            Exam Platform
+                        </span>
+                    </h1>
+                    <p class="text-xl text-gray-600 dark:text-gray-300">
+                        Application Web d'Examen (Spring Boot & Angular)
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 rounded-full text-sm font-medium">Spring Boot</span>
+                        <span class="px-3 py-1 bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 rounded-full text-sm font-medium">Angular</span>
+                        <span class="px-3 py-1 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 rounded-full text-sm font-medium">MySQL</span>
+                        <span class="px-3 py-1 bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200 rounded-full text-sm font-medium">Tailwind CSS</span>
+                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 rounded-full text-sm font-medium">JWT</span>
+                    </div>
+                </div>
+                <div class="md:w-1/2">
+                    <img src="images/Exam Platform/principale.png" alt="Exam Platform Dashboard" class="rounded-xl shadow-lg w-full">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Overview -->
+    <section class="py-16 px-4 bg-white dark:bg-dark-800">
+        <div class="container mx-auto max-w-6xl">
+            <div class="grid md:grid-cols-2 gap-12 items-start">
+                <div class="space-y-6">
+                    <h2 class="text-3xl font-bold text-gray-800 dark:text-white">Contexte du projet</h2>
+                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                        <strong>Exam Platform</strong> est une application web moderne permettant aux professeurs de <strong>créer des examens en ligne</strong>, d'ajouter des questions avec images, de gérer la durée par question, de collecter les réponses des étudiants, et de calculer les scores automatiquement.
+                    </p>
+                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                        L'application offre une interface intuitive pour les professeurs et les étudiants, avec un système de minuterie automatique pour chaque question et un calcul instantané des scores à la fin de l'examen.
+                    </p>
+                    <div class="flex flex-wrap gap-4 pt-4">
+                        <a href="https://github.com/BOUBKERsup07/P_EXAM/tree/main/Last_V" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-300 dark:bg-gray-700 dark:hover:bg-gray-600">
+                            <i class="fab fa-github mr-2"></i>
+                            Code source
+                        </a>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white">Objectifs du projet</h3>
+                    <ul class="space-y-3 text-gray-600 dark:text-gray-300">
+                        <li class="flex items-start">
+                            <i data-lucide="check-circle" class="text-green-500 mr-2 mt-0.5 w-5 h-5"></i>
+                            <span>Offrir une interface intuitive pour <strong>créer, modifier et gérer des examens en ligne</strong>.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check-circle" class="text-green-500 mr-2 mt-0.5 w-5 h-5"></i>
+                            <span>Permettre l'ajout de questions avec images et définir un temps limité par question.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check-circle" class="text-green-500 mr-2 mt-0.5 w-5 h-5"></i>
+                            <span>Collecter automatiquement les réponses des étudiants dans une base de données.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check-circle" class="text-green-500 mr-2 mt-0.5 w-5 h-5"></i>
+                            <span>Calculer et afficher les scores des étudiants en temps réel.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Screenshots Section -->
+    <section class="py-16 px-4 bg-gray-50 dark:bg-dark-900">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-3xl font-bold mb-12 text-center text-gray-800 dark:text-white">Captures d'écran</h2>
+            <div class="image-gallery">
+                <div class="image-card bg-white dark:bg-dark-800">
+                    <img src="images/Exam Platform/prof_bord.png" alt="Tableau de bord professeur" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="font-semibold text-gray-800 dark:text-white">Tableau de bord professeur</h3>
+                    </div>
+                </div>
+                <div class="image-card bg-white dark:bg-dark-800">
+                    <img src="images/Exam Platform/Student_bord.png" alt="Tableau de bord étudiant" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="font-semibold text-gray-800 dark:text-white">Tableau de bord étudiant</h3>
+                    </div>
+                </div>
+                <div class="image-card bg-white dark:bg-dark-800">
+                    <img src="images/Exam Platform/crée_exam.png" alt="Création d'examen" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="font-semibold text-gray-800 dark:text-white">Création d'examen</h3>
+                    </div>
+                </div>
+                <div class="image-card bg-white dark:bg-dark-800">
+                    <img src="images/Exam Platform/page_quiz_en_cours.png" alt="Quiz en cours" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="font-semibold text-gray-800 dark:text-white">Quiz en cours</h3>
+                    </div>
+                </div>
+                <div class="image-card bg-white dark:bg-dark-800">
+                    <img src="images/Exam Platform/score_final.png" alt="Score final" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="font-semibold text-gray-800 dark:text-white">Score final</h3>
+                    </div>
+                </div>
+                <div class="image-card bg-white dark:bg-dark-800">
+                    <img src="images/Exam Platform/resultats_detail.png" alt="Détails des résultats" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="font-semibold text-gray-800 dark:text-white">Détails des résultats</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-16 px-4 bg-white dark:bg-dark-800">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-3xl font-bold mb-12 text-center text-gray-800 dark:text-white">Fonctionnalités principales</h2>
+            <div class="grid md:grid-cols-2 gap-12">
+                <div class="space-y-8">
+                    <div class="feature-card pl-4 py-2">
+                        <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">Gestion des examens par le professeur</h3>
+                        <ul class="space-y-4 text-gray-600 dark:text-gray-300">
+                            <li class="flex items-start">
+                                <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-5 h-5"></i>
+                                <div>
+                                    <p class="font-medium">Création d'examens</p>
+                                    <p class="text-sm mt-1">Nom, description, liste de questions et génération d'un lien unique à partager</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-5 h-5"></i>
+                                <div>
+                                    <p class="font-medium">Gestion des questions</p>
+                                    <p class="text-sm mt-1">QCM ou réponse directe, avec texte et image optionnelle, définition des bonnes réponses</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-5 h-5"></i>
+                                <div>
+                                    <p class="font-medium">Minuterie par question</p>
+                                    <p class="text-sm mt-1">Spécification de la durée en secondes pour chaque question avec minuteur automatique</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="mt-8">
+                        <img src="images/Exam Platform/list_exam.png" alt="Liste des examens" class="rounded-lg shadow-md w-full">
+                        <p class="text-sm text-gray-500 dark:text-gray-400 text-center mt-2">Interface de gestion des examens</p>
+                    </div>
+                </div>
+                <div class="space-y-8">
+                    <div class="feature-card pl-4 py-2">
+                        <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">Participation de l'étudiant</h3>
+                        <ul class="space-y-4 text-gray-600 dark:text-gray-300">
+                            <li class="flex items-start">
+                                <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-5 h-5"></i>
+                                <div>
+                                    <p class="font-medium">Accès et authentification</p>
+                                    <p class="text-sm mt-1">Accès à l'examen via un lien unique et saisie de l'adresse email avant de commencer</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-5 h-5"></i>
+                                <div>
+                                    <p class="font-medium">Affichage des questions</p>
+                                    <p class="text-sm mt-1">Présentation séquentielle des questions avec limite de temps et passage automatique</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-5 h-5"></i>
+                                <div>
+                                    <p class="font-medium">Résultats et scores</p>
+                                    <p class="text-sm mt-1">Enregistrement automatique des réponses et calcul du score global et par question</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="mt-8">
+                        <img src="images/Exam Platform/page_quiz_en_cours.png" alt="Quiz en cours" class="rounded-lg shadow-md w-full">
+                        <p class="text-sm text-gray-500 dark:text-gray-400 text-center mt-2">Interface de quiz en cours avec minuteur</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<!-- Technologies Section -->
+<section class="py-16 px-4 bg-gray-50 dark:bg-dark-900">
+    <div class="container mx-auto max-w-6xl">
+        <h2 class="text-3xl font-bold mb-12 text-center text-gray-800 dark:text-white">Technologies utilisées</h2>
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-8">
+            <div class="tech-badge flex flex-col items-center p-6 bg-white dark:bg-dark-800 rounded-xl shadow-md">
+                <i class="fab fa-angular text-red-600 text-5xl mb-4"></i>
+                <h3 class="font-bold text-gray-800 dark:text-white">Angular</h3>
+                <p class="text-sm text-center text-gray-600 dark:text-gray-300 mt-2">Frontend</p>
+            </div>
+            <div class="tech-badge flex flex-col items-center p-6 bg-white dark:bg-dark-800 rounded-xl shadow-md">
+                <i class="fab fa-java text-blue-600 text-5xl mb-4"></i>
+                <h3 class="font-bold text-gray-800 dark:text-white">Spring Boot</h3>
+                <p class="text-sm text-center text-gray-600 dark:text-gray-300 mt-2">Backend</p>
+            </div>
+            <div class="tech-badge flex flex-col items-center p-6 bg-white dark:bg-dark-800 rounded-xl shadow-md">
+                <i class="fas fa-database text-blue-500 text-5xl mb-4"></i>
+                <h3 class="font-bold text-gray-800 dark:text-white">MySQL</h3>
+                <p class="text-sm text-center text-gray-600 dark:text-gray-300 mt-2">Base de données</p>
+            </div>
+            <div class="tech-badge flex flex-col items-center p-6 bg-white dark:bg-dark-800 rounded-xl shadow-md">
+                <i class="fab fa-css3-alt text-blue-500 text-5xl mb-4"></i>
+                <h3 class="font-bold text-gray-800 dark:text-white">Tailwind CSS</h3>
+                <p class="text-sm text-center text-gray-600 dark:text-gray-300 mt-2">Styling</p>
+            </div>
+            <div class="tech-badge flex flex-col items-center p-6 bg-white dark:bg-dark-800 rounded-xl shadow-md">
+                <i class="fas fa-key text-yellow-500 text-5xl mb-4"></i>
+                <h3 class="font-bold text-gray-800 dark:text-white">JWT</h3>
+                <p class="text-sm text-center text-gray-600 dark:text-gray-300 mt-2">Authentification</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Architecture Section -->
+<section class="py-16 px-4 bg-white dark:bg-dark-800">
+    <div class="container mx-auto max-w-6xl">
+        <h2 class="text-3xl font-bold mb-12 text-center text-gray-800 dark:text-white">Spécifications techniques</h2>
+        <div class="bg-gray-50 dark:bg-dark-900 p-8 rounded-xl shadow-lg mb-12">
+            <div class="flex flex-col items-center mb-8">
+                <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">Architecture simplifiée</h3>
+                <div class="flex flex-col md:flex-row items-center justify-center w-full gap-4 md:gap-8">
+                    <div class="bg-red-100 dark:bg-red-900 p-4 rounded-lg text-center min-w-[150px]">
+                        <p class="font-medium text-red-800 dark:text-red-200">Frontend (Angular)</p>
+                    </div>
+                    <div class="hidden md:block">
+                        <i data-lucide="arrow-right" class="w-6 h-6 text-gray-400"></i>
+                    </div>
+                    <div class="md:hidden">
+                        <i data-lucide="arrow-down" class="w-6 h-6 text-gray-400"></i>
+                    </div>
+                    <div class="bg-green-100 dark:bg-green-900 p-4 rounded-lg text-center min-w-[150px]">
+                        <p class="font-medium text-green-800 dark:text-green-200">API REST</p>
+                    </div>
+                    <div class="hidden md:block">
+                        <i data-lucide="arrow-right" class="w-6 h-6 text-gray-400"></i>
+                    </div>
+                    <div class="md:hidden">
+                        <i data-lucide="arrow-down" class="w-6 h-6 text-gray-400"></i>
+                    </div>
+                    <div class="bg-blue-100 dark:bg-blue-900 p-4 rounded-lg text-center min-w-[150px]">
+                        <p class="font-medium text-blue-800 dark:text-blue-200">Backend (Spring Boot)</p>
+                    </div>
+                    <div class="hidden md:block">
+                        <i data-lucide="arrow-right" class="w-6 h-6 text-gray-400"></i>
+                    </div>
+                    <div class="md:hidden">
+                        <i data-lucide="arrow-down" class="w-6 h-6 text-gray-400"></i>
+                    </div>
+                    <div class="bg-blue-100 dark:bg-blue-900 p-4 rounded-lg text-center min-w-[150px]">
+                        <p class="font-medium text-blue-800 dark:text-blue-200">Base de données (MySQL)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8">
+            <div>
+                <h4 class="text-lg font-semibold mb-4 text-gray-800 dark:text-white">Frontend (Angular & Tailwind CSS)</h4>
+                <ul class="space-y-2 text-gray-600 dark:text-gray-300">
+                    <li class="flex items-start">
+                        <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                        <span><strong>Interface professeur :</strong> Création/modification d'examens, gestion des questions, upload d'images, partage de liens</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                        <span><strong>Interface étudiant :</strong> Formulaire email, présentation des questions avec minuterie, affichage des scores</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                        <span>Design responsive avec Tailwind CSS pour tous les appareils</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                        <span>Gestion d'état avec services Angular et RxJS</span>
+                    </li>
+                </ul>
+                <div class="mt-6">
+                    <img src="images/Exam Platform/Login.png" alt="Page de connexion" class="rounded-lg shadow-md w-full">
+                    <p class="text-sm text-gray-500 dark:text-gray-400 text-center mt-2">Interface de connexion</p>
+                </div>
+            </div>
+            <div>
+                <h4 class="text-lg font-semibold mb-4 text-gray-800 dark:text-white">Backend (Spring Boot & MySQL)</h4>
+                <ul class="space-y-2 text-gray-600 dark:text-gray-300">
+                    <li class="flex items-start">
+                        <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                        <span><strong>API REST sécurisée</strong> pour la gestion des examens, questions et réponses</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                        <span>Authentification JWT pour sécuriser l'accès aux ressources</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                        <span>Stockage des images en base64 ou via un service de stockage</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4"></i>
+                        <span><strong>Modèle de données</strong> avec entités : Professeur, Examen, Question, Étudiant, Réponse</span>
+                    </li>
+                </ul>
+                <div class="mt-6">
+                    <img src="images/Exam Platform/Sign Up.png" alt="Page d'inscription" class="rounded-lg shadow-md w-full">
+                    <p class="text-sm text-gray-500 dark:text-gray-400 text-center mt-2">Interface d'inscription</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contraintes Section -->
+<section class="py-16 px-4 bg-gray-50 dark:bg-dark-900">
+    <div class="container mx-auto max-w-6xl">
+        <h2 class="text-3xl font-bold mb-12 text-center text-gray-800 dark:text-white">Contraintes techniques</h2>
+        <div class="grid md:grid-cols-2 gap-12">
+            <div class="space-y-6">
+                <ul class="space-y-4 text-gray-600 dark:text-gray-300">
+                    <li class="flex items-start">
+                        <i data-lucide="check-circle" class="text-green-500 mr-2 mt-0.5 w-5 h-5"></i>
+                        <span><strong>Interface responsive</strong> - Design adapté aux PC, tablettes et mobiles</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i data-lucide="check-circle" class="text-green-500 mr-2 mt-0.5 w-5 h-5"></i>
+                        <span><strong>Passage automatique</strong> - Transition automatique entre les questions à la fin du temps imparti</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i data-lucide="check-circle" class="text-green-500 mr-2 mt-0.5 w-5 h-5"></i>
+                        <span><strong>Sécurité</strong> - Lien d'examen sécurisé avec UUID ou token dans l'URL</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i data-lucide="check-circle" class="text-green-500 mr-2 mt-0.5 w-5 h-5"></i>
+                        <span><strong>Affichage optimal</strong> - Images des questions correctement affichées côté étudiant</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="image-card bg-white dark:bg-dark-800">
+                    <img src="images/Exam Platform/demo.png" alt="Démonstration" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="font-semibold text-gray-800 dark:text-white">Démonstration</h3>
+                    </div>
+                </div>
+                <div class="image-card bg-white dark:bg-dark-800">
+                    <img src="images/Exam Platform/detaills_exam.png" alt="Détails d'examen" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="font-semibold text-gray-800 dark:text-white">Détails d'examen</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-gray-900 dark:bg-dark-800 text-white py-8">
+    <div class="container mx-auto max-w-6xl px-4 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+        <div>
+            <h3 class="text-lg font-bold mb-4 dark:text-white">À propos</h3>
+            <p class="text-gray-400 text-sm leading-relaxed">
+                Développeur passionné par l'intelligence artificielle et le développement d'applications web.
+            </p>
+        </div>
+        <div>
+            <h3 class="text-lg font-bold mb-4 dark:text-white">Liens utiles</h3>
+            <ul class="space-y-2">
+                <li><a href="index.html" class="text-gray-400 hover:text-primary-400 transition">Accueil</a></li>
+                <li><a href="index.html#projects" class="text-gray-400 hover:text-primary-400 transition">Projets</a></li>
+                <li><a href="index.html#contact" class="text-gray-400 hover:text-primary-400 transition">Contact</a></li>
+            </ul>
+        </div>
+        <div>
+            <h3 class="text-lg font-bold mb-4 dark:text-white">Contact</h3>
+            <ul class="space-y-2">
+                <li class="flex items-center">
+                    <i class="far fa-envelope text-gray-400 mr-2"></i>
+                    <a href="mailto:cheyoukheboubker@gmail.com" class="text-gray-400 hover:text-primary-400 transition">cheyoukheboubker@gmail.com</a>
+                </li>
+                <li class="flex items-center">
+                    <i class="fab fa-github text-gray-400 mr-2"></i>
+                    <a href="https://github.com/SuptechBOUBKER" target="_blank" class="text-gray-400 hover:text-primary-400 transition">GitHub</a>
+                </li>
+                <li class="flex items-center">
+                    <i class="fab fa-linkedin text-gray-400 mr-2"></i>
+                    <a href="https://www.linkedin.com/in/boubker-cheyoukh-4696a4276/" target="_blank" class="text-gray-400 hover:text-primary-400 transition">LinkedIn</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="border-t border-gray-700 dark:border-gray-600 mt-8 pt-4 text-gray-400 text-sm text-center">
+        <p>&copy; 2025 Boubker Cheyoukh. Tous droits réservés.</p>
+    </div>
+</footer>
+    <!-- Modal for enlarged images -->
+    <div id="imageModal" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="enlargedImg">
+        <div id="caption" class="modal-caption"></div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        // Dark mode functionality
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const darkModeToggleMobile = document.getElementById('darkModeToggleMobile');
+        const darkModeIcon = document.getElementById('darkModeIcon');
+        const darkModeIconMobile = document.getElementById('darkModeIconMobile');
+        const html = document.documentElement;
+        
+        // Check for saved theme preference or use the system preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+            darkModeIcon.setAttribute('data-lucide', 'sun');
+            darkModeIconMobile.setAttribute('data-lucide', 'sun');
+        } else {
+            darkModeIcon.setAttribute('data-lucide', 'moon');
+            darkModeIconMobile.setAttribute('data-lucide', 'moon');
+        }
+        
+        // Re-initialize icons after changing them
+        lucide.createIcons();
+        
+        // Toggle dark mode function
+        function toggleDarkMode() {
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                darkModeIcon.setAttribute('data-lucide', 'moon');
+                darkModeIconMobile.setAttribute('data-lucide', 'moon');
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                darkModeIcon.setAttribute('data-lucide', 'sun');
+                darkModeIconMobile.setAttribute('data-lucide', 'sun');
+            }
+            lucide.createIcons();
+        }
+        
+        // Add event listeners for dark mode toggle
+        darkModeToggle.addEventListener('click', toggleDarkMode);
+        darkModeToggleMobile.addEventListener('click', toggleDarkMode);
+        
+        // Mobile menu functionality
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileMenuContent = document.getElementById('mobileMenuContent');
+        
+        mobileMenuButton.addEventListener('click', function() {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Close mobile menu when clicking on a link
+        const menuLinks = document.querySelectorAll('.menu-link');
+        menuLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+        
+        // Progress bar functionality
+        const progressBar = document.getElementById('progressBar');
+        window.addEventListener('scroll', function() {
+            const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (window.scrollY / windowHeight) * 100;
+            progressBar.style.width = scrolled + '%';
+        });
+        
+        // Modal image gallery functionality
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('enlargedImg');
+        const captionText = document.getElementById('caption');
+        const closeBtn = document.getElementsByClassName('close')[0];
+
+        // Get all image cards
+        const imageCards = document.querySelectorAll('.image-card');
+
+        // Add click event to all image cards
+        imageCards.forEach(card => {
+            card.addEventListener('click', function() {
+                const img = this.querySelector('img');
+                const caption = this.querySelector('h3').innerText;
+                
+                modal.style.display = 'block';
+                modalImg.src = img.src;
+                captionText.innerHTML = caption;
+            });
+        });
+
+        // Close the modal when clicking on the close button
+        closeBtn.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+
+        // Close the modal when clicking outside the image
+        modal.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Close the modal when pressing the Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' && modal.style.display === 'block') {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
