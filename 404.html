@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirection</title>
+    <script>
+        // Récupérer le chemin de l'URL actuelle sans l'extension
+        var path = window.location.pathname;
+        
+        // Si le chemin se termine par un slash, considérer comme index.html
+        if (path.endsWith('/')) {
+            window.location.href = path + 'index.html';
+        } else {
+            // Sinon, ajouter .html à la fin
+            window.location.href = path + '.html';
+        }
+    </script>
+</head>
+<body>
+    <p>Redirection en cours...</p>
+</body>
+</html>
