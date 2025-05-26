@@ -1,0 +1,17 @@
+RewriteEngine On
+
+# Supprimer l'extension .html des URLs
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.html -f
+RewriteRule ^(.*)$ $1.html [NC,L]
+
+# Rediriger index.html vers la racine du site
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /index\.html\ HTTP/
+RewriteRule ^index\.html$ / [R=301,L]
+
+# Rediriger les URLs avec .html vers les URLs sans extension
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /(.+)\.html\ HTTP/
+RewriteRule ^(.+)\.html$ /$1 [R=301,L]
+
+# Gérer les redirections pour les sous-dossiers si nécessaire
+# RewriteRule ^sous-dossier/index\.html$ /sous-dossier/ [R=301,L]
