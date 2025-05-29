@@ -5,15 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Redirection</title>
     <script>
-        // Récupérer le chemin de l'URL actuelle sans l'extension
+        // Récupérer le chemin de l'URL actuelle
         var path = window.location.pathname;
         
         // Si le chemin se termine par un slash, considérer comme index.html
         if (path.endsWith('/')) {
             window.location.href = path + 'index.html';
-        } else {
-            // Sinon, ajouter .html à la fin
+        } else if (!path.endsWith('.html')) {
+            // Ajouter .html seulement si le chemin ne se termine pas déjà par .html
             window.location.href = path + '.html';
+        } else {
+            // Si l'URL contient déjà .html, rediriger vers la page d'accueil
+            window.location.href = '/PORTFOLIO/';
         }
     </script>
 </head>
