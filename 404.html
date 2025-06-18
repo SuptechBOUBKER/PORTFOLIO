@@ -3,24 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redirection</title>
-    <script>
-        // Récupérer le chemin de l'URL actuelle
-        var path = window.location.pathname;
-        
-        // Si le chemin se termine par un slash, considérer comme index.html
-        if (path.endsWith('/')) {
-            window.location.href = path + 'index.html';
-        } else if (!path.endsWith('.html')) {
-            // Ajouter .html seulement si le chemin ne se termine pas déjà par .html
-            window.location.href = path + '.html';
-        } else {
-            // Si l'URL contient déjà .html, rediriger vers la page d'accueil
-            window.location.href = '/PORTFOLIO/';
+    <title>Page non trouvée - Portfolio Développeur Mobile & Backend</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .error-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #2e7d32, #00acc1);
+            color: white;
         }
-    </script>
+        .error-code {
+            font-size: 8rem;
+            font-weight: bold;
+            margin: 0;
+            line-height: 1;
+            text-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+        }
+        .error-message {
+            font-size: 2rem;
+            margin: 1rem 0 2rem;
+            max-width: 600px;
+        }
+        .btn-home {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: white;
+            color: #2e7d32;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-top: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .btn-home:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+        .error-illustration {
+            max-width: 300px;
+            margin: 2rem 0;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+        }
+    </style>
 </head>
 <body>
-    <p>Redirection en cours...</p>
+    <div class="error-container">
+        <h1 class="error-code">404</h1>
+        <h2 class="error-message">Oups ! Page non trouvée</h2>
+        <p>La page que vous recherchez semble avoir pris des vacances. Peut-être qu'elle est partie explorer d'autres horizons numériques.</p>
+        <svg class="error-illustration" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+        <a href="index.html" class="btn-home">
+            <i class="fas fa-home"></i> Retour à l'accueil
+        </a>
+    </div>
+    <script>
+        // Redirection automatique après 10 secondes
+        setTimeout(function() {
+            window.location.href = 'index.html';
+        }, 10000);
+    </script>
 </body>
 </html>
