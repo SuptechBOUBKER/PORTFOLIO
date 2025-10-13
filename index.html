@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -654,24 +654,47 @@
                         </a>
                     </div>
                 </div>
-
-                <div class="hidden lg:block"></div> <!-- Élément vide pour le positionnement -->
                 
-                <div class="group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-                    <div class="aspect-video overflow-hidden">
-                        <img src="images/Exam Platform/principale.png" alt="Capture d'écran de Exam Platform" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                <!-- Bloc Exam Platform + Rakeb côte à côte -->
+                <div class="col-span-full flex flex-col md:flex-row gap-8 justify-center">
+                    <!-- Exam Platform -->
+                    <div class="group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex-1">
+                        <div class="aspect-video overflow-hidden">
+                            <img src="images/Exam Platform/principale.png" alt="Capture d'écran de Exam Platform"
+                                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold mb-2 dark:text-white">Exam Platform</h3>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                Application web permettant aux professeurs de créer des examens en ligne avec minuterie et calcul automatique des scores, développée avec Spring Boot et Angular.
+                            </p>
+                            <a href="projet7.html"
+                                class="inline-flex items-center mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-500">
+                                En savoir plus
+                                <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                            </a>
+                        </div>
                     </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold mb-2 dark:text-white">Exam Platform</h3>
-                        <p class="text-gray-600 dark:text-gray-300">Application web permettant aux professeurs de créer des examens en ligne avec minuterie et calcul automatique des scores, développée avec Spring Boot et Angular.</p>                        
-                        <a href="projet7.html" class="inline-flex items-center mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-500">
-                            En savoir plus
-                            <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
-                        </a>
+
+                    <!-- Rakeb -->
+                    <div class="group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex-1">
+                        <div class="aspect-video overflow-hidden">
+                            <img src="images/icon/rakeb-bg.png" alt="Logo Rakeb — Covoiturage & Transport"
+                                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold mb-2 dark:text-white">Rakeb — Covoiturage & Transport</h3>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                Application et interface web de covoiturage/transport multi-plateforme bâtie avec Flutter. Réservation, suivi en temps réel, paiement, messagerie et géolocalisation pour Passagers et Conducteurs.
+                            </p>
+                            <a href="rakeb.html"
+                                class="inline-flex items-center mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-500">
+                                En savoir plus
+                                <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="hidden lg:block"></div> <!-- Élément vide pour le positionnement -->
             </div>
         </div>
     </section>

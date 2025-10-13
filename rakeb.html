@@ -1,0 +1,650 @@
+﻿<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rakeb — Covoiturage & Transport | Présentation</title>
+    <meta name="description" content="Rakeb, application et web de covoiturage/transport multi‑plateforme. Présentation professionnelle : architecture Flutter, Riverpod, GoRouter, Firebase, WebRTC, géolocalisation, fonctionnalités Passager/Conducteur, galeries d'images." />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" href="images/icon/rakeb-bg.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+            colors: {
+              brand: {
+                50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd',
+                400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8',
+                800: '#1e40af', 900: '#1e3a8a',
+              },
+              accent: {
+                50: '#ecfdf5', 100: '#d1fae5', 200: '#a7f3d0', 300: '#6ee7b7',
+                400: '#34d399', 500: '#10b981', 600: '#059669', 700: '#047857',
+                800: '#065f46', 900: '#064e3b',
+              }
+            },
+            boxShadow: {
+              soft: '0 4px 24px rgba(0,0,0,0.08)',
+              glow: '0 8px 32px rgba(59,130,246,0.25)',
+              accent: '0 8px 32px rgba(16,185,129,0.25)'
+            },
+            animation: {
+              'float': 'float 6s ease-in-out infinite',
+              'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            },
+            keyframes: {
+              float: {
+                '0%, 100%': { transform: 'translateY(0px)' },
+                '50%': { transform: 'translateY(-20px)' },
+              }
+            }
+          }
+        },
+        darkMode: 'class'
+      }
+    </script>
+    <style>
+      :root { color-scheme: light dark; }
+      .glass { backdrop-filter: saturate(180%) blur(14px); background: rgba(15,23,42,0.55); }
+      .fade-in { animation: fadeIn 0.6s ease-out both; }
+      .fade-in-delay { animation: fadeIn 0.6s ease-out 0.2s both; }
+      .fade-in-delay-2 { animation: fadeIn 0.6s ease-out 0.4s both; }
+      @keyframes fadeIn { from {opacity:0; transform: translateY(8px);} to {opacity:1; transform: translateY(0);} }
+      .gradient-text { background: linear-gradient(135deg, #2563eb 0%, #10b981 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+      .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+      .card-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 48px rgba(59,130,246,0.15); }
+    </style>
+  </head>
+  <body class="bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+    <!-- Navbar -->
+    <header class="sticky top-0 z-30 backdrop-blur supports-[backdrop-filter]:bg-white/70 dark:supports-[backdrop-filter]:bg-slate-900/60 border-b border-slate-200/60 dark:border-slate-800">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+        <a href="index.html" class="flex items-center gap-2 group">
+          <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-brand-600 to-accent-600 text-white shadow-glow group-hover:scale-105 transition font-bold">R</span>
+          <span class="font-semibold tracking-tight">Rakeb</span>
+        </a>
+        <nav class="hidden md:flex items-center gap-1">
+          <a href="#fonctionnalites" class="px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition">Fonctionnalités</a>
+          <a href="#architecture" class="px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition">Architecture</a>
+          <a href="#galerie" class="px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition">Galerie</a>
+        </nav>
+        <div class="flex items-center gap-3">
+          <a href="index.html#projets" class="hidden sm:inline-flex px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition text-sm">Portfolio</a>
+          <button id="themeToggle" class="px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition" aria-label="Basculer le thème">🌙</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Amélioré -->
+    <section class="relative overflow-hidden">
+  <div class="absolute inset-0 bg-gradient-to-b from-brand-50 to-white dark:from-slate-900 dark:to-slate-950 pointer-events-none"></div>
+  <div class="absolute top-20 right-0 w-96 h-96 bg-accent-200/20 rounded-full blur-3xl dark:bg-accent-900/10 pointer-events-none"></div>
+  <div class="absolute -bottom-20 left-0 w-96 h-96 bg-brand-200/20 rounded-full blur-3xl dark:bg-brand-900/10 pointer-events-none"></div>
+  
+  <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 lg:py-24">
+    <div class="grid lg:grid-cols-2 gap-12 items-center">
+      <div class="space-y-6">
+        <div class="inline-block">
+          <span class="px-4 py-2 rounded-full bg-brand-100 dark:bg-brand-900/40 text-brand-700 dark:text-brand-200 text-sm font-medium">✨ Projet multidisciplinaire</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight">
+          Rakeb — <span class="gradient-text">Covoiturage & Transport</span> multi‑plateforme
+        </h1>
+        <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed">
+          Solution de transport complète et moderne, conçue pour <strong>Passagers</strong> et <strong>Conducteurs</strong>. 
+          Une expérience fluide et cohérente sur mobile et web, avec réservation en temps réel, suivi GPS, paiement sécurisé 
+          et communication instantanée. Architecture robuste et évolutive.
+        </p>
+        <div class="flex flex-wrap gap-2 pt-4">
+          <span class="px-3 py-1.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-200 text-sm font-medium">Flutter</span>
+          <span class="px-3 py-1.5 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-200 text-sm font-medium">Riverpod</span>
+          <span class="px-3 py-1.5 rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-200 text-sm font-medium">GoRouter</span>
+          <span class="px-3 py-1.5 rounded-full bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-200 text-sm font-medium">Firebase</span>
+          <span class="px-3 py-1.5 rounded-full bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-200 text-sm font-medium">WebRTC</span>
+          <span class="px-3 py-1.5 rounded-full bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-200 text-sm font-medium">Google Maps</span>
+        </div>
+      </div>
+      <div class="flex justify-center">
+        <figure class="rounded-2xl overflow-hidden ring-1 ring-slate-200/70 dark:ring-slate-800 shadow-soft transform hover:scale-105 transition card-hover max-w-sm">
+          <img src="images/Covo/app/covo1.jpg" alt="Application Rakeb — écran d'accueil mobile" class="w-full h-auto object-cover" loading="lazy" />
+          <figcaption class="px-3 py-2 text-sm text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-900">📱 App — Accueil</figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+    <!-- Stats -->
+    <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 border-y border-slate-200 dark:border-slate-800">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <div class="fade-in">
+          <div class="text-3xl font-bold gradient-text">2</div>
+          <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Plateformes</p>
+        </div>
+        <div class="fade-in-delay">
+          <div class="text-3xl font-bold gradient-text">3</div>
+          <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Langues</p>
+        </div>
+        <div class="fade-in-delay-2">
+          <div class="text-3xl font-bold gradient-text">10+</div>
+          <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Écrans</p>
+        </div>
+        <div class="fade-in-delay">
+          <div class="text-3xl font-bold gradient-text">Real-time</div>
+          <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Tracking</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Piliers & Design System Amélioré -->
+    <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold">Fondations solides</h2>
+        <p class="mt-2 text-slate-600 dark:text-slate-400">Une architecture pensée pour la scalabilité et la maintenabilité</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="rounded-2xl p-6 ring-1 ring-slate-200/70 dark:ring-slate-800 bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-800 shadow-soft card-hover">
+          <div class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 text-xl font-bold">🏗️</div>
+          <h3 class="mt-4 font-semibold text-lg">Architecture modulaire</h3>
+          <p class="mt-2 text-slate-600 dark:text-slate-400">Features dédiées (auth, home, trip, payment, chat, profile, support) avec services transverses centralisés. Routage maîtrisé via GoRouter pour une évolutivité optimale.</p>
+        </div>
+        <div class="rounded-2xl p-6 ring-1 ring-slate-200/70 dark:ring-slate-800 bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-800 shadow-soft card-hover">
+          <div class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-300 text-xl font-bold">🎨</div>
+          <h3 class="mt-4 font-semibold text-lg">Design system unifié</h3>
+          <p class="mt-2 text-slate-600 dark:text-slate-400">Palette cohérente, typographies harmonisées et composants réutilisables (AppColors, AppTextStyles, common_widgets). Thème clair/sombre intégré pour consistance visuelle.</p>
+        </div>
+        <div class="rounded-2xl p-6 ring-1 ring-slate-200/70 dark:ring-slate-800 bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-800 shadow-soft card-hover">
+          <div class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-300 text-xl font-bold">⚡</div>
+          <h3 class="mt-4 font-semibold text-lg">État & Performance</h3>
+          <p class="mt-2 text-slate-600 dark:text-slate-400">State management Riverpod, providers globaux (thème, auth, langue) et consommation optimisée. Gestion efficace des ressources et rendu performant sur tous les appareils.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Fonctionnalités App -->
+    <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16" id="fonctionnalites">
+      <h2 class="text-3xl font-bold tracking-tight mb-3">Application mobile — Expérience utilisateur enrichie</h2>
+      <p class="text-slate-600 dark:text-slate-400 mb-8 text-lg">Fonctionnalités clés pensées pour passagers et conducteurs</p>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="rounded-xl p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 ring-1 ring-blue-200 dark:ring-blue-800 shadow-soft card-hover">
+          <h3 class="font-semibold text-lg">🔐 Authentification sécurisée</h3>
+          <p class="mt-2 text-slate-700 dark:text-slate-300">Login, register, reset/verify email, privacy & terms. Intégration Firebase Auth complète avec gestion des erreurs.</p>
+        </div>
+        <div class="rounded-xl p-6 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 ring-1 ring-green-200 dark:ring-green-800 shadow-soft card-hover">
+          <h3 class="font-semibold text-lg">🗺️ Carte interactive & trajets</h3>
+          <p class="mt-2 text-slate-700 dark:text-slate-300">Interface Google Maps avec overlay liste, filtres/tri avancés, détails véhicule et profil conducteur complet.</p>
+        </div>
+        <div class="rounded-xl p-6 bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 ring-1 ring-orange-200 dark:ring-orange-800 shadow-soft card-hover">
+          <h3 class="font-semibold text-lg">📝 Réservation fluide</h3>
+          <p class="mt-2 text-slate-700 dark:text-slate-300">Parcours intuitif avec ajout d'amis/passagers, validation et création via service dédié optimisé.</p>
+        </div>
+        <div class="rounded-xl p-6 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 ring-1 ring-purple-200 dark:ring-pink-800 shadow-soft card-hover">
+          <h3 class="font-semibold text-lg">📍 Suivi temps réel</h3>
+          <p class="mt-2 text-slate-700 dark:text-slate-300">Géolocalisation précise, positions et statuts en direct, trajets actifs avec mise à jour instantanée.</p>
+        </div>
+        <div class="rounded-xl p-6 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 ring-1 ring-emerald-200 dark:ring-teal-800 shadow-soft card-hover">
+          <h3 class="font-semibold text-lg">💳 Paiement & Portefeuille</h3>
+          <p class="mt-2 text-slate-700 dark:text-slate-300">Solde transparent, historique transactions, retraits sécurisés. Intégration Stripe/Wallet configurable.</p>
+        </div>
+        <div class="rounded-xl p-6 bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-900/20 dark:to-blue-900/20 ring-1 ring-cyan-200 dark:ring-blue-800 shadow-soft card-hover">
+          <h3 class="font-semibold text-lg">💬 Chat & Appels VoIP</h3>
+          <p class="mt-2 text-slate-700 dark:text-slate-300">Messages Firestore en temps réel, audio/vidéo via WebRTC, notifications d'appel sophistiquées.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interface Web -->
+    <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16" id="galerie">
+      <h2 class="text-3xl font-bold tracking-tight mb-3">Galerie — Interface web</h2>
+      <p class="text-slate-600 dark:text-slate-400 mb-8 text-lg">Outils complets pour conducteurs, passagers et administrateurs</p>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+         <figure class="group rounded-2xl overflow-hidden ring-1 ring-slate-200/70 dark:ring-slate-800 bg-white dark:bg-slate-900 shadow-soft card-hover">
+          <div class="relative overflow-hidden bg-slate-100 dark:bg-slate-800 h-56">
+            <img src="images/Covo/web/Page d’accueil1.png" alt="Web — page d’accueil" class="gallery-item w-full h-full object-cover group-hover:scale-110 transition duration-500 cursor-zoom-in" loading="lazy" />
+          </div>
+          <figcaption class="px-4 py-3 text-sm font-medium text-slate-900 dark:text-slate-100">🏠 Accueil Web</figcaption>
+          <p class="px-4 pb-3 text-xs text-slate-600 dark:text-slate-400">Présentation et recherche d’itinéraires</p>
+        </figure>
+        <figure class="group rounded-2xl overflow-hidden ring-1 ring-slate-200/70 dark:ring-slate-800 bg-white dark:bg-slate-900 shadow-soft card-hover">
+          <div class="relative overflow-hidden bg-slate-100 dark:bg-slate-800 h-56">
+            <img src="images/Covo/web/Page Tableau de bord (conducteur).png" alt="Web — tableau de bord conducteurs" class="gallery-item w-full h-full object-cover group-hover:scale-110 transition duration-500 cursor-zoom-in" loading="lazy" />
+          </div>
+          <figcaption class="px-4 py-3 text-sm font-medium text-slate-900 dark:text-slate-100">👨‍💼 Tableau de bord Conducteur</figcaption>
+          <p class="px-4 pb-3 text-xs text-slate-600 dark:text-slate-400">Gestion des trajets, statistiques, revenus</p>
+        </figure>
+        <figure class="group rounded-2xl overflow-hidden ring-1 ring-slate-200/70 dark:ring-slate-800 bg-white dark:bg-slate-900 shadow-soft card-hover">
+          <div class="relative overflow-hidden bg-slate-100 dark:bg-slate-800 h-56">
+            <img src="images/Covo/web/Page Réservation.png" alt="Web — page de réservation" class="gallery-item w-full h-full object-cover group-hover:scale-110 transition duration-500 cursor-zoom-in" loading="lazy" />
+          </div>
+          <figcaption class="px-4 py-3 text-sm font-medium text-slate-900 dark:text-slate-100">🎫 Système de Réservation</figcaption>
+          <p class="px-4 pb-3 text-xs text-slate-600 dark:text-slate-400">Interface intuitive et performante</p>
+        </figure>
+        <figure class="group rounded-2xl overflow-hidden ring-1 ring-slate-200/70 dark:ring-slate-800 bg-white dark:bg-slate-900 shadow-soft card-hover">
+          <div class="relative overflow-hidden bg-slate-100 dark:bg-slate-800 h-56">
+            <img src="images/Covo/web/Page trajets actifs.png" alt="Web — trajets actifs" class="gallery-item w-full h-full object-cover group-hover:scale-110 transition duration-500 cursor-zoom-in" loading="lazy" />
+          </div>
+          <figcaption class="px-4 py-3 text-sm font-medium text-slate-900 dark:text-slate-100">🔄 Suivi des trajets</figcaption>
+          <p class="px-4 pb-3 text-xs text-slate-600 dark:text-slate-400">Monitoring en temps réel</p>
+        </figure>
+        <figure class="group rounded-2xl overflow-hidden ring-1 ring-slate-200/70 dark:ring-slate-800 bg-white dark:bg-slate-900 shadow-soft card-hover">
+          <div class="relative overflow-hidden bg-slate-100 dark:bg-slate-800 h-56">
+            <img src="images/Covo/web/Page mes réservations.png" alt="Web — mes réservations" class="gallery-item w-full h-full object-cover group-hover:scale-110 transition duration-500 cursor-zoom-in" loading="lazy" />
+          </div>
+          <figcaption class="px-4 py-3 text-sm font-medium text-slate-900 dark:text-slate-100">🔍 Mes Réservations</figcaption>
+          <p class="px-4 pb-3 text-xs text-slate-600 dark:text-slate-400">Consultez et gérez vos réservations</p>
+        </figure>
+        <figure class="group rounded-2xl overflow-hidden ring-1 ring-slate-200/70 dark:ring-slate-800 bg-white dark:bg-slate-900 shadow-soft card-hover">
+          <div class="relative overflow-hidden bg-slate-100 dark:bg-slate-800 h-56">
+            <img src="images/Covo/web/Page Profil (conducteurs).png" alt="Web — profil conducteurs" class="gallery-item w-full h-full object-cover group-hover:scale-110 transition duration-500 cursor-zoom-in" loading="lazy" />
+          </div>
+          <figcaption class="px-4 py-3 text-sm font-medium text-slate-900 dark:text-slate-100">🚗 Profil Conducteur</figcaption>
+          <p class="px-4 pb-3 text-xs text-slate-600 dark:text-slate-400">Détails, statistiques et évaluations</p>
+        </figure>
+        <figure class="group rounded-2xl overflow-hidden ring-1 ring-slate-200/70 dark:ring-slate-800 bg-white dark:bg-slate-900 shadow-soft card-hover">
+          <div class="relative overflow-hidden bg-slate-100 dark:bg-slate-800 h-56">
+            <img src="images/Covo/web/Page Profil (passagers).png" alt="Web — profil passagers" class="gallery-item w-full h-full object-cover group-hover:scale-110 transition duration-500 cursor-zoom-in" loading="lazy" />
+          </div>
+          <figcaption class="px-4 py-3 text-sm font-medium text-slate-900 dark:text-slate-100">🧍 Profil Passager</figcaption>
+          <p class="px-4 pb-3 text-xs text-slate-600 dark:text-slate-400">Informations personnelles et historique</p>
+        </figure>
+        <figure class="group rounded-2xl overflow-hidden ring-1 ring-slate-200/70 dark:ring-slate-800 bg-white dark:bg-slate-900 shadow-soft card-hover">
+          <div class="relative overflow-hidden bg-slate-100 dark:bg-slate-800 h-56">
+            <img src="images/Covo/web/Page Administrateurs.png" alt="Web — espace administrateurs" class="gallery-item w-full h-full object-cover group-hover:scale-110 transition duration-500 cursor-zoom-in" loading="lazy" />
+          </div>
+          <figcaption class="px-4 py-3 text-sm font-medium text-slate-900 dark:text-slate-100">🛡️ Espace Administrateurs</figcaption>
+          <p class="px-4 pb-3 text-xs text-slate-600 dark:text-slate-400">Gestion avancée et supervision</p>
+        </figure>
+      </div>
+    </section>
+
+    <!-- Galerie App -->
+    <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16" id="galerie">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="text-3xl font-bold tracking-tight">Galerie — Application mobile</h2>
+          <p class="mt-2 text-slate-600 dark:text-slate-400">Interface utilisateur soignée et intuitive</p>
+        </div>
+        <!--<span class="text-sm text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full">👆 Cliquez pour agrandir</span>-->
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
+        <img class="gallery-item rounded-xl ring-1 ring-slate-200/70 dark:ring-slate-800 shadow-soft cursor-zoom-in hover:scale-105 transition card-hover" src="images/Covo/app/covo1.jpg" alt="App — écran 1" loading="lazy" />
+        <img class="gallery-item rounded-xl ring-1 ring-slate-200/70 dark:ring-slate-800 shadow-soft cursor-zoom-in hover:scale-105 transition card-hover" src="images/Covo/app/covo2.jpg" alt="App — écran 2" loading="lazy" />
+        <img class="gallery-item rounded-xl ring-1 ring-slate-200/70 dark:ring-slate-800 shadow-soft cursor-zoom-in hover:scale-105 transition card-hover" src="images/Covo/app/covo3.jpg" alt="App — écran 3" loading="lazy" />
+        <img class="gallery-item rounded-xl ring-1 ring-slate-200/70 dark:ring-slate-800 shadow-soft cursor-zoom-in hover:scale-105 transition card-hover" src="images/Covo/app/covo4.jpg" alt="App — écran 4" loading="lazy" />
+        <img class="gallery-item rounded-xl ring-1 ring-slate-200/70 dark:ring-slate-800 shadow-soft cursor-zoom-in hover:scale-105 transition card-hover" src="images/Covo/app/covo5.jpg" alt="App — écran 4" loading="lazy" />
+      </div>
+      <div class="mt-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
+        <img class="gallery-item rounded-xl ring-1 ring-slate-200/70 dark:ring-slate-800 shadow-soft cursor-zoom-in hover:scale-105 transition card-hover" src="images/Covo/app/covo9.jpg" alt="App — écran 5" loading="lazy" />
+        <img class="gallery-item rounded-xl ring-1 ring-slate-200/70 dark:ring-slate-800 shadow-soft cursor-zoom-in hover:scale-105 transition card-hover" src="images/Covo/app/covo6.jpg" alt="App — écran 6" loading="lazy" />
+        <img class="gallery-item rounded-xl ring-1 ring-slate-200/70 dark:ring-slate-800 shadow-soft cursor-zoom-in hover:scale-105 transition card-hover" src="images/Covo/app/covo7.jpg" alt="App — écran 7" loading="lazy" />
+        <img class="gallery-item rounded-xl ring-1 ring-slate-200/70 dark:ring-slate-800 shadow-soft cursor-zoom-in hover:scale-105 transition card-hover" src="images/Covo/app/covo8.jpg" alt="App — écran 8" loading="lazy" />
+        <img class="gallery-item rounded-xl ring-1 ring-slate-200/70 dark:ring-slate-800 shadow-soft cursor-zoom-in hover:scale-105 transition card-hover" src="images/Covo/app/covo10.jpg" alt="App — écran 9" loading="lazy" />
+      </div>
+    </section>
+
+    <!-- Architecture & Parcours -->
+    <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16" id="architecture">
+      <h2 class="text-3xl font-bold tracking-tight mb-12">Architecture & Expérience utilisateur</h2>
+      <div class="grid lg:grid-cols-2 gap-8">
+        <!-- Architecture Tech -->
+        <div class="rounded-2xl p-8 ring-1 ring-slate-200/70 dark:ring-slate-800 bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-800 shadow-soft">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-brand-100 dark:bg-brand-900/30 text-brand-600 dark:text-brand-300 text-lg">⚙️</div>
+            <h3 class="text-xl font-bold">Stack technique</h3>
+          </div>
+          <ul class="space-y-3 text-slate-700 dark:text-slate-300">
+            <li class="flex gap-3">
+              <span class="text-brand-600 font-bold flex-shrink-0">→</span>
+              <div>
+                <strong>Framework :</strong> Flutter + Riverpod, GoRouter pour routing avancé
+              </div>
+            </li>
+            <li class="flex gap-3">
+              <span class="text-brand-600 font-bold flex-shrink-0">→</span>
+              <div>
+                <strong>Backend :</strong> Firebase (Auth, Firestore, Messaging, Crashlytics, Analytics)
+              </div>
+            </li>
+            <li class="flex gap-3">
+              <span class="text-brand-600 font-bold flex-shrink-0">→</span>
+              <div>
+                <strong>Structure :</strong> <code class="bg-slate-200 dark:bg-slate-700 px-2 py-1 rounded text-sm">lib/core</code> (router, services, thème, widgets) et <code class="bg-slate-200 dark:bg-slate-700 px-2 py-1 rounded text-sm">lib/features</code> (pages, widgets)
+              </div>
+            </li>
+            <li class="flex gap-3">
+              <span class="text-brand-600 font-bold flex-shrink-0">→</span>
+              <div>
+                <strong>Localisation :</strong> FR/EN/AR via fichiers <code class="bg-slate-200 dark:bg-slate-700 px-2 py-1 rounded text-sm">.arb</code> et générés
+              </div>
+            </li>
+            <li class="flex gap-3">
+              <span class="text-brand-600 font-bold flex-shrink-0">→</span>
+              <div>
+                <strong>Communication :</strong> WebRTC pour audio/vidéo, Firestore pour messagerie
+              </div>
+            </li>
+            <li class="flex gap-3">
+              <span class="text-brand-600 font-bold flex-shrink-0">→</span>
+              <div>
+                <strong>Géolocalisation :</strong> Google Maps, tracking temps réel avec permissions gérées
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Parcours Utilisateur -->
+        <div class="rounded-2xl p-8 ring-1 ring-slate-200/70 dark:ring-slate-800 bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-800 shadow-soft">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-accent-100 dark:bg-accent-900/30 text-accent-600 dark:text-accent-300 text-lg">🚗</div>
+            <h3 class="text-xl font-bold">Parcours utilisateur</h3>
+          </div>
+          <div class="space-y-4">
+            <div class="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+              <p class="font-semibold text-blue-900 dark:text-blue-200">👥 Passager</p>
+              <p class="mt-2 text-sm text-slate-700 dark:text-slate-300">Onboarding → Auth → Accueil & recherche → Détails trajet → Réservation → Suivi temps réel → Historique → Notes & avis → Support</p>
+            </div>
+            <div class="p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+              <p class="font-semibold text-green-900 dark:text-green-200">🚕 Conducteur</p>
+              <p class="mt-2 text-sm text-slate-700 dark:text-slate-300">Auth → Gestion véhicule → Création trajet → Trajets actifs → Communication en direct → Historique & statistiques → Notes & avis → Support</p>
+            </div>
+            <div class="p-4 rounded-xl bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800">
+              <p class="font-semibold text-purple-900 dark:text-purple-200">🔗 Communication</p>
+              <p class="mt-2 text-sm text-slate-700 dark:text-slate-300">Chat Firestore (temps réel) • Appels audio/vidéo WebRTC • Notifications push Firebase</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cas d'usage & Défis -->
+    <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 rounded-3xl">
+      <h2 class="text-3xl font-bold tracking-tight mb-12 text-center">Défis techniques résolus</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="flex gap-4">
+          <div class="flex-shrink-0">
+            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-600 text-white font-bold">1</div>
+          </div>
+          <div>
+            <h3 class="font-semibold text-lg">Synchronisation temps réel</h3>
+            <p class="mt-1 text-slate-600 dark:text-slate-400">Gestion efficace des positions GPS, statuts de trajets et notifications sans surcharge serveur via Firestore listeners et debouncing intelligent.</p>
+          </div>
+        </div>
+        <div class="flex gap-4">
+          <div class="flex-shrink-0">
+            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-600 text-white font-bold">2</div>
+          </div>
+          <div>
+            <h3 class="font-semibold text-lg">WebRTC pour communications</h3>
+            <p class="mt-1 text-slate-600 dark:text-slate-400">Intégration audio/vidéo peer-to-peer avec gestion de la connexion, fallback gracieux et gestion des permissions sécurisée.</p>
+          </div>
+        </div>
+        <div class="flex gap-4">
+          <div class="flex-shrink-0">
+            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-accent-600 text-white font-bold">3</div>
+          </div>
+          <div>
+            <h3 class="font-semibold text-lg">État global multiplateforme</h3>
+            <p class="mt-1 text-slate-600 dark:text-slate-400">Riverpod pour state management unifié, synchronisation auth/prefs entre app et web sans perte de contexte.</p>
+          </div>
+        </div>
+        <div class="flex gap-4">
+          <div class="flex-shrink-0">
+            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-accent-600 text-white font-bold">4</div>
+          </div>
+          <div>
+            <h3 class="font-semibold text-lg">Accessibilité & i18n</h3>
+            <p class="mt-1 text-slate-600 dark:text-slate-400">Support de 3 langues (FR/EN/AR) avec génération automatique des traductions, thème clair/sombre, navigation au clavier.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Statistiques & Métriques -->
+    <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+      <h2 class="text-3xl font-bold tracking-tight mb-12 text-center">Par les chiffres</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div class="text-center p-6 rounded-2xl bg-white dark:bg-slate-900 ring-1 ring-slate-200/70 dark:ring-slate-800 shadow-soft card-hover">
+          <div class="text-4xl font-bold gradient-text">2</div>
+          <p class="mt-2 text-slate-600 dark:text-slate-400">Plateformes<br><span class="text-xs">(Mobile & Web)</span></p>
+        </div>
+        <div class="text-center p-6 rounded-2xl bg-white dark:bg-slate-900 ring-1 ring-slate-200/70 dark:ring-slate-800 shadow-soft card-hover">
+          <div class="text-4xl font-bold gradient-text">3</div>
+          <p class="mt-2 text-slate-600 dark:text-slate-400">Langues<br><span class="text-xs">(FR, EN, AR)</span></p>
+        </div>
+        <div class="text-center p-6 rounded-2xl bg-white dark:bg-slate-900 ring-1 ring-slate-200/70 dark:ring-slate-800 shadow-soft card-hover">
+          <div class="text-4xl font-bold gradient-text">10+</div>
+          <p class="mt-2 text-slate-600 dark:text-slate-400">Écrans<br><span class="text-xs">(Complètement mockés)</span></p>
+        </div>
+        <div class="text-center p-6 rounded-2xl bg-white dark:bg-slate-900 ring-1 ring-slate-200/70 dark:ring-slate-800 shadow-soft card-hover">
+          <div class="text-4xl font-bold gradient-text">100%</div>
+          <p class="mt-2 text-slate-600 dark:text-slate-400">Responsive<br><span class="text-xs">(Mobile first)</span></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stack Visuelle -->
+    <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+      <h2 class="text-3xl font-bold tracking-tight mb-12 text-center">Technologies utilisées</h2>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div class="p-4 rounded-xl bg-white dark:bg-slate-900 ring-1 ring-slate-200/70 dark:ring-slate-800 text-center card-hover">
+          <div class="text-3xl mb-2">🎯</div>
+          <p class="font-semibold text-sm">Flutter</p>
+          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Cross-platform</p>
+        </div>
+        <div class="p-4 rounded-xl bg-white dark:bg-slate-900 ring-1 ring-slate-200/70 dark:ring-slate-800 text-center card-hover">
+          <div class="text-3xl mb-2">🏛️</div>
+          <p class="font-semibold text-sm">Riverpod</p>
+          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">State Mgmt</p>
+        </div>
+        <div class="p-4 rounded-xl bg-white dark:bg-slate-900 ring-1 ring-slate-200/70 dark:ring-slate-800 text-center card-hover">
+          <div class="text-3xl mb-2">🛣️</div>
+          <p class="font-semibold text-sm">GoRouter</p>
+          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Routing</p>
+        </div>
+        <div class="p-4 rounded-xl bg-white dark:bg-slate-900 ring-1 ring-slate-200/70 dark:ring-slate-800 text-center card-hover">
+          <div class="text-3xl mb-2">🔥</div>
+          <p class="font-semibold text-sm">Firebase</p>
+          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Backend & Cloud</p>
+        </div>
+        <div class="p-4 rounded-xl bg-white dark:bg-slate-900 ring-1 ring-slate-200/70 dark:ring-slate-800 text-center card-hover">
+          <div class="text-3xl mb-2">📞</div>
+          <p class="font-semibold text-sm">WebRTC</p>
+          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Audio/Vidéo</p>
+        </div>
+        <div class="p-4 rounded-xl bg-white dark:bg-slate-900 ring-1 ring-slate-200/70 dark:ring-slate-800 text-center card-hover">
+          <div class="text-3xl mb-2">🗺️</div>
+          <p class="font-semibold text-sm">Google Maps</p>
+          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Mapping</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Points forts -->
+    <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+      <h2 class="text-3xl font-bold tracking-tight mb-12 text-center">Ce qui rend Rakeb unique</h2>
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="flex gap-4 p-6 rounded-2xl bg-white dark:bg-slate-900 ring-1 ring-slate-200/70 dark:ring-slate-800 card-hover">
+          <div class="text-4xl flex-shrink-0">⚡</div>
+          <div>
+            <h3 class="font-semibold text-lg mb-1">Performance optimale</h3>
+            <p class="text-slate-600 dark:text-slate-400">Appli ultra-rapide grâce à Riverpod et structuration modulaire. Pas de lag, expérience fluide sur tous les appareils.</p>
+          </div>
+        </div>
+        <div class="flex gap-4 p-6 rounded-2xl bg-white dark:bg-slate-900 ring-1 ring-slate-200/70 dark:ring-slate-800 card-hover">
+          <div class="text-4xl flex-shrink-0">🌍</div>
+          <div>
+            <h3 class="font-semibold text-lg mb-1">Multilingue & accessible</h3>
+            <p class="text-slate-600 dark:text-slate-400">3 langues complètes (FR/EN/AR), thème clair/sombre intégré, navigation accessible au clavier.</p>
+          </div>
+        </div>
+        <div class="flex gap-4 p-6 rounded-2xl bg-white dark:bg-slate-900 ring-1 ring-slate-200/70 dark:ring-slate-800 card-hover">
+          <div class="text-4xl flex-shrink-0">🔒</div>
+          <div>
+            <h3 class="font-semibold text-lg mb-1">Sécurité & confidentialité</h3>
+            <p class="text-slate-600 dark:text-slate-400">Firebase Auth sécurisé, gestion des permissions rigoureuse, données chiffrées, respect de la RGPD.</p>
+          </div>
+        </div>
+        <div class="flex gap-4 p-6 rounded-2xl bg-white dark:bg-slate-900 ring-1 ring-slate-200/70 dark:ring-slate-800 card-hover">
+          <div class="text-4xl flex-shrink-0">📈</div>
+          <div>
+            <h3 class="font-semibold text-lg mb-1">Scalabilité garantie</h3>
+            <p class="text-slate-600 dark:text-slate-400">Architecture modulaire prête pour la croissance. Services dédiés, état global centralisé, base de code maintenable.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Appel à l'action Final -->
+    <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+      <div class="rounded-3xl p-8 md:p-12 bg-gradient-to-r from-brand-600 to-accent-600 text-white shadow-glow overflow-hidden relative">
+        <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="relative z-10 grid md:grid-cols-2 gap-8 items-center">
+          <div>
+            <h2 class="text-2xl md:text-4xl font-bold leading-tight">Prêt à découvrir Rakeb en détail ?</h2>
+            <p class="mt-4 text-lg text-white/90 leading-relaxed">
+              Une présentation complète, une démo interactive ou des questions spécifiques ? 
+              N'hésitez pas à me contacter pour explorer comment ce projet pourrait inspirer vos propres initiatives.
+            </p>
+          </div>
+          <div class="flex flex-col gap-3 md:justify-end">
+            <a href="index.html#contact" class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-white/20 hover:bg-white/30 transition font-semibold backdrop-blur">
+              📧 Me contacter
+            </a>
+            <a href="index.html#projets" class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-white text-brand-700 hover:bg-slate-100 transition font-semibold">
+              🏠 Voir mon portfolio complet
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer Enrichi -->
+    <footer class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 border-t border-slate-200 dark:border-slate-800">
+      <div class="grid md:grid-cols-3 gap-8 mb-8">
+        <div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-brand-600 to-accent-600 text-white shadow-glow font-bold">R</span>
+            <span class="font-semibold">Rakeb</span>
+          </div>
+          <p class="text-sm text-slate-600 dark:text-slate-400">Solution de covoiturage multi-plateforme construite avec passion et expertise technique.</p>
+        </div>
+        <div>
+          <h4 class="font-semibold mb-3 text-sm">Navigation</h4>
+          <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
+            <li><a href="#fonctionnalites" class="hover:text-slate-900 dark:hover:text-slate-100 transition">Fonctionnalités</a></li>
+            <li><a href="#architecture" class="hover:text-slate-900 dark:hover:text-slate-100 transition">Architecture</a></li>
+            <li><a href="#galerie" class="hover:text-slate-900 dark:hover:text-slate-100 transition">Galerie</a></li>
+            <li><a href="index.html#projets" class="hover:text-slate-900 dark:hover:text-slate-100 transition">Autres projets</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-semibold mb-3 text-sm">Stack</h4>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-2 py-1 text-xs rounded-full bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-200">Flutter</span>
+            <span class="px-2 py-1 text-xs rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-200">Riverpod</span>
+            <span class="px-2 py-1 text-xs rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-200">Firebase</span>
+            <span class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-200">WebRTC</span>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-slate-200 dark:border-slate-800 text-sm text-slate-600 dark:text-slate-400">
+        <p>© 2025 Rakeb — Projet de covoiturage/transport multi-plateforme.</p>
+        <p>Conçu avec soin pour l'expérience utilisateur et la performance.</p>
+      </div>
+    </footer>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="fixed inset-0 hidden items-center justify-center bg-black/75 backdrop-blur-sm p-4 z-50">
+      <button id="lightboxClose" class="absolute top-4 right-4 px-3 py-2 rounded-lg bg-white/20 text-white hover:bg-white/30 transition font-semibold">✕</button>
+      <img id="lightboxImg" src="" alt="Aperçu" class="max-h-[85vh] max-w-[90vw] rounded-2xl ring-1 ring-white/30 shadow-2xl" />
+    </div>
+
+    <script>
+      // Initial theme based on localStorage or media
+      (function initTheme() {
+        const root = document.documentElement;
+        const saved = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (saved === 'dark' || (!saved && prefersDark)) root.classList.add('dark');
+      })();
+      
+      // Toggle theme
+      document.getElementById('themeToggle').addEventListener('click', () => {
+        const root = document.documentElement;
+        const isDark = root.classList.toggle('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      });
+
+      // Simple lightbox for gallery images
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightboxImg');
+      const closeBtn = document.getElementById('lightboxClose');
+      
+      document.querySelectorAll('.gallery-item').forEach(img => {
+        img.addEventListener('click', () => {
+          lightboxImg.src = img.src;
+          lightbox.classList.remove('hidden');
+          lightbox.classList.add('flex');
+          resetTransform();
+        });
+      });
+      
+      const hide = () => { 
+        lightbox.classList.add('hidden'); 
+        lightbox.classList.remove('flex'); 
+        resetTransform();
+      };
+      
+      // Zoom & pan inside lightbox
+      let scale = 1, tx = 0, ty = 0, dragging = false, sx = 0, sy = 0;
+      function updateTransform() {
+        lightboxImg.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+        lightboxImg.style.willChange = 'transform';
+        lightboxImg.style.cursor = scale > 1 ? (dragging ? 'grabbing' : 'grab') : 'zoom-in';
+      }
+      function resetTransform() {
+        scale = 1; tx = 0; ty = 0; dragging = false; sx = 0; sy = 0;
+        lightboxImg.style.transform = 'translate(0,0) scale(1)';
+        lightboxImg.style.cursor = 'zoom-in';
+      }
+      // Wheel zoom
+      lightboxImg.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const factor = e.deltaY < 0 ? 1.15 : 1/1.15;
+        scale = Math.max(1, Math.min(6, scale * factor));
+        updateTransform();
+      }, { passive: false });
+      // Drag to pan when zoomed
+      lightboxImg.addEventListener('mousedown', (e) => {
+        if (scale <= 1) return;
+        dragging = true;
+        sx = e.clientX - tx; sy = e.clientY - ty;
+        updateTransform();
+      });
+      window.addEventListener('mousemove', (e) => {
+        if (!dragging) return;
+        tx = e.clientX - sx; ty = e.clientY - sy;
+        updateTransform();
+      });
+      window.addEventListener('mouseup', () => {
+        if (!dragging) return;
+        dragging = false;
+        updateTransform();
+      });
+      // Double-click to reset zoom
+      lightboxImg.addEventListener('dblclick', () => { resetTransform(); });
+      
+      closeBtn.addEventListener('click', hide);
+      lightbox.addEventListener('click', (e) => { 
+        if (e.target === lightbox) hide(); 
+      });
+      document.addEventListener('keydown', (e) => { 
+        if (e.key === 'Escape') hide(); 
+      });
+    </script>
+  </body>
+</html>
