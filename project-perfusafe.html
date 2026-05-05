@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PerfuSafe — Edge AI Medical Monitoring</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --ink:#0a0a0a;
+  --paper:#f5f2eb;
+  --blue:#0047ff;
+  --teal:#00c896;
+  --red:#e8002a;
+  --muted:#9a9585;
+  --line:rgba(10,10,10,0.15);
+  --mono:'DM Mono',monospace;
+  --display:'Bebas Neue',sans-serif;
+  --body:'DM Sans',sans-serif;
+}
+
+html{scroll-behavior:smooth}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--body);
+  font-size:16px;
+  line-height:1.5;
+  overflow-x:hidden;
+}
+
+/* GRID OVERLAY */
+.grid-bg{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+  background-image:
+    linear-gradient(var(--line) 1px,transparent 1px),
+    linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:60px 60px;
+  opacity:0.4;
+}
+
+/* ─── NAV ─── */
+nav{
+  position:fixed;
+  top:0;left:0;right:0;
+  z-index:100;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 40px;
+  height:56px;
+  border-bottom:1px solid var(--ink);
+  background:var(--paper);
+  mix-blend-mode:normal;
+}
+.nav-logo{
+  font-family:var(--display);
+  font-size:24px;
+  letter-spacing:0.05em;
+  color:var(--ink);
+  text-decoration:none;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.nav-logo-dot{
+  width:10px;height:10px;
+  border-radius:50%;
+  background:var(--blue);
+  animation:blink 2s ease-in-out infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+.nav-links{
+  display:flex;
+  gap:40px;
+  list-style:none;
+}
+.nav-links a{
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--muted);
+  text-decoration:none;
+  transition:color 0.2s;
+}
+.nav-links a:hover{color:var(--blue)}
+.nav-status{
+  font-family:var(--mono);
+  font-size:10px;
+  color:var(--teal);
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.nav-status::before{
+  content:'';
+  width:6px;height:6px;
+  border-radius:50%;
+  background:var(--teal);
+  animation:blink 1.5s ease-in-out infinite;
+}
+
+/* ─── HERO ─── */
+.hero{
+  position:relative;
+  z-index:1;
+  min-height:100vh;
+  padding:100px 40px 0;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  grid-template-rows:auto 1fr;
+  border-bottom:1px solid var(--ink);
+}
+.hero-tag{
+  grid-column:1/-1;
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  color:var(--muted);
+  padding-bottom:24px;
+  border-bottom:1px solid var(--line);
+  margin-bottom:40px;
+  display:flex;
+  align-items:center;
+  gap:20px;
+}
+.hero-tag span{color:var(--blue)}
+.hero-left{
+  padding-right:60px;
+  border-right:1px solid var(--line);
+  padding-bottom:80px;
+}
+.hero-title{
+  font-family:var(--display);
+  font-size:clamp(80px,12vw,180px);
+  line-height:0.88;
+  letter-spacing:-0.01em;
+  color:var(--ink);
+  margin-bottom:40px;
+}
+.hero-title em{
+  font-style:normal;
+  color:var(--blue);
+  display:block;
+}
+.hero-desc{
+  font-size:17px;
+  color:var(--muted);
+  line-height:1.7;
+  max-width:440px;
+  margin-bottom:48px;
+}
+.hero-desc strong{color:var(--ink);font-weight:500}
+.hero-ctas{
+  display:flex;
+  gap:16px;
+  align-items:center;
+}
+.btn-primary{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:14px 28px;
+  background:var(--blue);
+  color:#fff;
+  font-family:var(--mono);
+  font-size:12px;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  text-decoration:none;
+  border:1px solid var(--blue);
+  transition:all 0.2s;
+}
+.btn-primary:hover{background:var(--ink);border-color:var(--ink)}
+.btn-outline{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:14px 28px;
+  background:transparent;
+  color:var(--ink);
+  font-family:var(--mono);
+  font-size:12px;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  text-decoration:none;
+  border:1px solid var(--ink);
+  transition:all 0.2s;
+}
+.btn-outline:hover{background:var(--ink);color:var(--paper)}
+
+.hero-right{
+  padding-left:60px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  padding-bottom:80px;
+}
+.hero-metrics{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:1px;
+  background:var(--line);
+  border:1px solid var(--line);
+  margin-bottom:40px;
+}
+.metric{
+  background:var(--paper);
+  padding:28px 24px;
+}
+.metric-val{
+  font-family:var(--display);
+  font-size:56px;
+  line-height:1;
+  color:var(--ink);
+}
+.metric-val.blue{color:var(--blue)}
+.metric-val.teal{color:var(--teal)}
+.metric-label{
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-top:8px;
+}
+
+/* EKG line */
+.ekg-container{
+  width:100%;
+  overflow:hidden;
+}
+.ekg-label{
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:0.1em;
+  color:var(--muted);
+  margin-bottom:8px;
+}
+.ekg-svg{width:100%;height:60px}
+.ekg-path{
+  fill:none;
+  stroke:var(--blue);
+  stroke-width:1.5;
+  stroke-dasharray:800;
+  stroke-dashoffset:800;
+  animation:ekg 3s ease-in-out infinite;
+}
+.ekg-path2{
+  fill:none;
+  stroke:var(--teal);
+  stroke-width:1;
+  opacity:0.4;
+  stroke-dasharray:800;
+  stroke-dashoffset:800;
+  animation:ekg 3s ease-in-out 0.5s infinite;
+}
+@keyframes ekg{
+  0%{stroke-dashoffset:800}
+  60%{stroke-dashoffset:0}
+  100%{stroke-dashoffset:-800}
+}
+
+/* hero bottom annotation */
+.hero-footnote{
+  grid-column:1/-1;
+  padding:20px 0;
+  border-top:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.hero-footnote-text{
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--muted);
+}
+.hero-team-tags{
+  display:flex;
+  gap:8px;
+}
+.team-pill{
+  font-family:var(--mono);
+  font-size:10px;
+  padding:4px 10px;
+  border:1px solid var(--line);
+  color:var(--muted);
+}
+
+/* ─── SECTION BASE ─── */
+section{
+  position:relative;
+  z-index:1;
+}
+.section-header{
+  display:grid;
+  grid-template-columns:40px 1fr;
+  align-items:start;
+  gap:0;
+  padding:60px 40px 48px;
+  border-bottom:1px solid var(--line);
+}
+.section-num{
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--muted);
+  padding-top:4px;
+}
+.section-title{
+  font-family:var(--display);
+  font-size:clamp(40px,6vw,88px);
+  line-height:0.9;
+  letter-spacing:-0.01em;
+}
+.section-title em{font-style:normal;color:var(--blue)}
+
+/* ─── FEATURES / SOLUTIONS ─── */
+.features{border-bottom:1px solid var(--ink)}
+.features-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+}
+.feature-card{
+  padding:48px 40px;
+  border-right:1px solid var(--line);
+}
+.feature-card:last-child{border-right:none}
+.feature-num{
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--blue);
+  letter-spacing:0.1em;
+  margin-bottom:32px;
+  display:block;
+}
+.feature-icon{
+  width:48px;height:48px;
+  margin-bottom:24px;
+}
+.feature-icon path,.feature-icon circle,.feature-icon rect,.feature-icon line,.feature-icon polyline{
+  stroke:var(--ink);
+  fill:none;
+  stroke-width:1.5;
+  stroke-linecap:square;
+}
+.feature-title{
+  font-family:var(--display);
+  font-size:32px;
+  letter-spacing:0.02em;
+  margin-bottom:16px;
+  line-height:1;
+}
+.feature-desc{
+  font-size:14px;
+  color:var(--muted);
+  line-height:1.7;
+}
+.feature-tag{
+  display:inline-block;
+  margin-top:24px;
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  padding:4px 10px;
+  border:1px solid var(--blue);
+  color:var(--blue);
+}
+
+/* ─── INTERFACE SHOWCASE ─── */
+.showcase{border-bottom:1px solid var(--ink)}
+.showcase-item{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  border-bottom:1px solid var(--line);
+}
+.showcase-item:last-child{border-bottom:none}
+.showcase-item.reverse{direction:rtl}
+.showcase-item.reverse>*{direction:ltr}
+.showcase-info{
+  padding:60px 60px 60px 40px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  border-right:1px solid var(--line);
+}
+.showcase-item.reverse .showcase-info{
+  border-right:none;
+  border-left:1px solid var(--line);
+  padding:60px 40px 60px 60px;
+}
+.showcase-label{
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  color:var(--teal);
+  margin-bottom:20px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.showcase-label::before{content:'//'}
+.showcase-heading{
+  font-family:var(--display);
+  font-size:clamp(36px,4vw,60px);
+  letter-spacing:0.01em;
+  line-height:0.95;
+  margin-bottom:24px;
+}
+.showcase-text{
+  font-size:14px;
+  color:var(--muted);
+  line-height:1.8;
+  margin-bottom:32px;
+}
+.spec-list{list-style:none;display:flex;flex-direction:column;gap:12px}
+.spec-list li{
+  font-family:var(--mono);
+  font-size:12px;
+  color:var(--muted);
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.spec-list li::before{
+  content:'→';
+  color:var(--blue);
+  font-size:14px;
+}
+.showcase-visual{
+  overflow:hidden;
+  background:#e8e4db;
+  position:relative;
+}
+.showcase-visual img{
+  width:100%;height:100%;
+  object-fit:cover;
+  display:block;
+  filter:grayscale(20%) contrast(1.05);
+  transition:filter 0.4s,transform 0.6s;
+}
+.showcase-visual:hover img{
+  filter:grayscale(0%) contrast(1.1);
+  transform:scale(1.02);
+}
+.showcase-visual-label{
+  position:absolute;
+  bottom:20px;right:20px;
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:rgba(10,10,10,0.5);
+  background:rgba(245,242,235,0.85);
+  padding:6px 12px;
+  border:1px solid var(--line);
+}
+
+/* ─── BENCHMARK / TECH ─── */
+.tech{border-bottom:1px solid var(--ink)}
+.tech-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+}
+.tech-panel{
+  padding:60px 40px;
+  border-right:1px solid var(--line);
+}
+.tech-panel:last-child{border-right:none}
+.tech-panel-title{
+  font-family:var(--display);
+  font-size:40px;
+  margin-bottom:40px;
+  line-height:1;
+}
+.bench-row{
+  display:grid;
+  grid-template-columns:120px 1fr 60px;
+  align-items:center;
+  gap:16px;
+  padding:16px 0;
+  border-bottom:1px solid var(--line);
+}
+.bench-row:last-child{border-bottom:none}
+.bench-label{
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--muted);
+}
+.bench-bar-wrap{height:4px;background:rgba(10,10,10,0.08);position:relative}
+.bench-bar{
+  position:absolute;
+  top:0;left:0;
+  height:100%;
+  transition:width 1.5s cubic-bezier(0.16,1,0.3,1);
+}
+.bench-bar.blue{background:var(--blue)}
+.bench-bar.teal{background:var(--teal)}
+.bench-bar.red{background:var(--red)}
+.bench-val{
+  font-family:var(--mono);
+  font-size:11px;
+  text-align:right;
+  color:var(--ink);
+  font-weight:500;
+}
+
+/* comparison table */
+.compare-table{width:100%;border-collapse:collapse}
+.compare-table th{
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--muted);
+  text-align:left;
+  padding:12px 0;
+  border-bottom:1px solid var(--ink);
+}
+.compare-table td{
+  font-family:var(--mono);
+  font-size:12px;
+  padding:14px 0;
+  border-bottom:1px solid var(--line);
+  vertical-align:middle;
+}
+.compare-table tr:last-child td{border-bottom:none}
+.badge{
+  display:inline-block;
+  padding:3px 8px;
+  font-size:10px;
+  font-family:var(--mono);
+}
+.badge.good{background:#d4f4e8;color:#005c35}
+.badge.bad{background:#fce8eb;color:#8a001a}
+.badge.edge{background:#e0ecff;color:#0033b3;font-weight:500}
+
+/* ─── TIMELINE / PLANNING ─── */
+.timeline{border-bottom:1px solid var(--ink)}
+.timeline-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+}
+.tl-phase{
+  padding:48px 32px 48px 40px;
+  border-right:1px solid var(--line);
+  position:relative;
+}
+.tl-phase:last-child{border-right:none}
+.tl-num{
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:0.15em;
+  color:var(--muted);
+  margin-bottom:20px;
+  display:block;
+}
+.tl-title{
+  font-family:var(--display);
+  font-size:28px;
+  letter-spacing:0.02em;
+  margin-bottom:16px;
+  line-height:1;
+}
+.tl-items{list-style:none;display:flex;flex-direction:column;gap:8px}
+.tl-items li{
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--muted);
+  line-height:1.5;
+  padding-left:14px;
+  position:relative;
+}
+.tl-items li::before{
+  content:'—';
+  position:absolute;
+  left:0;
+  color:var(--blue);
+}
+.tl-phase::after{
+  content:attr(data-phase);
+  position:absolute;
+  bottom:20px;right:20px;
+  font-family:var(--display);
+  font-size:80px;
+  color:rgba(10,10,10,0.04);
+  line-height:1;
+  pointer-events:none;
+}
+
+/* ─── DOCUMENTS ─── */
+.docs{
+  background:var(--ink);
+  border-bottom:1px solid #333;
+}
+.docs .section-header{
+  border-bottom:1px solid rgba(255,255,255,0.1);
+}
+.docs .section-num{color:rgba(255,255,255,0.3)}
+.docs .section-title{color:#fff}
+.docs .section-title em{color:var(--teal)}
+.docs-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+}
+.doc-card{
+  padding:60px 40px;
+  border-right:1px solid rgba(255,255,255,0.08);
+  text-decoration:none;
+  display:block;
+  position:relative;
+  overflow:hidden;
+  transition:background 0.3s;
+}
+.doc-card:last-child{border-right:none}
+.doc-card:hover{background:rgba(255,255,255,0.03)}
+.doc-card-type{
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.3);
+  margin-bottom:40px;
+}
+.doc-card-num{
+  font-family:var(--display);
+  font-size:120px;
+  line-height:1;
+  color:rgba(255,255,255,0.06);
+  position:absolute;
+  top:20px;right:20px;
+}
+.doc-card-title{
+  font-family:var(--display);
+  font-size:44px;
+  color:#fff;
+  line-height:0.95;
+  letter-spacing:0.01em;
+  margin-bottom:16px;
+}
+.doc-card-desc{
+  font-size:14px;
+  color:rgba(255,255,255,0.4);
+  line-height:1.6;
+  margin-bottom:48px;
+}
+.doc-card-action{
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+}
+.doc-card:first-child .doc-card-action{color:var(--blue)}
+.doc-card:last-child .doc-card-action{color:var(--teal)}
+.doc-card-action svg{
+  width:14px;height:14px;
+  transition:transform 0.2s;
+}
+.doc-card:hover .doc-card-action svg{transform:translateX(4px)}
+
+/* ─── TEAM ─── */
+.team{border-bottom:1px solid var(--ink)}
+.team-inner{
+  padding:60px 40px;
+  display:grid;
+  grid-template-columns:320px 1fr;
+  gap:80px;
+  align-items:start;
+}
+.team-copy{}
+.team-copy p{
+  font-size:14px;
+  color:var(--muted);
+  line-height:1.8;
+  margin-top:16px;
+}
+.team-members{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1px;
+  background:var(--line);
+  border:1px solid var(--line);
+  align-self:start;
+}
+.team-member{
+  background:var(--paper);
+  padding:24px 20px;
+}
+.member-init{
+  font-family:var(--display);
+  font-size:32px;
+  color:var(--blue);
+  line-height:1;
+  margin-bottom:10px;
+}
+.member-name{
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--ink);
+  font-weight:500;
+}
+.member-role{
+  font-family:var(--mono);
+  font-size:10px;
+  color:var(--muted);
+  margin-top:4px;
+}
+
+/* ─── FOOTER ─── */
+footer{
+  position:relative;
+  z-index:1;
+  background:var(--ink);
+  padding:32px 40px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.footer-logo{
+  font-family:var(--display);
+  font-size:20px;
+  letter-spacing:0.05em;
+  color:#fff;
+}
+.footer-copy{
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:0.1em;
+  color:rgba(255,255,255,0.3);
+  text-transform:uppercase;
+}
+.footer-links{
+  display:flex;
+  gap:24px;
+  list-style:none;
+}
+.footer-links a{
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.3);
+  text-decoration:none;
+}
+.footer-links a:hover{color:#fff}
+
+/* reveal animation */
+.reveal{
+  opacity:0;
+  transform:translateY(24px);
+  transition:opacity 0.7s ease,transform 0.7s ease;
+}
+.reveal.visible{opacity:1;transform:none}
+
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr}
+  .hero-left{border-right:none;padding-right:0}
+  .hero-right{padding-left:0}
+  .features-grid{grid-template-columns:1fr}
+  .feature-card{border-right:none;border-bottom:1px solid var(--line)}
+  .showcase-item{grid-template-columns:1fr}
+  .tech-grid{grid-template-columns:1fr}
+  .tech-panel{border-right:none;border-bottom:1px solid var(--line)}
+  .timeline-grid{grid-template-columns:1fr 1fr}
+  .docs-grid{grid-template-columns:1fr}
+  .doc-card{border-right:none;border-bottom:1px solid rgba(255,255,255,0.08)}
+  .team-inner{grid-template-columns:1fr}
+  .team-members{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <span class="nav-logo-dot"></span>
+    PerfuSafe
+  </a>
+  <ul class="nav-links">
+    <li><a href="#solutions">Solutions</a></li>
+    <li><a href="#bench">Performance</a></li>
+    <li><a href="#docs">Docs</a></li>
+  </ul>
+  <div class="nav-status">HESTIM 2026 — Système</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag">
+    <span>PerfuSafe®</span>
+    <span>/ IoT Edge AI / Monitoring Médical / TinyML /</span>
+    <span style="margin-left:auto">Innovation Médicale 2026</span>
+  </div>
+
+  <div class="hero-left reveal">
+    <h1 class="hero-title">
+      Le futur du<br>
+      <em>Monitoring</em>
+    </h1>
+    <p class="hero-desc">
+      Système intelligent de surveillance des perfusions utilisant le <strong>TinyML</strong> pour une détection d'anomalies ultra-précise directement sur l'appareil. Zéro cloud. Latence sub-milliseconde.
+    </p>
+    <div class="hero-ctas">
+      <a href="#docs" class="btn-primary">
+        Découvrir le projet
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="#fff" stroke-width="1.5" stroke-linecap="square"/></svg>
+      </a>
+      <a href="#bench" class="btn-outline">Benchmark →</a>
+    </div>
+  </div>
+
+  <div class="hero-right reveal">
+    <div class="hero-metrics">
+      <div class="metric">
+        <div class="metric-val blue">99.1<span style="font-size:24px">%</span></div>
+        <div class="metric-label">Précision IA</div>
+      </div>
+      <div class="metric">
+        <div class="metric-val teal">0.012<span style="font-size:20px">ms</span></div>
+        <div class="metric-label">Latence Edge</div>
+      </div>
+      <div class="metric">
+        <div class="metric-val" style="font-size:40px">−90<span style="font-size:20px">%</span></div>
+        <div class="metric-label">Bande Passante</div>
+      </div>
+      <div class="metric">
+        <div class="metric-val" style="font-size:40px">0.006</div>
+        <div class="metric-label">mAh / Cycle</div>
+      </div>
+    </div>
+
+    <div class="ekg-container">
+      <div class="ekg-label">SIGNAL_MONITORING // CHANNEL_01</div>
+      <svg class="ekg-svg" viewBox="0 0 600 60" preserveAspectRatio="none">
+        <path class="ekg-path" d="M0,30 L60,30 L70,30 L80,5 L90,55 L100,15 L110,30 L150,30 L160,30 L170,5 L180,55 L190,15 L200,30 L250,30 L260,30 L270,5 L280,55 L290,15 L300,30 L350,30 L360,30 L370,5 L380,55 L390,15 L400,30 L450,30 L460,30 L470,5 L480,55 L490,15 L500,30 L600,30"/>
+        <path class="ekg-path2" d="M0,30 L80,30 L85,20 L90,40 L95,30 L200,30 L205,20 L210,40 L215,30 L350,30 L355,20 L360,40 L365,30 L500,30 L505,20 L510,40 L515,30 L600,30"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="hero-footnote">
+    <div class="hero-footnote-text">Projet Lauréat HESTIM — Architecture TinyML / GRU / Edge Deployment</div>
+    <div class="hero-team-tags">
+      <span class="team-pill">B.Cheyoukh</span>
+      <span class="team-pill">S.Fettah</span>
+      <span class="team-pill">A.Elatmani</span>
+      <span class="team-pill">M.Salek</span>
+      <span class="team-pill">H.Faris</span>
+      <span class="team-pill">H.Khoumania</span>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="solutions" class="features">
+  <div class="section-header reveal">
+    <span class="section-num">01</span>
+    <h2 class="section-title">Nos<br><em>Solutions</em></h2>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card reveal">
+      <span class="feature-num">001 / EDGE_AI</span>
+      <svg class="feature-icon" viewBox="0 0 48 48"><rect x="8" y="8" width="32" height="32" rx="0"/><rect x="16" y="16" width="16" height="16" rx="0"/><line x1="4" y1="24" x2="8" y2="24"/><line x1="40" y1="24" x2="44" y2="24"/><line x1="24" y1="4" x2="24" y2="8"/><line x1="24" y1="40" x2="24" y2="44"/></svg>
+      <h3 class="feature-title">TinyML Sur Puce</h3>
+      <p class="feature-desc">Modèles GRU compressés et déployés directement sur microcontrôleur. Inférence locale, autonomie maximale, aucune dépendance cloud.</p>
+      <span class="feature-tag">MCU Deployment</span>
+    </div>
+    <div class="feature-card reveal">
+      <span class="feature-num">002 / DASHBOARD</span>
+      <svg class="feature-icon" viewBox="0 0 48 48"><rect x="4" y="4" width="40" height="40" rx="0"/><line x1="4" y1="16" x2="44" y2="16"/><line x1="24" y1="16" x2="24" y2="44"/><polyline points="10,36 16,26 22,32 30,20 38,28"/></svg>
+      <h3 class="feature-title">Tableau de Bord</h3>
+      <p class="feature-desc">Interface soignant multi-patients en temps réel. Alertes prédictives intelligentes anti-fatigue d'alarme, visualisation biométrique avancée.</p>
+      <span class="feature-tag">Real-time UI</span>
+    </div>
+    <div class="feature-card reveal">
+      <span class="feature-num">003 / ANALYTICS</span>
+      <svg class="feature-icon" viewBox="0 0 48 48"><circle cx="24" cy="24" r="20"/><polyline points="24,12 24,24 32,30"/><line x1="4" y1="24" x2="8" y2="24"/><line x1="40" y1="24" x2="44" y2="24"/></svg>
+      <h3 class="feature-title">Analyse Prédictive</h3>
+      <p class="feature-desc">Séries temporelles analysées par GRU pour anticiper les complications. Historique complet par patient, tendances long-terme, score de risque dynamique.</p>
+      <span class="feature-tag">GRU / TimeSeries</span>
+    </div>
+  </div>
+</section>
+
+<!-- INTERFACE SHOWCASE -->
+<section class="showcase">
+  <div class="section-header reveal">
+    <span class="section-num">02</span>
+    <h2 class="section-title">Interface<br><em>Médicale</em></h2>
+  </div>
+
+  <div class="showcase-item">
+    <div class="showcase-info reveal">
+      <div class="showcase-label">Tableau de bord</div>
+      <h3 class="showcase-heading">Vue Multi-Patients</h3>
+      <p class="showcase-text">Visualisez en temps réel l'ensemble de vos patients depuis une interface unifiée. Les alertes prédictives de l'IA réduisent la fatigue d'alarme tout en maintenant une vigilance maximale.</p>
+      <ul class="spec-list">
+        <li>Surveillance simultanée N patients</li>
+        <li>Alertes intelligentes contextuelles</li>
+        <li>Score de criticité automatique</li>
+      </ul>
+    </div>
+    <div class="showcase-visual">
+      <img src="images/PerfuSafe/Tableau de bord.png" alt="Tableau de bord PerfuSafe">
+      <div class="showcase-visual-label">dashboard_v3.2</div>
+    </div>
+  </div>
+
+  <div class="showcase-item reverse">
+    <div class="showcase-info reveal">
+      <div class="showcase-label">Gestion patients</div>
+      <h3 class="showcase-heading">Suivi Individuel</h3>
+      <p class="showcase-text">Accédez à l'historique biométrique complet de chaque patient. L'IA analyse les tendances pour prévenir les complications avant leur survenue.</p>
+      <ul class="spec-list">
+        <li>Historique complet des perfusions</li>
+        <li>Analyse prédictive GRU</li>
+        <li>Rapport médical exportable</li>
+      </ul>
+    </div>
+    <div class="showcase-visual">
+      <img src="images/PerfuSafe/page mes Patients.png" alt="Gestion patients">
+      <div class="showcase-visual-label">patients_view.v2</div>
+    </div>
+  </div>
+
+  <div class="showcase-item" style="grid-template-columns:1fr 1fr 1fr">
+    <div class="showcase-info reveal" style="border-right:1px solid var(--line);grid-column:1">
+      <div class="showcase-label">Authentification</div>
+      <h3 class="showcase-heading" style="font-size:36px">Accès Sécurisé</h3>
+      <p class="showcase-text" style="font-size:13px">Protocole d'authentification conforme aux normes médicales RGPD. Sessions chiffrées et journalisation des accès.</p>
+    </div>
+    <div class="showcase-visual" style="min-height:320px">
+      <img src="images/PerfuSafe/Page Connexion.png" alt="Connexion">
+      <div class="showcase-visual-label">auth_login</div>
+    </div>
+    <div class="showcase-visual" style="min-height:320px;border-left:1px solid var(--line)">
+      <img src="images/PerfuSafe/page inscription.png" alt="Inscription">
+      <div class="showcase-visual-label">auth_register</div>
+    </div>
+  </div>
+</section>
+
+<!-- BENCHMARK -->
+<section id="bench" class="tech">
+  <div class="section-header reveal">
+    <span class="section-num">03</span>
+    <h2 class="section-title">Benchmark<br><em>Performance</em></h2>
+  </div>
+  <div class="tech-grid">
+    <div class="tech-panel reveal">
+      <h3 class="tech-panel-title">Edge vs Cloud</h3>
+      <div class="bench-row">
+        <span class="bench-label">Latence</span>
+        <div class="bench-bar-wrap"><div class="bench-bar teal" style="width:8%"></div></div>
+        <span class="bench-val" style="color:var(--teal)">0.012ms</span>
+      </div>
+      <div class="bench-row">
+        <span class="bench-label">Cloud ref.</span>
+        <div class="bench-bar-wrap"><div class="bench-bar red" style="width:100%"></div></div>
+        <span class="bench-val" style="color:var(--red)">120ms</span>
+      </div>
+      <div class="bench-row">
+        <span class="bench-label">Précision</span>
+        <div class="bench-bar-wrap"><div class="bench-bar blue" style="width:99.1%"></div></div>
+        <span class="bench-val">99.1%</span>
+      </div>
+      <div class="bench-row">
+        <span class="bench-label">Bande pass.</span>
+        <div class="bench-bar-wrap"><div class="bench-bar teal" style="width:10%"></div></div>
+        <span class="bench-val" style="color:var(--teal)">−90%</span>
+      </div>
+      <div class="bench-row">
+        <span class="bench-label">Conso. mAh</span>
+        <div class="bench-bar-wrap"><div class="bench-bar blue" style="width:15%"></div></div>
+        <span class="bench-val">0.006</span>
+      </div>
+    </div>
+
+    <div class="tech-panel reveal">
+      <h3 class="tech-panel-title">Comparatif</h3>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Critère</th>
+            <th>Cloud</th>
+            <th>Edge AI</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Latence inférence</td>
+            <td><span class="badge bad">~120ms</span></td>
+            <td><span class="badge edge">0.012ms</span></td>
+          </tr>
+          <tr>
+            <td>Confidentialité données</td>
+            <td><span class="badge bad">Externe</span></td>
+            <td><span class="badge good">Local</span></td>
+          </tr>
+          <tr>
+            <td>Autonomie hors-réseau</td>
+            <td><span class="badge bad">Nulle</span></td>
+            <td><span class="badge good">Totale</span></td>
+          </tr>
+          <tr>
+            <td>Consommation énergie</td>
+            <td><span class="badge bad">Haute</span></td>
+            <td><span class="badge good">0.006mAh</span></td>
+          </tr>
+          <tr>
+            <td>Déploiement MCU</td>
+            <td><span class="badge bad">Impossible</span></td>
+            <td><span class="badge good">Natif</span></td>
+          </tr>
+          <tr>
+            <td>Conformité RGPD</td>
+            <td><span class="badge bad">Complexe</span></td>
+            <td><span class="badge good">Simplifiée</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section class="timeline">
+  <div class="section-header reveal">
+    <span class="section-num">04</span>
+    <h2 class="section-title">Cycle de<br><em>Développement</em></h2>
+  </div>
+  <div class="timeline-grid">
+    <div class="tl-phase reveal" data-phase="I">
+      <span class="tl-num">Phase 01 / Recherche</span>
+      <h4 class="tl-title">Analyse &amp; Cadrage</h4>
+      <ul class="tl-items">
+        <li>Revue de littérature TinyML</li>
+        <li>Identification contraintes médicales</li>
+        <li>Sélection architecture GRU</li>
+        <li>Définition KPIs cibles</li>
+      </ul>
+    </div>
+    <div class="tl-phase reveal" data-phase="II">
+      <span class="tl-num">Phase 02 / Données</span>
+      <h4 class="tl-title">Dataset &amp; Training</h4>
+      <ul class="tl-items">
+        <li>Collecte données perfusion</li>
+        <li>Annotation anomalies médicales</li>
+        <li>Entraînement modèles GRU</li>
+        <li>Validation croisée 99.1%</li>
+      </ul>
+    </div>
+    <div class="tl-phase reveal" data-phase="III">
+      <span class="tl-num">Phase 03 / Déploiement</span>
+      <h4 class="tl-title">Edge &amp; MCU</h4>
+      <ul class="tl-items">
+        <li>Quantification et pruning</li>
+        <li>Portage TensorFlow Lite</li>
+        <li>Optimisation microcontrôleur</li>
+        <li>Tests latence 0.012ms</li>
+      </ul>
+    </div>
+    <div class="tl-phase reveal" data-phase="IV">
+      <span class="tl-num">Phase 04 / Interface</span>
+      <h4 class="tl-title">UI &amp; Validation</h4>
+      <ul class="tl-items">
+        <li>Design tableau de bord soignant</li>
+        <li>Intégration alertes prédictives</li>
+        <li>Tests usabilité terrain</li>
+        <li>Validation jury HESTIM</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- DOCUMENTS -->
+<section id="docs" class="docs">
+  <div class="section-header reveal">
+    <span class="section-num">05</span>
+    <h2 class="section-title">Ressources<br><em>Projet</em></h2>
+  </div>
+  <div class="docs-grid">
+    <a href="IOT/IoT Monitoring Médication & Perfusion.pdf" download class="doc-card reveal">
+      <div class="doc-card-type">PDF Présentation / Architecture IoT</div>
+      <div class="doc-card-num">01</div>
+      <h3 class="doc-card-title">Présentation<br>IoT &amp; IA</h3>
+      <p class="doc-card-desc">Architecture TinyML complète, déploiement Edge, modèles GRU et résultats de performance.</p>
+      <span class="doc-card-action">
+        Télécharger
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 7h10M8 3l4 4-4 4" stroke-linecap="square"/></svg>
+      </span>
+    </a>
+    <a href="IOT/PerfuSafe .pdf" download class="doc-card reveal">
+      <div class="doc-card-type">PDF Technique / Spécifications</div>
+      <div class="doc-card-num">02</div>
+      <h3 class="doc-card-title">Cahier des<br>Charges</h3>
+      <p class="doc-card-desc">Spécifications médicales complètes, contraintes réglementaires et architecture système détaillée.</p>
+      <span class="doc-card-action">
+        Consulter
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 7h10M8 3l4 4-4 4" stroke-linecap="square"/></svg>
+      </span>
+    </a>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section class="team">
+  <div class="section-header reveal">
+    <span class="section-num">06</span>
+    <h2 class="section-title">L'Équipe<br><em>HESTIM</em></h2>
+  </div>
+  <div class="team-inner">
+    <div class="team-copy reveal">
+      <p>Équipe pluridisciplinaire réunissant expertise en Intelligence Artificielle, systèmes embarqués et ingénierie biomédicale. Projet lauréat HESTIM, promotion 2026.</p>
+    </div>
+    <div class="team-members reveal">
+      <div class="team-member">
+        <div class="member-init">BC</div>
+        <div class="member-name">Boubker Cheyoukh</div>
+        <div class="member-role">Edge AI / MCU</div>
+      </div>
+      <div class="team-member">
+        <div class="member-init">SF</div>
+        <div class="member-name">Saad Fettah</div>
+        <div class="member-role">ML Engineering</div>
+      </div>
+      <div class="team-member">
+        <div class="member-init">AE</div>
+        <div class="member-name">Abderrazzak Elatmani</div>
+        <div class="member-role">Data Science</div>
+      </div>
+      <div class="team-member">
+        <div class="member-init">MS</div>
+        <div class="member-name">Mehdi Salek</div>
+        <div class="member-role">Frontend / UI</div>
+      </div>
+      <div class="team-member">
+        <div class="member-init">HF</div>
+        <div class="member-name">Hamada Faris</div>
+        <div class="member-role">IoT Systems</div>
+      </div>
+      <div class="team-member">
+        <div class="member-init">HK</div>
+        <div class="member-name">Hamza Khoumania</div>
+        <div class="member-role">Backend / API</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-logo">PerfuSafe®</span>
+  <span class="footer-copy">© 2026 — Projet Lauréat HESTIM</span>
+  <ul class="footer-links">
+    <li><a href="#solutions">Solutions</a></li>
+    <li><a href="#bench">Benchmark</a></li>
+    <li><a href="#docs">Docs</a></li>
+  </ul>
+</footer>
+
+<script>
+const observer = new IntersectionObserver(entries => {
+  entries.forEach((e,i) => {
+    if(e.isIntersecting){
+      e.target.style.transitionDelay = (i * 0.08) + 's';
+      e.target.classList.add('visible');
+    }
+  });
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// animate bench bars on scroll
+const benchObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      e.target.querySelectorAll('.bench-bar').forEach(bar => {
+        const w = bar.style.width;
+        bar.style.width = '0';
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => { bar.style.width = w; });
+        });
+      });
+      benchObs.unobserve(e.target);
+    }
+  });
+},{threshold:0.3});
+document.querySelectorAll('.tech-panel').forEach(p => benchObs.observe(p));
+</script>
+</body>
+</html>

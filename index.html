@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -63,6 +63,12 @@
         img {
             max-width: 100%;
             height: auto;
+        }
+        .project-card {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .filter-btn.active {
+            box-shadow: 0 4px 6px -1px rgba(124, 58, 237, 0.2), 0 2px 4px -1px rgba(124, 58, 237, 0.1);
         }
     </style>
 </head>
@@ -167,11 +173,11 @@
                     +212 6 44 43 57 52
                 </p>
                 <p class="flex items-center justify-center text-gray-800 dark:text-gray-200">
-                    <i data-lucide="github" class="text-primary-600 dark:text-primary-400 mr-3 w-5 h-5"></i>
+                    <i class="fab fa-github text-primary-600 dark:text-primary-400 mr-3 w-5 h-5"></i>
                     <a href="https://github.com/BOUBKERsup07" target="_blank" rel="noopener noreferrer" class="hover:underline">github.com/BOUBKERsup07</a>
                 </p>
                 <p class="flex items-center justify-center text-gray-800 dark:text-gray-200">
-                    <i data-lucide="linkedin" class="text-primary-600 dark:text-primary-400 mr-3 w-5 h-5"></i>
+                    <i class="fab fa-linkedin text-primary-600 dark:text-primary-400 mr-3 w-5 h-5"></i>
                     <a href="https://www.linkedin.com/in/boubker-cheyoukh-4696a4276/" target="_blank" rel="noopener noreferrer" class="hover:underline">linkedin.com/in/boubker-cheyoukh</a>
                 </p>
             </div>
@@ -616,41 +622,72 @@
     </section>
 
     <!-- Education Section -->
-    <section id="education" class="py-20 bg-white dark:bg-dark-800 fade-in">
+    <section id="education" class="py-24 bg-white dark:bg-dark-800">
         <div class="container mx-auto max-w-6xl px-4">
-            <h2 class="text-4xl font-bold mb-12 text-center text-primary-600 dark:text-primary-400">Ma Formation</h2>
-            <div class="relative border-l-4 border-primary-600 dark:border-primary-400 ml-4 md:ml-6 space-y-12">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-black text-gray-900 dark:text-white tracking-tight">
+                    Parcours <span class="text-primary-600">Académique</span>
+                </h2>
+                <div class="w-24 h-1.5 bg-primary-600 mx-auto mt-4 rounded-full"></div>
+            </div>
+
+            <div class="relative border-l-2 border-slate-200 dark:border-slate-700 ml-4 md:ml-12 space-y-12">
                 <!-- Master -->
-                <div class="mb-10 ml-8 md:ml-10 relative group">
-                    <span class="absolute -left-12 md:-left-14 top-1 flex items-center justify-center w-8 h-8 rounded-full bg-primary-600 text-white ring-4 ring-white dark:ring-dark-800 shadow-lg">
-                        <i class="fas fa-graduation-cap text-sm"></i>
-                    </span>
-                    <div class="bg-gray-50 dark:bg-dark-900 p-6 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 dark:border-dark-700">
-                        <span class="inline-block px-3 py-1 mb-3 text-xs font-semibold tracking-wider text-primary-600 uppercase bg-primary-100 rounded-full dark:bg-primary-900/30 dark:text-primary-400">
-                            2025 – PRÉSENT
-                        </span>
-                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">MASTER GÉNIE INFORMATIQUE & INTELLIGENCE ARTIFICIELLE</h3>
-                        <p class="text-primary-600 dark:text-primary-400 font-medium mb-2">BIG DATA & IA | 1ÈRE ANNÉE</p>
-                        <p class="text-gray-600 dark:text-gray-300">
-                            <i class="fas fa-university mr-2"></i>HESTIM, CASABLANCA
+                <div class="relative pl-8 md:pl-12 group">
+                    <span class="absolute -left-[11px] top-1 flex items-center justify-center w-5 h-5 rounded-full bg-white dark:bg-dark-800 border-2 border-primary-600 group-hover:bg-primary-600 transition-colors duration-300"></span>
+                    <div class="bg-slate-50 dark:bg-dark-900/50 p-8 rounded-3xl border border-transparent hover:border-primary-100 dark:hover:border-primary-900 transition-all duration-300 shadow-sm">
+                        <span class="inline-block px-3 py-1 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-[10px] font-black uppercase tracking-widest mb-2">2025 — PRÉSENT</span>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 uppercase">Master Génie Informatique & Intelligence Artificielle</h3>
+                        <p class="text-primary-600 dark:text-primary-400 font-bold mb-3">BIG DATA & IA | 1ÈRE ANNÉE</p>
+                        <p class="text-gray-700 dark:text-gray-300 font-medium flex items-center">
+                            <i class="fas fa-university mr-2 text-primary-600"></i> HESTIM, Casablanca
                         </p>
                     </div>
                 </div>
-                <!-- Licence -->
-                <div class="ml-8 md:ml-10 relative group">
-                    <span class="absolute -left-12 md:-left-14 top-1 flex items-center justify-center w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 ring-4 ring-white dark:ring-dark-800 group-hover:bg-primary-600 group-hover:text-white transition-colors duration-300 shadow-lg">
-                        <i class="fas fa-university text-sm"></i>
-                    </span>
-                    <div class="bg-gray-50 dark:bg-dark-900 p-6 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 dark:border-dark-700">
-                        <span class="inline-block px-3 py-1 mb-3 text-xs font-semibold tracking-wider text-gray-500 uppercase bg-gray-200 rounded-full dark:bg-gray-700 dark:text-gray-300">
-                            2022 – 2025
-                        </span>
-                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Licence en Informatique Appliquée à la Gestion des Entreprises (MIAGE)</h3>
-                        <p class="text-green-600 dark:text-green-400 font-medium mb-2">
-                            <i class="fas fa-check-circle mr-1"></i>Diplôme obtenu
+
+                <!-- LP DIM -->
+                <div class="relative pl-8 md:pl-12 group">
+                    <span class="absolute -left-[11px] top-1 flex items-center justify-center w-5 h-5 rounded-full bg-white dark:bg-dark-800 border-2 border-primary-600 group-hover:bg-primary-600 transition-colors duration-300"></span>
+                    <div class="bg-slate-50 dark:bg-dark-900/50 p-8 rounded-3xl border border-transparent hover:border-primary-100 dark:hover:border-primary-900 transition-all duration-300 shadow-sm">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-4">
+                            <div>
+                                <span class="inline-block px-3 py-1 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-[10px] font-black uppercase tracking-widest mb-2">2024 — 2025</span>
+                                <h3 class="text-xl font-bold text-gray-900 dark:text-white">Licence Professionnelle — Développement Internet & Mobile</h3>
+                            </div>
+                            <div class="text-right">
+                                <span class="inline-block px-3 py-1 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-xs font-bold">Mention : Très Bien</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 dark:text-gray-300 font-medium mb-4 flex items-center">
+                            <i class="fas fa-university mr-2 text-primary-600"></i> Université du Littoral Côte d'Opale (ULCO)
                         </p>
-                        <p class="text-gray-600 dark:text-gray-300">
-                            <i class="fas fa-university mr-2"></i>École Supérieure SupTechnologie, Casablanca
+                        <div class="flex flex-wrap gap-4 items-center text-sm text-gray-500">
+                            <span class="flex items-center"><i class="fas fa-link mr-2 opacity-50"></i> Double diplomation avec SupTechnologie</span>
+                            <span class="flex items-center"><i class="fas fa-graduation-cap mr-2 opacity-50"></i> 180 ECTS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Licence MIAGE -->
+                <div class="relative pl-8 md:pl-12 group">
+                    <span class="absolute -left-[11px] top-1 flex items-center justify-center w-5 h-5 rounded-full bg-white dark:bg-dark-800 border-2 border-primary-600 group-hover:bg-primary-600 transition-colors duration-300"></span>
+                    <div class="bg-slate-50 dark:bg-dark-900/50 p-8 rounded-3xl border border-transparent hover:border-primary-100 dark:hover:border-primary-900 transition-all duration-300 shadow-sm">
+                        <span class="inline-block px-3 py-1 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-[10px] font-black uppercase tracking-widest mb-2">2022 — 2025</span>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Licence MIAGE — Informatique Appliquée à la Gestion des Entreprises</h3>
+                        <p class="text-gray-700 dark:text-gray-300 font-medium flex items-center">
+                            <i class="fas fa-university mr-2 text-primary-600"></i> École Supérieure SupTechnologie, Casablanca
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Baccalauréat -->
+                <div class="relative pl-8 md:pl-12 group">
+                    <span class="absolute -left-[11px] top-1 flex items-center justify-center w-5 h-5 rounded-full bg-white dark:bg-dark-800 border-2 border-primary-600 group-hover:bg-primary-600 transition-colors duration-300"></span>
+                    <div class="bg-slate-50 dark:bg-dark-900/50 p-8 rounded-3xl border border-transparent hover:border-primary-100 dark:hover:border-primary-900 transition-all duration-300 shadow-sm">
+                        <span class="inline-block px-3 py-1 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-[10px] font-black uppercase tracking-widest mb-2">2021 — 2022</span>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 text-sm">Baccalauréat Scientifique — Sciences Physiques</h3>
+                        <p class="text-gray-700 dark:text-gray-300 font-medium flex items-center">
+                            <i class="fas fa-school mr-2 text-primary-600"></i> Lycée Anouar Al Madina, Casablanca
                         </p>
                     </div>
                 </div>
@@ -659,120 +696,84 @@
     </section>
 
     <!-- Certifications Section -->
-    <section id="certifications" class="py-20 bg-gray-50 dark:bg-dark-900 fade-in">
+    <section id="certifications" class="py-24 bg-slate-50 dark:bg-dark-900 overflow-hidden">
         <div class="container mx-auto max-w-6xl px-4">
-            <h2 class="text-4xl font-bold mb-12 text-center text-primary-600 dark:text-primary-400">Certifications</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Cisco CCNA 1 -->
-                <div class="bg-white dark:bg-dark-800 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 group border border-gray-100 dark:border-dark-700 hover:-translate-y-2">
-                    <div class="h-2 bg-gradient-to-r from-blue-500 to-cyan-400"></div>
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40 transition-colors">
-                                <i class="fas fa-network-wired text-2xl text-blue-500"></i>
-                            </div>
-                            <span class="text-xs font-medium px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded text-gray-600 dark:text-gray-300">2023</span>
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-black text-gray-900 dark:text-white tracking-tight">
+                    Expertise <span class="text-primary-600">Certifiée</span>
+                </h2>
+                <div class="w-24 h-1.5 bg-primary-600 mx-auto mt-4 rounded-full"></div>
+            </div>
+            
+            <div class="space-y-12">
+                <!-- Group 1: Data Science & AI -->
+                <div class="bg-white dark:bg-dark-800 rounded-3xl p-8 shadow-sm border border-gray-100 dark:border-gray-700">
+                    <h3 class="text-xl font-bold mb-8 flex items-center text-gray-900 dark:text-white uppercase tracking-widest text-sm">
+                        <i class="fas fa-brain text-primary-600 mr-3"></i> Data Science & AI
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="group p-4 rounded-2xl bg-slate-50 dark:bg-dark-900/50 hover:bg-white dark:hover:bg-dark-700 border border-transparent hover:border-primary-100 dark:hover:border-primary-900 transition-all duration-300">
+                            <p class="text-[10px] font-black text-primary-600 mb-1 uppercase tracking-tighter">IBM Certification</p>
+                            <h4 class="text-sm font-bold text-gray-800 dark:text-gray-200 leading-snug">Machine Learning with Python</h4>
                         </div>
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1 group-hover:text-blue-500 transition-colors">Cisco CCNA 1</h3>
-                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 h-10 overflow-hidden">Introduction to Networks</p>
-                        <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 border-t border-gray-100 dark:border-gray-700 pt-3">
-                            <span class="truncate font-medium"><i class="fas fa-certificate mr-1"></i>Cisco Academy</span>
-                            <span class="text-green-500"><i class="fas fa-check-circle"></i> Validé</span>
+                        <div class="group p-4 rounded-2xl bg-slate-50 dark:bg-dark-900/50 hover:bg-white dark:hover:bg-dark-700 border border-transparent hover:border-primary-100 dark:hover:border-primary-900 transition-all duration-300">
+                            <p class="text-[10px] font-black text-primary-600 mb-1 uppercase tracking-tighter">IBM Certification</p>
+                            <h4 class="text-sm font-bold text-gray-800 dark:text-gray-200 leading-snug">Python for Data Science & AI</h4>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Cisco CCNA 2 -->
-                <div class="bg-white dark:bg-dark-800 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 group border border-gray-100 dark:border-dark-700 hover:-translate-y-2">
-                    <div class="h-2 bg-gradient-to-r from-blue-600 to-indigo-500"></div>
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40 transition-colors">
-                                <i class="fas fa-wifi text-2xl text-blue-600"></i>
-                            </div>
-                            <span class="text-xs font-medium px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded text-gray-600 dark:text-gray-300">2024</span>
+                        <div class="group p-4 rounded-2xl bg-slate-50 dark:bg-dark-900/50 hover:bg-white dark:hover:bg-dark-700 border border-transparent hover:border-primary-100 dark:hover:border-primary-900 transition-all duration-300">
+                            <p class="text-[10px] font-black text-primary-600 mb-1 uppercase tracking-tighter">IBM Certification</p>
+                            <h4 class="text-sm font-bold text-gray-800 dark:text-gray-200 leading-snug">Exploratory Data Analysis</h4>
                         </div>
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1 group-hover:text-blue-600 transition-colors">Cisco CCNA 2</h3>
-                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 h-10 overflow-hidden">Switching, Routing and Wireless Essentials</p>
-                        <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 border-t border-gray-100 dark:border-gray-700 pt-3">
-                            <span class="truncate font-medium"><i class="fas fa-certificate mr-1"></i>Cisco Academy</span>
-                            <span class="text-green-500"><i class="fas fa-check-circle"></i> Validé</span>
+                        <div class="group p-4 rounded-2xl bg-slate-50 dark:bg-dark-900/50 hover:bg-white dark:hover:bg-dark-700 border border-transparent hover:border-primary-100 dark:hover:border-primary-900 transition-all duration-300">
+                            <p class="text-[10px] font-black text-primary-600 mb-1 uppercase tracking-tighter">IBM Certification</p>
+                            <h4 class="text-sm font-bold text-gray-800 dark:text-gray-200 leading-snug">Data Science Methodology</h4>
                         </div>
                     </div>
                 </div>
 
-                <!-- Data Science Methodology -->
-                <div class="bg-white dark:bg-dark-800 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 group border border-gray-100 dark:border-dark-700 hover:-translate-y-2">
-                    <div class="h-2 bg-gradient-to-r from-blue-400 to-blue-300"></div>
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40 transition-colors">
-                                <i class="fas fa-database text-2xl text-blue-400"></i>
+                <!-- Group 2: Infrastructure & Networks -->
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white dark:bg-dark-800 rounded-3xl p-8 shadow-sm border border-gray-100 dark:border-gray-700">
+                        <h3 class="text-xl font-bold mb-6 flex items-center text-gray-900 dark:text-white uppercase tracking-widest text-sm">
+                            <i class="fas fa-network-wired text-primary-600 mr-3"></i> Réseaux & Cloud
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center p-4 rounded-2xl bg-slate-50 dark:bg-dark-900/50 border border-transparent hover:border-primary-100 transition-all">
+                                <div class="w-10 h-10 bg-white dark:bg-dark-800 rounded-xl flex items-center justify-center shadow-sm mr-4 text-primary-600 font-bold">HW</div>
+                                <div>
+                                    <h4 class="text-sm font-bold">HCIA Cloud Computing V5.5</h4>
+                                    <p class="text-[10px] text-gray-500 font-medium">Huawei ICT Academy</p>
+                                </div>
                             </div>
-                            <span class="text-xs font-medium px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded text-gray-600 dark:text-gray-300">Dec 2025</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1 group-hover:text-blue-400 transition-colors">Data Science Methodology</h3>
-                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 h-10 overflow-hidden">Methodologies for Data Science</p>
-                        <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 border-t border-gray-100 dark:border-gray-700 pt-3">
-                            <span class="truncate font-medium"><i class="fas fa-award mr-1"></i>Coursera</span>
-                            <span class="text-green-500"><i class="fas fa-check-circle"></i> Validé</span>
+                            <div class="flex items-center p-4 rounded-2xl bg-slate-50 dark:bg-dark-900/50 border border-transparent hover:border-primary-100 transition-all">
+                                <div class="w-10 h-10 bg-white dark:bg-dark-800 rounded-xl flex items-center justify-center shadow-sm mr-4 text-blue-600 font-bold text-[10px]">CISCO</div>
+                                <div>
+                                    <h4 class="text-sm font-bold">CCNA 1 & 2 (Routing & Switching)</h4>
+                                    <p class="text-[10px] text-gray-500 font-medium">Cisco Networking Academy</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Tools for Data Science -->
-                <div class="bg-white dark:bg-dark-800 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 group border border-gray-100 dark:border-dark-700 hover:-translate-y-2">
-                    <div class="h-2 bg-gradient-to-r from-blue-400 to-teal-400"></div>
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="p-3 bg-teal-50 dark:bg-teal-900/20 rounded-lg group-hover:bg-teal-100 dark:group-hover:bg-teal-900/40 transition-colors">
-                                <i class="fas fa-tools text-2xl text-teal-400"></i>
+                    <div class="bg-white dark:bg-dark-800 rounded-3xl p-8 shadow-sm border border-gray-100 dark:border-gray-700">
+                        <h3 class="text-xl font-bold mb-6 flex items-center text-gray-900 dark:text-white uppercase tracking-widest text-sm">
+                            <i class="fas fa-shield-alt text-primary-600 mr-3"></i> Sécurité & Fondations
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center p-4 rounded-2xl bg-slate-50 dark:bg-dark-900/50 border border-transparent hover:border-primary-100 transition-all">
+                                <div class="w-10 h-10 bg-white dark:bg-dark-800 rounded-xl flex items-center justify-center shadow-sm mr-4 text-orange-600"><i class="fas fa-shield-virus"></i></div>
+                                <div>
+                                    <h4 class="text-sm font-bold">Threat Landscape Intro</h4>
+                                    <p class="text-[10px] text-gray-500 font-medium">Cybersecurity Foundations</p>
+                                </div>
                             </div>
-                            <span class="text-xs font-medium px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded text-gray-600 dark:text-gray-300">Dec 2025</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1 group-hover:text-teal-400 transition-colors">Tools for Data Science</h3>
-                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 h-10 overflow-hidden">Jupyter, RStudio, GitHub</p>
-                        <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 border-t border-gray-100 dark:border-gray-700 pt-3">
-                            <span class="truncate font-medium"><i class="fas fa-award mr-1"></i>Coursera</span>
-                            <span class="text-green-500"><i class="fas fa-check-circle"></i> Validé</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- HackerRank JS -->
-                <div class="bg-white dark:bg-dark-800 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 group border border-gray-100 dark:border-dark-700 hover:-translate-y-2">
-                    <div class="h-2 bg-gradient-to-r from-yellow-400 to-yellow-300"></div>
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/40 transition-colors">
-                                <i class="fab fa-js text-2xl text-yellow-400"></i>
+                            <div class="flex items-center p-4 rounded-2xl bg-slate-50 dark:bg-dark-900/50 border border-transparent hover:border-primary-100 transition-all">
+                                <div class="w-10 h-10 bg-white dark:bg-dark-800 rounded-xl flex items-center justify-center shadow-sm mr-4 text-blue-400 font-bold text-[10px]">IBM</div>
+                                <div>
+                                    <h4 class="text-sm font-bold">Foundations of Data Science</h4>
+                                    <p class="text-[10px] text-gray-500 font-medium">Tools & Methodologies</p>
+                                </div>
                             </div>
-                            <span class="text-xs font-medium px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded text-gray-600 dark:text-gray-300">Jan 2025</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1 group-hover:text-yellow-400 transition-colors">JavaScript (Basic)</h3>
-                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 h-10 overflow-hidden">Problem Solving with JavaScript</p>
-                        <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 border-t border-gray-100 dark:border-gray-700 pt-3">
-                            <span class="truncate font-medium"><i class="fab fa-hackerrank mr-1"></i>HackerRank</span>
-                            <span class="text-green-500"><i class="fas fa-check-circle"></i> Validé</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- HackerRank CSS -->
-                <div class="bg-white dark:bg-dark-800 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 group border border-gray-100 dark:border-dark-700 hover:-translate-y-2">
-                    <div class="h-2 bg-gradient-to-r from-blue-500 to-blue-400"></div>
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40 transition-colors">
-                                <i class="fab fa-css3-alt text-2xl text-blue-500"></i>
-                            </div>
-                            <span class="text-xs font-medium px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded text-gray-600 dark:text-gray-300">Jan 2025</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1 group-hover:text-blue-500 transition-colors">CSS (Basic)</h3>
-                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 h-10 overflow-hidden">Cascading Style Sheets</p>
-                        <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 border-t border-gray-100 dark:border-gray-700 pt-3">
-                            <span class="truncate font-medium"><i class="fab fa-hackerrank mr-1"></i>HackerRank</span>
-                            <span class="text-green-500"><i class="fas fa-check-circle"></i> Validé</span>
                         </div>
                     </div>
                 </div>
@@ -781,13 +782,176 @@
     </section>
 
     <!-- Projects Section -->
-    <section id="projects" class="py-20 bg-gray-50 dark:bg-dark-900">
-        <div class="container mx-auto max-w-6xl px-4">
-            <h2 class="text-4xl font-bold mb-12 text-center text-primary-600 dark:text-primary-400">
-                Mes Projets
-            </h2>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+    <section id="projects" class="py-24 bg-white dark:bg-dark-800">
+        <div class="container mx-auto max-w-7xl px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-black text-gray-900 dark:text-white tracking-tight">
+                    <span class="text-primary-600">Projets</span>
+                </h2>
+                <div class="w-24 h-1.5 bg-primary-600 mx-auto mt-4 rounded-full"></div>
+            </div>
+
+            <!-- Filtres de Projets -->
+            <div class="flex flex-wrap justify-center gap-3 mb-16">
+                <button data-filter="all" class="filter-btn active px-8 py-2.5 rounded-full text-sm font-bold transition-all duration-300 border-2 border-primary-600 bg-primary-600 text-white shadow-lg shadow-primary-600/20">
+                    Tous les projets
+                </button>
+                <button data-filter="dev" class="filter-btn px-8 py-2.5 rounded-full text-sm font-bold transition-all duration-300 border-2 border-transparent bg-slate-100 dark:bg-dark-900 text-gray-600 dark:text-gray-400 hover:bg-slate-200">
+                    Développement
+                </button>
+                <button data-filter="ia" class="filter-btn px-8 py-2.5 rounded-full text-sm font-bold transition-all duration-300 border-2 border-transparent bg-slate-100 dark:bg-dark-900 text-gray-600 dark:text-gray-400 hover:bg-slate-200">
+                    Intelligence Artificielle
+                </button>
+                <button data-filter="reseaux" class="filter-btn px-8 py-2.5 rounded-full text-sm font-bold transition-all duration-300 border-2 border-transparent bg-slate-100 dark:bg-dark-900 text-gray-600 dark:text-gray-400 hover:bg-slate-200">
+                    Infrastructure & Réseaux
+                </button>
+            </div>
+
+            <div id="projects-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+                <!-- PerfuSafe (Nouveau projet 2026 - 3ème place) -->
+                <div data-category="ia" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-red-100 dark:border-red-900">
+                    <div class="aspect-video overflow-hidden relative">
+                        <div class="absolute top-2 left-2 bg-amber-500 text-white text-[10px] font-bold px-2 py-1 rounded-full z-10 shadow-md flex items-center">
+                            <i class="fas fa-trophy mr-1"></i> 3ème Place HESTIM
+                        </div>
+                        <div class="absolute top-2 right-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full z-10 shadow-md">IoT & Edge AI</div>
+                        <img src="images/PerfuSafe/landig_page.png" alt="PerfuSafe" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">PerfuSafe 🚨</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Monitoring intelligent de perfusion avec Edge AI (TinyML, FastAPI, Next.js). Détection d'anomalies en temps réel.</p>
+                        <a href="project-perfusafe.html" class="inline-flex items-center mt-4 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300">
+                            En savoir plus
+                            <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+                <!-- ShadowDay (Nouveau projet 2026) -->
+                <div data-category="ia" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-indigo-100 dark:border-indigo-900">
+                    <div class="aspect-video overflow-hidden relative">
+                        <div class="absolute top-2 right-2 bg-indigo-600 text-white text-xs font-bold px-2 py-1 rounded-full z-10 shadow-md">FullStack & IA</div>
+                        <img src="images/shadowday/Page d'accueil.png" alt="ShadowDay" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">ShadowDay 🔍</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Plateforme d'immersion professionnelle interactive boostée par l'IA (Express.js, React, WebRTC).</p>
+                        <a href="project-shadowday.html" class="inline-flex items-center mt-4 text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300">
+                            En savoir plus
+                            <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Business Intelligence Hospitalière (Nouveau projet 2026) -->
+                <div data-category="ia" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-cyan-100 dark:border-cyan-900">
+                    <div class="aspect-video overflow-hidden relative">
+                        <div class="absolute top-2 right-2 bg-cyan-600 text-white text-xs font-bold px-2 py-1 rounded-full z-10 shadow-md">BI & Data Warehouse</div>
+                        <img src="Projet_Power_BI/dw.png" alt="BI Hospitalière" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">BI Hospitalière 🏥</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Solution décisionnelle complète (SQL Server, SSIS, SSAS, Power BI) pour l'optimisation des ressources hospitalières.</p>
+                        <a href="project-hospital-bi.html" class="inline-flex items-center mt-4 text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300">
+                            En savoir plus
+                            <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Analyse Énergétique -->
+                <div data-category="ia" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-yellow-200 dark:border-yellow-900">
+                    <div class="aspect-video overflow-hidden relative">
+                        <div class="absolute top-2 right-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full z-10 shadow-md">Data Science & Énergie</div>
+                        <img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=600&q=80" alt="Analyse et Prévision de la Consommation Énergétique" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">Prévision Énergétique ⚡</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Analyse de séries temporelles et détection d'anomalies (Prophet, Isolation Forest).</p>
+                        <a href="project-energy.html" class="inline-flex items-center mt-4 text-yellow-600 dark:text-yellow-500 hover:text-yellow-700 dark:hover:text-yellow-400">
+                            En savoir plus
+                            <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Machine Learning -->
+                <div data-category="ia" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-rose-100 dark:border-rose-900">
+                    <div class="aspect-video overflow-hidden relative">
+                        <div class="absolute top-2 right-2 bg-rose-600 text-white text-xs font-bold px-2 py-1 rounded-full z-10">Machine Learning</div>
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80" alt="Analyse Prédictive du Risque de Maladie Cardiaque" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">Analyse Risque Cardiaque</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Pipeline ML et application Streamlit pour prédire le risque de maladie coronarienne.</p>
+                        <a href="project-heart-disease.html" class="inline-flex items-center mt-4 text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-500">
+                            En savoir plus
+                            <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Ndafatech - Smart Waste Management (Nouveau projet IoT 2026) -->
+                <div data-category="ia" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-green-200 dark:border-green-900">
+                    <div class="aspect-video overflow-hidden relative">
+                        <div class="absolute top-2 right-2 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full z-10 shadow-md">IoT & Smart City</div>
+                        <img src="images/icon/nadafaTech.png" alt="Ndafatech - Smart Waste Management" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">Ndafatech Smart Waste 🚮</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Système intelligent de gestion des déchets basé sur LoRaWAN et IoT pour optimiser la collecte urbaine.</p>
+                        <a href="project-nadafatech.html" class="inline-flex items-center mt-4 text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300">
+                            En savoir plus
+                            <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div data-category="reseaux" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-primary-100 dark:border-primary-900">
+                    <div class="aspect-video overflow-hidden relative">
+                        <div class="absolute top-2 right-2 bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded-full z-10">Cisco & VPN</div>
+                        <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80" alt="Configuration d'un VPN Site-to-Site avec Cisco IOS" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">VPN Site-to-Site Cisco</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Mise en place d'un tunnel VPN IPsec sécurisé pour connecter deux réseaux distants (Routage OSPF).</p>
+                        <a href="project-vpn.html" class="inline-flex items-center mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-500">
+                            En savoir plus
+                            <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div data-category="reseaux" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-primary-100 dark:border-primary-900">
+                    <div class="aspect-video overflow-hidden relative">
+                        <div class="absolute top-2 right-2 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-full z-10">AWS & Docker</div>
+                        <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=600&q=80" alt="Monitoring avec AWS et Zabbix" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">Monitoring AWS & Zabbix</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Déploiement d'une infrastructure cloud pour la supervision de serveurs avec Zabbix et Docker.</p>
+                        <a href="project-zabbix.html" class="inline-flex items-center mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-500">
+                            En savoir plus
+                            <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div data-category="reseaux" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-primary-100 dark:border-primary-900">
+                    <div class="aspect-video overflow-hidden relative">
+                        <div class="absolute top-2 right-2 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full z-10">Sécurité & NAC</div>
+                        <img src="Projet_RESAUX/packetfence_logo.png" alt="Solution NAC PacketFence" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">Solution NAC PacketFence</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Déploiement d'une solution de contrôle d'accès réseau avec authentification 802.1X et Active Directory.</p>
+                        <a href="project-nac.html" class="inline-flex items-center mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-500">
+                            En savoir plus
+                            <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div data-category="dev" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                     <div class="aspect-video overflow-hidden">
                         <img src="images/TKINTER7.png" alt="Capture d'écran du projet de gestion des données scolaires" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
                     </div>
@@ -800,7 +964,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                <div data-category="dev" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                     <div class="aspect-video overflow-hidden">
                         <img src="images/resto1.png" alt="Capture d'écran du projet de gestion des restaurants" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
                     </div>
@@ -813,7 +977,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                <div data-category="dev" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                     <div class="aspect-video overflow-hidden">
                         <img src="images/eco1.png" alt="Capture d'écran du site éducatif full-stack" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
                     </div>
@@ -826,7 +990,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                <div data-category="dev" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                     <div class="aspect-video overflow-hidden">
                         <img src="images/NextStepJob/NextstepJob4.png" alt="Capture d'écran de NextStepJobs" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
                     </div>
@@ -840,7 +1004,23 @@
                     </div>
                 </div>
 
-                <div class="group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                 <!-- SABO League (Nouveau projet) -->
+                <div data-category="dev" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-emerald-100 dark:border-emerald-900">
+                    <div class="aspect-video overflow-hidden relative">
+                        <div class="absolute top-2 right-2 bg-emerald-500 text-white text-xs font-bold px-2 py-1 rounded-full z-10 shadow-md">Développement Mobile</div>
+                        <img src="images/SABOLeague/saboleague_Cover.png" alt="SABO League - Application Mobile" class="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">SABO League ⚽</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Application mobile Flutter (Sqflite, API REST) dédiée aux passionnés de football.</p>
+                        <a href="project-saboleague.html" class="inline-flex items-center mt-4 text-emerald-600 dark:text-emerald-500 hover:text-emerald-700 dark:hover:text-emerald-400">
+                            En savoir plus
+                            <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div data-category="dev" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                     <div class="aspect-video overflow-hidden">
                         <img src="images/Eventhub/Eventhub.png" alt="Capture d'écran de Eventhub" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
                     </div>
@@ -854,7 +1034,7 @@
                     </div>
                 </div>
 
-                <div class="group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                <div data-category="dev" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                     <div class="aspect-video overflow-hidden">
                         <img src="images/Pokemon/Pokemon.png" alt="Capture d'écran du jeu Échecs Pokémon" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
                     </div>
@@ -868,29 +1048,44 @@
                     </div>
                 </div>
                 
-                <!-- Bloc Exam Platform + Rakeb côte à côte -->
-                <div class="col-span-full flex flex-col md:flex-row gap-8 justify-center">
-                    <!-- Exam Platform -->
-                    <div class="group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex-1">
-                        <div class="aspect-video overflow-hidden">
-                            <img src="images/Exam Platform/principale.png" alt="Capture d'écran de Exam Platform"
-                                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
-                        </div>
-                        <div class="p-6">
-                            <h3 class="text-xl font-semibold mb-2 dark:text-white">Exam Platform</h3>
-                            <p class="text-gray-600 dark:text-gray-300">
-                                Application web permettant aux professeurs de créer des examens en ligne avec minuterie et calcul automatique des scores, développée avec Spring Boot et Angular.
-                            </p>
-                            <a href="Exam_Platform.html"
-                                class="inline-flex items-center mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-500">
-                                En savoir plus
-                                <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
-                            </a>
-                        </div>
+                <div data-category="dev" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                    <div class="aspect-video overflow-hidden">
+                        <img src="images/Exam Platform/principale.png" alt="Capture d'écran de Exam Platform"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
                     </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">Exam Platform</h3>
+                        <p class="text-gray-600 dark:text-gray-300">
+                            Application web permettant aux professeurs de créer des examens en ligne avec minuterie et calcul automatique des scores, développée avec Spring Boot et Angular.
+                        </p>
+                        <a href="Exam_Platform.html"
+                            class="inline-flex items-center mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-500">
+                            En savoir plus
+                            <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- KurrencyConvert (Nouveau projet Android 2026) -->
+                <div data-category="dev" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-emerald-100 dark:border-emerald-900">
+                    <div class="aspect-video overflow-hidden relative">
+                        <div class="absolute top-2 right-2 bg-emerald-600 text-white text-xs font-bold px-2 py-1 rounded-full z-10 shadow-md">Android & Kotlin</div>
+                        <img src="images/icon/kurrencyConvert.png" alt="KurrencyConvert" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">KurrencyConvert 💸</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Application Android de conversion de devises en temps réel avec Kotlin, MVVM et Firebase Realtime Database.</p>
+                        <a href="project-kurrency.html" class="inline-flex items-center mt-4 text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300">
+                            En savoir plus
+                            <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
 
+                <!-- Bloc Rakeb centré -->
+                <div class="col-span-full flex justify-center">
                     <!-- Rakeb -->
-                    <div class="group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex-1">
+                    <div data-category="dev" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 max-w-md w-full">
                         <div class="aspect-video overflow-hidden">
                             <img src="images/icon/rakeb-bg.png" alt="Logo Rakeb — Covoiturage & Transport"
                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
@@ -909,6 +1104,8 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </section>
         </div>
     </section>
 
@@ -930,12 +1127,12 @@
                             +212 6 44 43 57 52
                         </a>
                     </div>
-                    <div class="flex space-x-4">
+                   <div class="flex space-x-4">
                         <a href="https://github.com/BOUBKERsup07" target="_blank" rel="noopener noreferrer" class="p-2 rounded-full bg-gray-100 dark:bg-dark-700 hover:bg-gray-200 dark:hover:bg-dark-600 transition-colors" aria-label="Profil GitHub">
-                            <i data-lucide="github" class="w-6 h-6 dark:text-gray-300"></i>
+                            <i class="fab fa-github w-6 h-6 flex items-center justify-center dark:text-gray-300"></i>
                         </a>
                         <a href="https://www.linkedin.com/in/boubker-cheyoukh-4696a4276/" target="_blank" rel="noopener noreferrer" class="p-2 rounded-full bg-gray-100 dark:bg-dark-700 hover:bg-gray-200 dark:hover:bg-dark-600 transition-colors" aria-label="Profil LinkedIn">
-                            <i data-lucide="linkedin" class="w-6 h-6 dark:text-gray-300"></i>
+                            <i class="fab fa-linkedin w-6 h-6 flex items-center justify-center dark:text-gray-300"></i>
                         </a>
                     </div>
                 </div>
@@ -1133,6 +1330,43 @@
                 cvDropdown.classList.add('hidden');
                 cvDropdownButton.setAttribute('aria-expanded', 'false');
             }
+        });
+
+        // Filtrage des Projets
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const projectCards = document.querySelectorAll('.project-card');
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Mise à jour des classes actives sur les boutons
+                filterButtons.forEach(btn => {
+                    btn.classList.remove('active', 'bg-primary-600', 'text-white', 'border-primary-600', 'shadow-lg', 'shadow-primary-600/20');
+                    btn.classList.add('border-transparent', 'bg-slate-100', 'dark:bg-dark-900', 'text-gray-600', 'dark:text-gray-400');
+                });
+                button.classList.add('active', 'bg-primary-600', 'text-white', 'border-primary-600', 'shadow-lg', 'shadow-primary-600/20');
+                button.classList.remove('border-transparent', 'bg-slate-100', 'dark:bg-dark-900', 'text-gray-600', 'dark:text-gray-400');
+
+                const filterValue = button.getAttribute('data-filter');
+
+                projectCards.forEach(card => {
+                    // Animation de sortie
+                    card.style.opacity = '0';
+                    card.style.transform = 'scale(0.95)';
+                    
+                    setTimeout(() => {
+                        if (filterValue === 'all' || card.getAttribute('data-category') === filterValue) {
+                            card.classList.remove('hidden');
+                            // Animation d'entrée
+                            setTimeout(() => {
+                                card.style.opacity = '1';
+                                card.style.transform = 'scale(1)';
+                            }, 50);
+                        } else {
+                            card.classList.add('hidden');
+                        }
+                    }, 300);
+                });
+            });
         });
 
         // Scroll progress bar

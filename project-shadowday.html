@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ShadowDay - Plateforme d'immersion professionnelle interactive boostée par l'IA">
+    <title>ShadowDay | Immersion Professionnelle & IA</title>
+    
+    <!-- Scripts & Styles -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+                    colors: {
+                        primary: { 500: '#6366f1', 600: '#4f46e5' },
+                        dark: { 800: '#1e293b', 900: '#0f172a', 950: '#020617' },
+                        shadow: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5' }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'gradient': 'gradient 8s linear infinite',
+                    },
+                    keyframes: {
+                        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-20px)' } },
+                        gradient: { '0%, 100%': { backgroundPosition: '0% 50%' }, '50%': { backgroundPosition: '100% 50%' } }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="icon" href="images/icon/shadowday_icon.svg" type="image/svg+xml">
+
+    <style>
+        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.2); }
+        .dark .glass { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.05); }
+        
+        .glass-nav { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0, 0, 0, 0.05); }
+        .dark .glass-nav { background: rgba(15, 23, 42, 0.8); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+
+        .hero-mesh {
+            background-color: #f8fafc;
+            background-image: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.05) 0, transparent 50%), 
+                              radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.05) 0, transparent 50%);
+        }
+        .dark .hero-mesh {
+            background-color: #020617;
+            background-image: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0, transparent 50%), 
+                              radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.15) 0, transparent 50%);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .img-card {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            border-radius: 2rem;
+        }
+        .img-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 30px 60px -12px rgba(99, 102, 241, 0.25);
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        .dark ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #6366f1; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-dark-950 text-slate-900 dark:text-slate-100 selection:bg-primary-500/30 transition-colors duration-500 hero-mesh">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-[100] transition-all duration-300 py-4 glass-nav" id="navbar">
+        <div class="container mx-auto px-6 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-4 group">
+                <div class="w-10 h-10 bg-primary-500 rounded-xl flex items-center justify-center shadow-lg group-hover:rotate-[-8deg] transition-all">
+                    <i data-lucide="arrow-left" class="text-white w-6 h-6"></i>
+                </div>
+                <span class="text-lg font-black tracking-tighter dark:text-white">Retour au Portfolio</span>
+            </a>
+
+            <div class="flex items-center gap-6">
+                <div class="hidden md:flex items-center gap-8 mr-4">
+                    <a href="#constat" class="text-sm font-bold hover:text-primary-500 transition-colors">Vision</a>
+                    <a href="#features" class="text-sm font-bold hover:text-primary-500 transition-colors">Immersion</a>
+                    <a href="#presentation" class="text-sm font-bold hover:text-primary-500 transition-colors">Documentation</a>
+                </div>
+                <button id="darkModeToggle" class="w-10 h-10 rounded-xl bg-white dark:bg-dark-800 flex items-center justify-center shadow-sm border border-slate-200 dark:border-slate-700 hover:scale-105 transition-all">
+                    <i id="darkModeIcon" data-lucide="moon" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-40 pb-20 px-6 overflow-hidden">
+        <div class="container mx-auto max-w-6xl">
+            <div class="flex flex-col lg:flex-row gap-16 items-center">
+                <div class="flex-1 space-y-8 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-500/10 border border-primary-500/20 text-primary-600 dark:text-primary-400 font-bold text-[10px] uppercase tracking-[0.2em]">
+                        🚀 Innovation Orientation 2026
+                    </div>
+                    
+                    <h1 class="text-6xl lg:text-8xl font-black leading-[0.9] tracking-tighter dark:text-white">
+                        Shadow<br><span class="gradient-text bg-[length:200%_auto] animate-gradient">Day</span>
+                    </h1>
+                    
+                    <p class="text-xl text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl mx-auto lg:mx-0 font-medium">
+                        Vivre un métier avant de le choisir. Une plateforme d'immersion professionnelle boostée par l'IA pour décider de son avenir.
+                    </p>
+                    
+                    <div class="flex flex-wrap gap-4 justify-center lg:justify-start">
+                        <div class="flex items-center gap-3 px-6 py-4 rounded-2xl glass border border-slate-200 dark:border-white/10 shadow-sm">
+                            <i class="devicon-react-original text-blue-400 text-xl"></i>
+                            <span class="text-xs font-bold">React & TS</span>
+                        </div>
+                        <div class="flex items-center gap-3 px-6 py-4 rounded-2xl glass border border-slate-200 dark:border-white/10 shadow-sm">
+                            <i class="fas fa-brain text-purple-500 text-lg"></i>
+                            <span class="text-xs font-bold">IA Module</span>
+                        </div>
+                        <div class="flex items-center gap-3 px-6 py-4 rounded-2xl glass border border-slate-200 dark:border-white/10 shadow-sm">
+                            <i class="fas fa-video text-indigo-500 text-lg"></i>
+                            <span class="text-xs font-bold">WebRTC</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex-1 w-full animate-float">
+                    <div class="relative group">
+                        <div class="absolute -inset-4 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-[3rem] blur-2xl opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+                        <div class="relative rounded-[2.5rem] overflow-hidden border-8 border-white dark:border-dark-800 shadow-2xl">
+                            <img src="images/shadowday/Page d'accueil.png" alt="ShadowDay Home" class="w-full h-auto">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- La Problématique -->
+    <section id="constat" class="py-32 bg-slate-100/50 dark:bg-dark-900/30">
+        <div class="container mx-auto max-w-5xl px-6">
+            <div class="text-center mb-20 space-y-4">
+                <h2 class="text-[10px] font-black uppercase tracking-[0.4em] text-primary-500">Le Constat</h2>
+                <h3 class="text-4xl font-black tracking-tighter dark:text-white">Pourquoi ShadowDay ?</h3>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="p-10 rounded-[2.5rem] bg-white dark:bg-dark-900/50 border border-slate-200 dark:border-white/5 hover:border-primary-500/30 transition-all duration-500 text-center group">
+                    <div class="w-16 h-16 mx-auto mb-8 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-500 text-2xl group-hover:scale-110 transition-transform">
+                        <i data-lucide="eye-off"></i>
+                    </div>
+                    <p class="text-slate-600 dark:text-slate-400 font-bold italic leading-relaxed">“J’ai découvert trop tard que ce métier ne me plaisait pas.”</p>
+                </div>
+                
+                <div class="p-10 rounded-[2.5rem] bg-white dark:bg-dark-900/50 border border-slate-200 dark:border-white/5 hover:border-purple-500/30 transition-all duration-500 text-center group">
+                    <div class="w-16 h-16 mx-auto mb-8 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-500 text-2xl group-hover:scale-110 transition-transform">
+                        <i data-lucide="users"></i>
+                    </div>
+                    <p class="text-slate-600 dark:text-slate-400 font-bold italic leading-relaxed">“Je choisis surtout selon ce qu’on me dit autour de moi.”</p>
+                </div>
+                
+                <div class="p-10 rounded-[2.5rem] bg-white dark:bg-dark-900/50 border border-slate-200 dark:border-white/5 hover:border-rose-500/30 transition-all duration-500 text-center group">
+                    <div class="w-16 h-16 mx-auto mb-8 rounded-2xl bg-rose-500/10 flex items-center justify-center text-rose-500 text-2xl group-hover:scale-110 transition-transform">
+                        <i data-lucide="clock"></i>
+                    </div>
+                    <p class="text-slate-600 dark:text-slate-400 font-bold italic leading-relaxed">“J’ai peur de perdre du temps dans une mauvaise voie.”</p>
+                </div>
+            </div>
+
+            <div class="mt-20 p-12 rounded-[3rem] bg-gradient-to-br from-indigo-600 to-purple-700 text-white flex flex-col md:flex-row items-center gap-12 shadow-2xl shadow-indigo-500/30 relative overflow-hidden">
+                <div class="relative z-10 text-5xl opacity-30"><i data-lucide="lightbulb" class="w-16 h-16"></i></div>
+                <div class="relative z-10">
+                    <h3 class="text-3xl font-black mb-4 tracking-tight">Notre Vision</h3>
+                    <p class="text-indigo-100 text-lg leading-relaxed font-medium">
+                        Comprendre l’utilisateur change tout. ShadowDay utilise le <span class="text-white font-bold">Design Thinking</span> pour offrir une réponse concrète aux doutes d'une génération.
+                    </p>
+                </div>
+                <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Showcase -->
+    <section id="features" class="py-32">
+        <div class="container mx-auto max-w-6xl px-6">
+            <!-- Feature 1 -->
+            <div class="flex flex-col lg:flex-row gap-20 items-center mb-40">
+                <div class="flex-1 space-y-8">
+                    <h3 class="text-5xl font-black tracking-tighter dark:text-white">Streaming <br><span class="text-primary-500">Interactif</span></h3>
+                    <p class="text-lg text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
+                        Grâce à <strong>WebRTC</strong>, suivez des professionnels en direct. Posez vos questions et observez la réalité du métier, sans filtre et en temps réel.
+                    </p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-4 rounded-2xl bg-slate-100 dark:bg-dark-900 border border-slate-200 dark:border-white/5">
+                            <p class="font-black text-primary-500 text-xl">Live</p>
+                            <p class="text-xs font-bold text-slate-500 uppercase">Streaming P2P</p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-slate-100 dark:bg-dark-900 border border-slate-200 dark:border-white/5">
+                            <p class="font-black text-purple-500 text-xl">0 Latence</p>
+                            <p class="text-xs font-bold text-slate-500 uppercase">Interaction Directe</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-1 img-card border-4 border-white dark:border-dark-800 shadow-2xl">
+                    <img src="images/shadowday/live-watch.png" alt="Live Immersion" class="w-full h-auto">
+                </div>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="flex flex-col lg:flex-row-reverse gap-20 items-center mb-40">
+                <div class="flex-1 space-y-8">
+                    <h3 class="text-5xl font-black tracking-tighter dark:text-white">Module IA <br><span class="text-purple-500">Adaptatif</span></h3>
+                    <p class="text-lg text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
+                        L'IA génère des questions personnalisées pendant l'immersion pour tester votre compatibilité avec le métier observé.
+                    </p>
+                    <div class="p-8 rounded-[2rem] bg-slate-900 border-l-8 border-primary-500 shadow-2xl">
+                        <p class="text-primary-400 font-mono text-[10px] uppercase tracking-widest mb-4">// AI Diagnosis Engine</p>
+                        <p class="text-slate-300 font-bold italic leading-relaxed text-lg">
+                            "Votre intérêt pour l'aspect créatif du design semble plus fort que pour la gestion technique. Profil : UI Designer."
+                        </p>
+                    </div>
+                </div>
+                <div class="flex-1 img-card border-4 border-white dark:border-dark-800 shadow-2xl">
+                    <img src="images/shadowday/Question IA générée en temps réel pendant une immersion médicale.png" alt="AI Interface" class="w-full h-auto">
+                </div>
+            </div>
+
+            <!-- Gallery Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10 mt-20">
+                <div class="group space-y-6">
+                    <div class="img-card border-2 border-slate-200 dark:border-dark-800 shadow-xl">
+                        <img src="images/shadowday/catalogue.png" alt="Catalogue" class="w-full">
+                    </div>
+                    <div class="text-center">
+                        <p class="text-sm font-black uppercase tracking-widest opacity-50">Catalogue</p>
+                        <p class="font-bold">Découverte des métiers</p>
+                    </div>
+                </div>
+                
+                <div class="group space-y-6">
+                    <div class="img-card border-2 border-slate-200 dark:border-dark-800 shadow-xl">
+                        <img src="images/shadowday/dashboard createur.png" alt="Dashboard" class="w-full">
+                    </div>
+                    <div class="text-center">
+                        <p class="text-sm font-black uppercase tracking-widest opacity-50">Gestion</p>
+                        <p class="font-bold">Dashboard Créateur</p>
+                    </div>
+                </div>
+                
+                <div class="group space-y-6">
+                    <div class="img-card border-2 border-slate-200 dark:border-dark-800 shadow-xl">
+                        <img src="images/shadowday/evolution.png" alt="Evolution" class="w-full">
+                    </div>
+                    <div class="text-center">
+                        <p class="text-sm font-black uppercase tracking-widest opacity-50">Analyse</p>
+                        <p class="font-bold">Suivi de l'évolution</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technical Stack -->
+    <section class="py-32 bg-slate-900 text-white relative overflow-hidden">
+        <div class="container mx-auto max-w-6xl px-6 relative z-10">
+            <div class="text-center mb-20 space-y-4">
+                <h2 class="text-5xl font-black tracking-tighter">Stack Technique</h2>
+                <p class="text-slate-400 font-medium">Une architecture robuste pour une expérience fluide.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="p-10 rounded-[2.5rem] bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-500">
+                    <div class="w-12 h-12 bg-indigo-500/20 rounded-xl flex items-center justify-center text-indigo-400 mb-6 text-xl">
+                        <i class="fab fa-node-js"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-4">Backend</h4>
+                    <p class="text-sm text-slate-400 leading-relaxed font-medium">Node.js, Express & Drizzle ORM pour un typage PostgreSQL sécurisé.</p>
+                </div>
+                
+                <div class="p-10 rounded-[2.5rem] bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-500">
+                    <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center text-blue-400 mb-6 text-xl">
+                        <i class="fab fa-react"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-4">Frontend</h4>
+                    <p class="text-sm text-slate-400 leading-relaxed font-medium">React, TypeScript & Framer Motion pour des animations fluides.</p>
+                </div>
+                
+                <div class="p-10 rounded-[2.5rem] bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-500">
+                    <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center text-purple-400 mb-6 text-xl">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-4">Database</h4>
+                    <p class="text-sm text-slate-400 leading-relaxed font-medium">PostgreSQL optimisé pour les relations étudiants-mentors.</p>
+                </div>
+                
+                <div class="p-10 rounded-[2.5rem] bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-500">
+                    <div class="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center text-orange-400 mb-6 text-xl">
+                        <i class="fas fa-broadcast-tower"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-4">Streaming</h4>
+                    <p class="text-sm text-slate-400 leading-relaxed font-medium">WebRTC pour une latence ultra-faible en direct.</p>
+                </div>
+            </div>
+        </div>
+        <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-primary-500/10 rounded-full blur-[120px]"></div>
+    </section>
+
+    <!-- Présentation PDF Section -->
+    <section id="presentation" class="py-32">
+        <div class="container mx-auto max-w-5xl px-6">
+            <div class="text-center mb-20 space-y-4">
+                <h2 class="text-5xl font-black tracking-tighter dark:text-white">Documentation</h2>
+                <p class="text-slate-500 dark:text-slate-400 font-medium text-lg">Découvrez les coulisses de la conception de ShadowDay.</p>
+            </div>
+            
+            <div class="relative group">
+                <div class="absolute -inset-4 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-[3rem] blur-2xl opacity-10 group-hover:opacity-25 transition duration-1000"></div>
+                <div class="relative bg-white dark:bg-dark-900 p-4 rounded-[2.5rem] shadow-2xl border border-slate-200 dark:border-white/5">
+                    <iframe src="images/shadowday/shadowday.pdf" width="100%" height="700px" class="rounded-2xl border-0" title="Présentation ShadowDay">
+                        Votre navigateur ne supporte pas l'affichage des PDF. <a href="images/shadowday/shadowday.pdf" class="text-indigo-600 underline">Téléchargez-le ici</a>.
+                    </iframe>
+                </div>
+            </div>
+            
+            <div class="mt-16 text-center">
+                <a href="images/shadowday/shadowday.pdf" download class="inline-flex items-center px-12 py-5 bg-primary-500 text-white font-black rounded-2xl hover:translate-y-[-4px] transition-all shadow-xl shadow-primary-500/20 uppercase tracking-widest text-sm">
+                    <i class="fas fa-download mr-4"></i> Télécharger le PDF
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Équipe -->
+    <section class="py-32 bg-slate-100/50 dark:bg-dark-900/30">
+        <div class="container mx-auto max-w-4xl px-6">
+            <div class="text-center mb-20">
+                <h2 class="text-[10px] font-black uppercase tracking-[0.4em] text-primary-500 mb-4">Collaboration</h2>
+                <h3 class="text-4xl font-black tracking-tighter dark:text-white">L'Équipe ShadowDay</h3>
+            </div>
+            
+            <div class="flex flex-wrap justify-center gap-16">
+                <div class="text-center space-y-6 group">
+                    <div class="w-28 h-28 bg-white dark:bg-dark-800 rounded-[2rem] mx-auto flex items-center justify-center text-3xl font-black text-indigo-500 border-2 border-slate-200 dark:border-white/10 shadow-xl group-hover:scale-110 transition-transform">BC</div>
+                    <p class="font-black text-sm uppercase tracking-widest opacity-80">Boubker Cheyoukh</p>
+                </div>
+                <div class="text-center space-y-6 group">
+                    <div class="w-28 h-28 bg-white dark:bg-dark-800 rounded-[2rem] mx-auto flex items-center justify-center text-3xl font-black text-purple-500 border-2 border-slate-200 dark:border-white/10 shadow-xl group-hover:scale-110 transition-transform">SF</div>
+                    <p class="font-black text-sm uppercase tracking-widest opacity-80">Saad Fettah</p>
+                </div>
+                <div class="text-center space-y-6 group">
+                    <div class="w-28 h-28 bg-white dark:bg-dark-800 rounded-[2rem] mx-auto flex items-center justify-center text-3xl font-black text-blue-500 border-2 border-slate-200 dark:border-white/10 shadow-xl group-hover:scale-110 transition-transform">AE</div>
+                    <p class="font-black text-sm uppercase tracking-widest opacity-80">Abderrazzak E.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-20 border-t border-slate-200 dark:border-white/5 text-center">
+        <div class="container mx-auto px-6">
+            <img src="images/icon/shadowday_icon.svg" alt="Logo" class="w-12 h-12 mx-auto mb-8 opacity-50">
+            <p class="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em]">
+                © 2026 ShadowDay — Redéfinir l'Orientation
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('shadow-xl', 'py-3');
+                nav.classList.remove('py-4');
+            } else {
+                nav.classList.remove('shadow-xl', 'py-3');
+                nav.classList.add('py-4');
+            }
+        });
+
+        // Dark Mode Logic
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const darkModeIcon = document.getElementById('darkModeIcon');
+
+        function initializeDarkMode() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                darkModeIcon.setAttribute('data-lucide', 'sun');
+            } else {
+                document.documentElement.classList.remove('dark');
+                darkModeIcon.setAttribute('data-lucide', 'moon');
+            }
+            lucide.createIcons();
+        }
+
+        darkModeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.theme = isDark ? 'dark' : 'light';
+            darkModeIcon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
+            lucide.createIcons();
+        });
+
+        document.addEventListener('DOMContentLoaded', initializeDarkMode);
+    </script>
+</body>
+</html>

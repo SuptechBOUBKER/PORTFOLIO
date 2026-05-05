@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Projet : Mise en place d’une solution NAC avec PacketFence et authentification 802.1X">
+    <title>Projet - Solution NAC PacketFence</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'tech': ['JetBrains Mono', 'monospace'],
+                        'cyber': ['Orbitron', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a',
+                        },
+                        cyber: {
+                            500: '#00ff88',
+                            600: '#00cc6a',
+                            700: '#00a052',
+                            900: '#003d1f',
+                        },
+                        neon: {
+                            pink: '#ff00ff',
+                            blue: '#00ffff',
+                            green: '#00ff00',
+                            purple: '#ff00ff',
+                        },
+                        dark: {
+                            800: '#0a0e27',
+                            900: '#050718',
+                            950: '#02030f',
+                        }
+                    },
+                    animation: {
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'scan': 'scan 3s linear infinite',
+                        'matrix': 'matrix 20s linear infinite',
+                        'cyber-pulse': 'cyber-pulse 2s ease-in-out infinite',
+                        'neon-flicker': 'neon-flicker 1.5s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        glow: {
+                            '0%': { boxShadow: '0 0 20px rgba(59, 130, 246, 0.5)' },
+                            '100%': { boxShadow: '0 0 40px rgba(59, 130, 246, 0.8), 0 0 60px rgba(59, 130, 246, 0.4)' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-20px)' }
+                        },
+                        scan: {
+                            '0%': { transform: 'translateX(-100%)' },
+                            '100%': { transform: 'translateX(100%)' }
+                        },
+                        matrix: {
+                            '0%': { transform: 'translateY(-100%)' },
+                            '100%': { transform: 'translateY(100%)' }
+                        },
+                        'cyber-pulse': {
+                            '0%, 100%': { opacity: 1 },
+                            '50%': { opacity: 0.5 }
+                        },
+                        'neon-flicker': {
+                            '0%, 100%': { opacity: 1 },
+                            '50%': { opacity: 0.8 }
+                        }
+                    },
+                    backgroundImage: {
+                        'cyber-grid': 'linear-gradient(0deg, transparent 24%, rgba(0, 255, 136, 0.05) 25%, rgba(0, 255, 136, 0.05) 26%, transparent 27%, transparent 74%, rgba(0, 255, 136, 0.05) 75%, rgba(0, 255, 136, 0.05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(0, 255, 136, 0.05) 25%, rgba(0, 255, 136, 0.05) 26%, transparent 27%, transparent 74%, rgba(0, 255, 136, 0.05) 75%, rgba(0, 255, 136, 0.05) 76%, transparent 77%, transparent)',
+                        'neon-gradient': 'linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%)',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/url-handler.js"></script>
+    <script src="js/protection.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif;
+            background: #050718;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        /* Cyber Grid Background */
+        .cyber-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 255, 136, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
+                linear-gradient(180deg, #050718 0%, #0a0e27 50%, #050718 100%);
+            background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+            z-index: -2;
+        }
+
+        .cyber-grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 136, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 136, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        /* Neon Text Effects */
+        .neon-text {
+            text-shadow: 
+                0 0 10px rgba(0, 255, 136, 0.8),
+                0 0 20px rgba(0, 255, 136, 0.6),
+                0 0 30px rgba(0, 255, 136, 0.4),
+                0 0 40px rgba(0, 255, 136, 0.2);
+            animation: neon-flicker 2s ease-in-out infinite;
+        }
+
+        .neon-border {
+            border: 2px solid rgba(0, 255, 136, 0.6);
+            box-shadow: 
+                0 0 20px rgba(0, 255, 136, 0.4),
+                inset 0 0 20px rgba(0, 255, 136, 0.1);
+            animation: cyber-pulse 2s ease-in-out infinite;
+        }
+
+        /* Holographic Cards */
+        .holo-card {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.1) 0%, 
+                rgba(255, 255, 255, 0.05) 50%, 
+                rgba(255, 255, 255, 0.1) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .holo-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, 
+                transparent 30%, 
+                rgba(0, 255, 136, 0.1) 50%, 
+                transparent 70%);
+            transform: rotate(45deg);
+            transition: all 0.6s;
+            pointer-events: none;
+        }
+
+        .holo-card:hover::before {
+            animation: scan 1s linear infinite;
+        }
+
+        /* Network Animation */
+        .network-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            opacity: 0.3;
+        }
+
+        .network-line {
+            position: absolute;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.6), transparent);
+            height: 1px;
+            animation: scan 3s linear infinite;
+        }
+
+        .network-node {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(0, 255, 136, 0.8);
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.6);
+            animation: cyber-pulse 2s ease-in-out infinite;
+        }
+
+        /* Loading Animation */
+        .cyber-loader {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(0, 255, 136, 0.2);
+            border-top: 3px solid rgba(0, 255, 136, 0.8);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Terminal Effect */
+        .terminal {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .terminal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.8), transparent);
+            animation: scan 2s linear infinite;
+        }
+
+        .terminal-text {
+            color: rgba(0, 255, 136, 0.9);
+            text-shadow: 0 0 5px rgba(0, 255, 136, 0.6);
+        }
+
+        /* Glitch Effect */
+        .glitch {
+            position: relative;
+            color: #fff;
+            font-size: 4em;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-shadow: 0.05em 0 0 rgba(255, 0, 0, 0.75),
+                        -0.025em -0.05em 0 rgba(0, 255, 0, 0.75),
+                        0.025em 0.05em 0 rgba(0, 0, 255, 0.75);
+            animation: glitch 500ms infinite;
+        }
+
+        @keyframes glitch {
+            0% { text-shadow: 0.05em 0 0 rgba(255, 0, 0, 0.75), -0.05em -0.025em 0 rgba(0, 255, 0, 0.75), 0.025em 0.05em 0 rgba(0, 0, 255, 0.75); }
+            14% { text-shadow: 0.05em 0 0 rgba(255, 0, 0, 0.75), -0.05em -0.025em 0 rgba(0, 255, 0, 0.75), 0.025em 0.05em 0 rgba(0, 0, 255, 0.75); }
+            15% { text-shadow: -0.05em -0.025em 0 rgba(255, 0, 0, 0.75), 0.025em 0.025em 0 rgba(0, 255, 0, 0.75), -0.05em -0.05em 0 rgba(0, 0, 255, 0.75); }
+            49% { text-shadow: -0.05em -0.025em 0 rgba(255, 0, 0, 0.75), 0.025em 0.025em 0 rgba(0, 255, 0, 0.75), -0.05em -0.05em 0 rgba(0, 0, 255, 0.75); }
+            50% { text-shadow: 0.025em 0.05em 0 rgba(255, 0, 0, 0.75), 0.05em 0 0 rgba(0, 255, 0, 0.75), 0 -0.05em 0 rgba(0, 0, 255, 0.75); }
+            99% { text-shadow: 0.025em 0.05em 0 rgba(255, 0, 0, 0.75), 0.05em 0 0 rgba(0, 255, 0, 0.75), 0 -0.05em 0 rgba(0, 0, 255, 0.75); }
+            100% { text-shadow: -0.025em 0 0 rgba(255, 0, 0, 0.75), -0.025em -0.025em 0 rgba(0, 255, 0, 0.75), -0.025em -0.05em 0 rgba(0, 0, 255, 0.75); }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, rgba(0, 255, 136, 0.6), rgba(59, 130, 246, 0.6));
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(45deg, rgba(0, 255, 136, 0.8), rgba(59, 130, 246, 0.8));
+        }
+
+        /* Fade in animation */
+        .fade-in { 
+            animation: fadeIn 1s ease-in; 
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        @keyframes fadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .glitch {
+                font-size: 2.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Cyber Background -->
+    <div class="cyber-bg"></div>
+    <div class="cyber-grid-overlay"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full h-16 holo-card border-0 z-50">
+        <div class="container mx-auto px-6 h-full flex items-center justify-between">
+            <a href="index.html" class="flex items-center group">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-cyber-500 to-primary-500 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+                    <i data-lucide="arrow-left" class="w-5 h-5 text-dark-950"></i>
+                </div>
+                <span class="font-cyber text-lg font-bold neon-text">NAC.SECURE</span>
+            </a>
+            
+            <div class="flex items-center gap-4">
+                <div class="hidden md:flex items-center gap-6 font-tech text-sm">
+                    <a href="#overview" class="text-cyber-500 hover:text-cyber-400 transition-colors">Overview</a>
+                    <a href="#topology" class="text-cyber-500 hover:text-cyber-400 transition-colors">Topology</a>
+                    <a href="#implementation" class="text-cyber-500 hover:text-cyber-400 transition-colors">Implementation</a>
+                    <a href="#results" class="text-cyber-500 hover:text-cyber-400 transition-colors">Results</a>
+                </div>
+                
+                 <!--<button class="w-10 h-10 rounded-full neon-border flex items-center justify-center hover:bg-cyber-500/10 transition-all">
+                    <i data-lucide="settings" class="w-4 h-4 text-cyber-500"></i>
+                </button>-->
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="overview" class="min-h-screen flex items-center justify-center px-6 relative">
+        <!-- Network Animation Background -->
+        <div class="network-bg">
+            <div class="network-line" style="top: 20%; animation-delay: 0s;"></div>
+            <div class="network-line" style="top: 40%; animation-delay: 1s;"></div>
+            <div class="network-line" style="top: 60%; animation-delay: 2s;"></div>
+            <div class="network-line" style="top: 80%; animation-delay: 0.5s;"></div>
+            <div class="network-node" style="top: 25%; left: 20%;"></div>
+            <div class="network-node" style="top: 45%; left: 60%;"></div>
+            <div class="network-node" style="top: 65%; left: 40%;"></div>
+            <div class="network-node" style="top: 85%; left: 80%;"></div>
+        </div>
+
+        <div class="container mx-auto max-w-6xl relative z-10">
+            <div class="text-center fade-in">
+                <!-- Status Badge 
+                <div class="inline-flex items-center gap-2 px-4 py-2 mb-8 rounded-full neon-border bg-dark-950/80 backdrop-blur-sm">
+                    <div class="w-2 h-2 rounded-full bg-cyber-500 animate-pulse"></div>
+                    <span class="font-tech text-xs text-cyber-500 tracking-widest uppercase">SYSTEM_ACTIVE</span>
+                </div>-->
+
+                <!-- Main Title with Glitch Effect -->
+                <div class="mb-8">
+                    <h1 class="glitch font-cyber text-6xl md:text-8xl font-black">
+                        NAC.SECURE
+                    </h1>
+                    <div class="mt-4 text-2xl md:text-3xl font-cyber text-cyber-500">
+                        Network Access Control System
+                    </div>
+                </div>
+
+                <!-- Terminal Description -->
+                <div class="terminal max-w-3xl mx-auto mb-12">
+                    <div class="terminal-text text-sm md:text-base leading-relaxed">
+                        <p class="mb-2">$ ./initialize_nac_system.sh</p>
+                        <p class="mb-2">> PacketFence + 802.1X + Active Directory</p>
+                        <p class="mb-2">> Network Access Control Architecture</p>
+                        <p class="animate-cyber-pulse">> Status: SECURE_AUTHENTICATED</p>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-wrap justify-center gap-6 mb-16">
+                    <a href="https://github.com/BOUBKERsup07/Projet_NAC_PacketFence_8021X_ActiveDirectory" target="_blank" rel="noopener noreferrer" 
+                       class="group relative px-8 py-4 neon-border bg-dark-950/80 backdrop-blur-sm rounded-xl hover:scale-105 transition-all duration-300">
+                        <div class="absolute inset-0 bg-gradient-to-r from-cyber-500/20 to-primary-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <div class="relative flex items-center gap-3">
+                            <i class="fab fa-github text-xl text-cyber-500"></i>
+                            <span class="font-tech text-cyber-500">SOURCE_CODE</span>
+                        </div>
+                    </a>
+                    
+                    <a href="#rapport" 
+                       class="group relative px-8 py-4 neon-border bg-dark-950/80 backdrop-blur-sm rounded-xl hover:scale-105 transition-all duration-300">
+                        <div class="absolute inset-0 bg-gradient-to-r from-primary-500/20 to-purple-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <div class="relative flex items-center gap-3">
+                            <i data-lucide="file-text" class="w-5 h-5 text-primary-500"></i>
+                            <span class="font-tech text-primary-500">DOCUMENTATION</span>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Tech Stack Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                    <div class="holo-card p-6 hover:scale-105 transition-transform duration-300">
+                        <div class="w-16 h-16 mx-auto mb-4 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                            <i class="fas fa-shield-alt text-2xl text-white"></i>
+                        </div>
+                        <h3 class="font-cyber text-lg font-bold text-cyber-500 mb-2">PACKETFENCE</h3>
+                        <p class="font-tech text-xs text-gray-400">Network Access Control</p>
+                    </div>
+                    
+                    <div class="holo-card p-6 hover:scale-105 transition-transform duration-300">
+                        <div class="w-16 h-16 mx-auto mb-4 rounded-lg bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
+                            <i class="fas fa-key text-2xl text-white"></i>
+                        </div>
+                        <h3 class="font-cyber text-lg font-bold text-cyber-500 mb-2">802.1X</h3>
+                        <p class="font-tech text-xs text-gray-400">Authentication Protocol</p>
+                    </div>
+                    
+                    <div class="holo-card p-6 hover:scale-105 transition-transform duration-300">
+                        <div class="w-16 h-16 mx-auto mb-4 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                            <i class="fab fa-windows text-2xl text-white"></i>
+                        </div>
+                        <h3 class="font-cyber text-lg font-bold text-cyber-500 mb-2">ACTIVE DIRECTORY</h3>
+                        <p class="font-tech text-xs text-gray-400">Identity Management</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Network Topology Section -->
+    <section id="topology" class="py-20 px-6">
+        <div class="container mx-auto max-w-6xl">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="font-cyber text-4xl md:text-5xl font-bold neon-text mb-4">
+                    NETWORK TOPOLOGY
+                </h2>
+                <p class="font-tech text-cyber-500 text-lg">
+                    Architecture Interactive du Système NAC
+                </p>
+            </div>
+
+            <!-- Network Architecture Image -->
+            <div class="holo-card p-8 mb-16">
+                <div class="text-center">
+                    <img src="Projet_RESAUX/Architecture NAC.png" alt="Network Architecture NAC System" 
+                         class="">
+                    <div class="mt-6">
+                        <p class="font-tech text-sm text-cyber-500 mb-2">ARCHITECTURE NAC PACKETFENCE</p>
+                        <p class="font-tech text-xs text-gray-400">Système complet de contrôle d'accès réseau avec intégration Active Directory</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Implementation Dashboard -->
+    <section id="implementation" class="py-20 px-6">
+        <div class="container mx-auto max-w-6xl">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="font-cyber text-4xl md:text-5xl font-bold neon-text mb-4">
+                    IMPLEMENTATION DASHBOARD
+                </h2>
+                <p class="font-tech text-cyber-500 text-lg">
+                    Configuration & Déploiement du Système
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Phase 1: Setup -->
+                <div class="holo-card p-6 fade-in hover:scale-105 transition-transform">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                            <i data-lucide="terminal" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="px-3 py-1 rounded-full bg-green-500/20 text-green-500 text-xs font-tech font-bold">
+                            PHASE 1
+                        </div>
+                    </div>
+                    <h3 class="font-cyber text-lg font-bold text-cyber-500 mb-3">INFRASTRUCTURE SETUP</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                            <span class="font-tech text-xs text-gray-400">PacketFence Server Deployment</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                            <span class="font-tech text-xs text-gray-400">Active Directory Integration</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                            <span class="font-tech text-xs text-gray-400">Network Configuration</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 2: Authentication -->
+                <div class="holo-card p-6 fade-in hover:scale-105 transition-transform" style="animation-delay: 0.2s;">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                            <i data-lucide="key" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-500 text-xs font-tech font-bold">
+                            PHASE 2
+                        </div>
+                    </div>
+                    <h3 class="font-cyber text-lg font-bold text-cyber-500 mb-3">802.1X AUTHENTICATION</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></div>
+                            <span class="font-tech text-xs text-gray-400">RADIUS Server Configuration</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></div>
+                            <span class="font-tech text-xs text-gray-400">EAP-TLS Certificate Setup</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></div>
+                            <span class="font-tech text-xs text-gray-400">Switch Configuration</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 3: Testing -->
+                <div class="holo-card p-6 fade-in hover:scale-105 transition-transform" style="animation-delay: 0.4s;">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
+                            <i data-lucide="check-circle" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="px-3 py-1 rounded-full bg-blue-500/20 text-blue-500 text-xs font-tech font-bold">
+                            PHASE 3
+                        </div>
+                    </div>
+                    <h3 class="font-cyber text-lg font-bold text-cyber-500 mb-3">VALIDATION & TESTING</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
+                            <span class="font-tech text-xs text-gray-400">Access Policy Testing</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
+                            <span class="font-tech text-xs text-gray-400">Security Audit</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
+                            <span class="font-tech text-xs text-gray-400">Performance Monitoring</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Dashboard -->
+    <section id="results" class="py-20 px-6">
+        <div class="container mx-auto max-w-6xl">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="font-cyber text-4xl md:text-5xl font-bold neon-text mb-4">
+                    PERFORMANCE METRICS
+                </h2>
+                <p class="font-tech text-cyber-500 text-lg">
+                    Résultats & Analyse du Système NAC
+                </p>
+            </div>
+
+            <!-- Metrics Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+                <div class="holo-card p-6 text-center fade-in hover:scale-105 transition-transform">
+                    <div class="text-4xl font-cyber font-bold text-cyber-500 mb-2">100%</div>
+                    <div class="font-tech text-xs text-gray-400 mb-3">AUTHENTICATION SUCCESS</div>
+                    <div class="w-full bg-dark-950/50 rounded-full h-2">
+                        <div class="bg-gradient-to-r from-cyber-500 to-primary-500 h-2 rounded-full" style="width: 100%"></div>
+                    </div>
+                </div>
+
+                <div class="holo-card p-6 text-center fade-in hover:scale-105 transition-transform" style="animation-delay: 0.1s;">
+                    <div class="text-4xl font-cyber font-bold text-green-500 mb-2">0ms</div>
+                    <div class="font-tech text-xs text-gray-400 mb-3">LATENCY</div>
+                    <div class="w-full bg-dark-950/50 rounded-full h-2">
+                        <div class="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full" style="width: 98%"></div>
+                    </div>
+                </div>
+
+                <div class="holo-card p-6 text-center fade-in hover:scale-105 transition-transform" style="animation-delay: 0.2s;">
+                    <div class="text-4xl font-cyber font-bold text-blue-500 mb-2">24/7</div>
+                    <div class="font-tech text-xs text-gray-400 mb-3">UPTIME</div>
+                    <div class="w-full bg-dark-950/50 rounded-full h-2">
+                        <div class="bg-gradient-to-r from-blue-500 to-cyan-500 h-2 rounded-full" style="width: 99.9%"></div>
+                    </div>
+                </div>
+
+                <div class="holo-card p-6 text-center fade-in hover:scale-105 transition-transform" style="animation-delay: 0.3s;">
+                    <div class="text-4xl font-cyber font-bold text-purple-500 mb-2">256</div>
+                    <div class="font-tech text-xs text-gray-400 mb-3">DEVICES MANAGED</div>
+                    <div class="w-full bg-dark-950/50 rounded-full h-2">
+                        <div class="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full" style="width: 85%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Status -->
+            <div class="holo-card p-8 mb-16 fade-in">
+                <h3 class="font-cyber text-2xl font-bold text-cyber-500 mb-6 text-center">SECURITY STATUS</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="font-tech text-sm text-gray-400">FIREWALL STATUS</span>
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                                <span class="font-tech text-xs text-green-500">ACTIVE</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="font-tech text-sm text-gray-400">INTRUSION DETECTION</span>
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                                <span class="font-tech text-xs text-green-500">MONITORING</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="font-tech text-sm text-gray-400">THREAT LEVEL</span>
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
+                                <span class="font-tech text-xs text-blue-500">LOW</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="font-tech text-sm text-gray-400">ACCESS CONTROL</span>
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                                <span class="font-tech text-xs text-green-500">ENFORCED</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="font-tech text-sm text-gray-400">POLICY COMPLIANCE</span>
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                                <span class="font-tech text-xs text-green-500">100%</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="font-tech text-sm text-gray-400">AUDIT LOGS</span>
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                                <span class="font-tech text-xs text-green-500">RECORDING</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Skills Dashboard -->
+            <div class="holo-card p-8 fade-in">
+                <h3 class="font-cyber text-2xl font-bold text-cyber-500 mb-6 text-center">TECHNICAL SKILLS MATRIX</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-tech text-sm text-cyber-500">PACKETFENCE</span>
+                                <span class="font-tech text-xs text-gray-400">EXPERT</span>
+                            </div>
+                            <div class="w-full bg-dark-950/50 rounded-full h-3">
+                                <div class="bg-gradient-to-r from-cyber-500 to-primary-500 h-3 rounded-full animate-glow" style="width: 95%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-tech text-sm text-cyber-500">802.1X/RADIUS</span>
+                                <span class="font-tech text-xs text-gray-400">ADVANCED</span>
+                            </div>
+                            <div class="w-full bg-dark-950/50 rounded-full h-3">
+                                <div class="bg-gradient-to-r from-blue-500 to-cyan-500 h-3 rounded-full animate-glow" style="width: 88%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-tech text-sm text-cyber-500">ACTIVE DIRECTORY</span>
+                                <span class="font-tech text-xs text-gray-400">ADVANCED</span>
+                            </div>
+                            <div class="w-full bg-dark-950/50 rounded-full h-3">
+                                <div class="bg-gradient-to-r from-purple-500 to-pink-500 h-3 rounded-full animate-glow" style="width: 82%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-tech text-sm text-cyber-500">NETWORK SECURITY</span>
+                                <span class="font-tech text-xs text-gray-400">EXPERT</span>
+                            </div>
+                            <div class="w-full bg-dark-950/50 rounded-full h-3">
+                                <div class="bg-gradient-to-r from-green-500 to-emerald-500 h-3 rounded-full animate-glow" style="width: 92%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-tech text-sm text-cyber-500">TROUBLESHOOTING</span>
+                                <span class="font-tech text-xs text-gray-400">EXPERT</span>
+                            </div>
+                            <div class="w-full bg-dark-950/50 rounded-full h-3">
+                                <div class="bg-gradient-to-r from-orange-500 to-red-500 h-3 rounded-full animate-glow" style="width: 90%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-tech text-sm text-cyber-500">SYSTEM ADMIN</span>
+                                <span class="font-tech text-xs text-gray-400">ADVANCED</span>
+                            </div>
+                            <div class="w-full bg-dark-950/50 rounded-full h-3">
+                                <div class="bg-gradient-to-r from-indigo-500 to-blue-500 h-3 rounded-full animate-glow" style="width: 85%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Documentation Section -->
+    <section id="rapport" class="py-20 px-6">
+        <div class="container mx-auto max-w-6xl">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="font-cyber text-4xl md:text-5xl font-bold neon-text mb-4">
+                    TECHNICAL DOCUMENTATION
+                </h2>
+                <p class="font-tech text-cyber-500 text-lg">
+                    Rapport Complet du Projet NAC
+                </p>
+            </div>
+
+            <div class="holo-card p-8 fade-in">
+                <div class="terminal mb-8">
+                    <div class="terminal-text">
+                        <p class="mb-2">$ ls -la /documentation/</p>
+                        <p class="mb-2">drwxr-xr-x 2 admin admin 4096 Dec 15 10:30 .</p>
+                        <p class="mb-2">-rw-r--r-- 1 admin admin 2.5M Dec 15 10:30 Projet_NAC_PacketFence_8021X_ActiveDirectory.pdf</p>
+                        <p class="animate-cyber-pulse">$ file Projet_NAC_PacketFence_8021X_ActiveDirectory.pdf</p>
+                        <p class="text-cyber-500">> PDF document, version 1.4, complete technical documentation</p>
+                    </div>
+                </div>
+
+                <div class="bg-dark-950/50 rounded-xl p-6 border border-cyber-500/30">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                        <div>
+                            <h3 class="font-cyber text-xl font-bold text-cyber-500 mb-4">DOCUMENTATION CONTENTS</h3>
+                            <ul class="space-y-3 font-tech text-sm text-gray-400">
+                                <li class="flex items-center gap-3">
+                                    <div class="w-2 h-2 rounded-full bg-cyber-500"></div>
+                                    <span>Architecture Overview & Design</span>
+                                </li>
+                                <li class="flex items-center gap-3">
+                                    <div class="w-2 h-2 rounded-full bg-cyber-500"></div>
+                                    <span>Implementation Guide & Configuration</span>
+                                </li>
+                                <li class="flex items-center gap-3">
+                                    <div class="w-2 h-2 rounded-full bg-cyber-500"></div>
+                                    <span>Security Policies & Access Control</span>
+                                </li>
+                                <li class="flex items-center gap-3">
+                                    <div class="w-2 h-2 rounded-full bg-cyber-500"></div>
+                                    <span>Testing Results & Performance Analysis</span>
+                                </li>
+                                <li class="flex items-center gap-3">
+                                    <div class="w-2 h-2 rounded-full bg-cyber-500"></div>
+                                    <span>Troubleshooting Guide & Best Practices</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-32 h-32 mx-auto mb-6 rounded-xl bg-gradient-to-br from-cyber-500 to-primary-500 flex items-center justify-center animate-float">
+                                <i data-lucide="file-text" class="w-12 h-12 text-white"></i>
+                            </div>
+                            <div class="space-y-4">
+                                <a href="Projet_RESAUX/Projet_NAC_PacketFence_8021X_ActiveDirectory.pdf" 
+                                   target="_blank"
+                                   class="group inline-flex items-center gap-3 px-6 py-3 neon-border bg-dark-950/80 backdrop-blur-sm rounded-xl hover:scale-105 transition-all">
+                                    <i data-lucide="eye" class="w-4 h-4 text-cyber-500"></i>
+                                    <span class="font-tech text-cyber-500">VIEW_DOCUMENTATION</span>
+                                </a>
+                                <br>
+                                <a href="Projet_RESAUX/Projet_NAC_PacketFence_8021X_ActiveDirectory.pdf" 
+                                   download
+                                   class="group inline-flex items-center gap-3 px-6 py-3 neon-border bg-dark-950/80 backdrop-blur-sm rounded-xl hover:scale-105 transition-all">
+                                    <i data-lucide="download" class="w-4 h-4 text-primary-500"></i>
+                                    <span class="font-tech text-primary-500">DOWNLOAD_PDF</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-6 border-t border-cyber-500/20">
+        <div class="container mx-auto max-w-6xl text-center">
+            <div class="mb-6">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full neon-border bg-dark-950/80 backdrop-blur-sm">
+                    <div class="w-2 h-2 rounded-full bg-cyber-500 animate-pulse"></div>
+                    <span class="font-tech text-xs text-cyber-500 tracking-widest uppercase">SYSTEM_ONLINE</span>
+                </div>
+            </div>
+            <p class="font-tech text-sm text-gray-400">
+                © 2026 BOUBKER CHEYOUKH | NAC.SECURE SYSTEM | CYBERSECURITY PORTFOLIO
+            </p>
+            <div class="mt-4 flex justify-center gap-6">
+                <a href="https://github.com/BOUBKERsup07" target="_blank" class="text-cyber-500 hover:text-cyber-400 transition-colors">
+                    <i class="fab fa-github text-xl"></i>
+                </a>
+                <!-- <a href="https://linkedin.com/in/boubker-cheyoukh" target="_blank" class="text-cyber-500 hover:text-cyber-400 transition-colors">
+                    <i class="fab fa-linkedin text-xl"></i>
+                </a> -->
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide Icons
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            
+            // Initialize animations
+            initializeAnimations();
+            
+            // Initialize scroll effects
+            initializeScrollEffects();
+            
+            // Initialize network interactions
+            initializeNetworkInteractions();
+        });
+
+        // Smooth Scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Initialize Animations
+        function initializeAnimations() {
+            // Fade in elements on scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationPlayState = 'running';
+                        entry.target.style.opacity = '1';
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.fade-in').forEach(el => {
+                el.style.animationPlayState = 'paused';
+                el.style.opacity = '0';
+                observer.observe(el);
+            });
+        }
+
+        // Scroll Effects
+        function initializeScrollEffects() {
+            let lastScroll = 0;
+            const nav = document.querySelector('nav');
+            
+            window.addEventListener('scroll', () => {
+                const currentScroll = window.pageYOffset;
+                
+                // Navbar hide/show on scroll
+                if (currentScroll <= 0) {
+                    nav.classList.remove('translate-y-[-100%]');
+                } else if (currentScroll > lastScroll) {
+                    nav.classList.add('translate-y-[-100%]');
+                } else {
+                    nav.classList.remove('translate-y-[-100%]');
+                }
+                
+                lastScroll = currentScroll;
+            });
+        }
+
+        // Network Interactions
+        function initializeNetworkInteractions() {
+            // Network nodes click effects
+            const networkNodes = document.querySelectorAll('.absolute > div[class*="rounded-xl"], .absolute > div[class*="rounded-lg"]');
+            
+            networkNodes.forEach(node => {
+                node.addEventListener('click', function() {
+                    // Create pulse effect
+                    const pulse = document.createElement('div');
+                    pulse.className = 'absolute inset-0 rounded-inherit bg-cyber-500/30 animate-ping';
+                    this.appendChild(pulse);
+                    
+                    setTimeout(() => {
+                        pulse.remove();
+                    }, 1000);
+                    
+                    // Show node info
+                    showNodeInfo(this);
+                });
+            });
+        }
+
+        // Show Node Information
+        function showNodeInfo(node) {
+            const nodeTypes = {
+                'PACKETFENCE': {
+                    title: 'PACKETFENCE CONTROLLER',
+                    status: 'ACTIVE',
+                    description: 'Central NAC management system',
+                    connections: 6
+                },
+                'AD': {
+                    title: 'ACTIVE DIRECTORY',
+                    status: 'SYNCED',
+                    description: 'Identity management provider',
+                    connections: 256
+                },
+                'RADIUS': {
+                    title: 'RADIUS SERVER',
+                    status: 'RUNNING',
+                    description: 'Authentication service',
+                    connections: 128
+                }
+            };
+
+            // Find node type by text content
+            const nodeText = node.textContent.trim();
+            const nodeInfo = nodeTypes[nodeText] || {
+                title: 'CLIENT DEVICE',
+                status: 'CONNECTED',
+                description: 'Network endpoint',
+                connections: 1
+            };
+
+            // Create info popup (simplified)
+            console.log('Node Info:', nodeInfo);
+        }
+
+        // Terminal typing effect
+        function typeTerminalText() {
+            const terminalElements = document.querySelectorAll('.terminal-text');
+            
+            terminalElements.forEach(terminal => {
+                const text = terminal.textContent;
+                terminal.textContent = '';
+                let index = 0;
+                
+                function type() {
+                    if (index < text.length) {
+                        terminal.textContent += text.charAt(index);
+                        index++;
+                        setTimeout(type, 50);
+                    }
+                }
+                
+                // Start typing when element is visible
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            type();
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                });
+                
+                observer.observe(terminal);
+            });
+        }
+
+        // Progress bar animations
+        function animateProgressBars() {
+            const progressBars = document.querySelectorAll('[style*="width"]');
+            
+            progressBars.forEach(bar => {
+                const targetWidth = bar.style.width;
+                bar.style.width = '0%';
+                
+                setTimeout(() => {
+                    bar.style.transition = 'width 2s ease-out';
+                    bar.style.width = targetWidth;
+                }, 500);
+            });
+        }
+
+        // Cyber effects
+        function addCyberEffects() {
+            // Add random glitch effect to title
+            const glitchTitle = document.querySelector('.glitch');
+            if (glitchTitle) {
+                setInterval(() => {
+                    glitchTitle.style.animation = 'none';
+                    setTimeout(() => {
+                        glitchTitle.style.animation = 'glitch 500ms infinite';
+                    }, 100);
+                }, 5000);
+            }
+
+            // Add floating particles
+            createFloatingParticles();
+        }
+
+        // Create floating particles
+        function createFloatingParticles() {
+            const particleCount = 20;
+            const container = document.body;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'fixed w-1 h-1 bg-cyber-500 rounded-full opacity-50 pointer-events-none';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animation = `float ${10 + Math.random() * 20}s ease-in-out infinite`;
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Initialize everything
+        typeTerminalText();
+        animateProgressBars();
+        addCyberEffects();
+
+        // Add keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                // Close any modals or reset view
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        // Performance monitoring
+        console.log('%c NAC.SECURE SYSTEM INITIALIZED ', 'background: #00ff88; color: #000; font-weight: bold; padding: 4px 8px;');
+        console.log('%c Network Access Control Dashboard ', 'background: #3b82f6; color: #fff; font-weight: bold; padding: 4px 8px;');
+    </script>
+</body>
+</html>

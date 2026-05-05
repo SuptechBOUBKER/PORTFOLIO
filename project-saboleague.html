@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SABO League - L'expérience ultime du football mobile développée avec Flutter">
+    <title>SABO League | Elite Mobile Sport</title>
+    
+    <!-- Scripts & Styles -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Oswald:wght@700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { 
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        display: ['Oswald', 'sans-serif']
+                    },
+                    colors: {
+                        pitch: {
+                            50: '#f0fdf4',
+                            500: '#10b981',
+                            600: '#059669',
+                            900: '#064e3b',
+                            950: '#022c22'
+                        },
+                        dark: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                            950: '#020617'
+                        }
+                    },
+                    animation: {
+                        'stadium-pulse': 'stadium-pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float-3d': 'float-3d 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        'stadium-pulse': { '0%, 100%': { opacity: 0.1 }, '50%': { opacity: 0.3 } },
+                        'float-3d': { 
+                            '0%, 100%': { transform: 'translateY(0) rotateX(10deg) rotateY(-10deg)' }, 
+                            '50%': { transform: 'translateY(-20px) rotateX(15deg) rotateY(-5deg)' } 
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .stadium-bg {
+            background-color: #020617;
+            background-image: 
+                linear-gradient(rgba(16, 185, 129, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(16, 185, 129, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        .light .stadium-bg {
+            background-color: #f8fafc;
+            background-image: 
+                linear-gradient(rgba(16, 185, 129, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(16, 185, 129, 0.1) 1px, transparent 1px);
+        }
+
+        .neon-border {
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.3), inset 0 0 15px rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.5);
+        }
+
+        .perspective-container { perspective: 1000px; }
+        
+        .group:hover .rotate-y-12 { transform: rotateY(12deg); }
+        .group:hover .rotate-y-n12 { transform: rotateY(-12deg); }
+        
+        .phone-stack {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .glass-sport {
+            background: rgba(2, 6, 23, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .light .glass-sport {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .field-line {
+            position: absolute;
+            background: rgba(16, 185, 129, 0.2);
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #10b981; border-radius: 10px; }
+
+        .custom-cursor {
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2310b981' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'%3E%3C/circle%3E%3Cpath d='M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20'%3E%3C/path%3E%3Cpath d='M2 12h20'%3E%3C/path%3E%3C/svg%3E"), auto;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="bg-dark-950 text-slate-100 light:bg-slate-50 light:text-slate-900 selection:bg-pitch-500/30 custom-cursor overflow-x-hidden stadium-bg transition-colors duration-500">
+
+    <!-- Global Field Decoration -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[200%] h-full border-[100px] border-pitch-500/5 light:border-pitch-500/[0.02] rounded-[100%] opacity-20 animate-stadium-pulse"></div>
+        <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-pitch-500/20 light:via-pitch-500/10 to-transparent"></div>
+    </div>
+
+    <!-- Navigation Unique -->
+    <nav class="fixed top-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-4xl">
+        <div class="glass-sport rounded-full px-8 py-4 flex items-center justify-between shadow-2xl transition-all duration-500">
+            <a href="index.html" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 bg-pitch-500 rounded-full flex items-center justify-center group-hover:rotate-[360deg] transition-transform duration-700">
+                    <i data-lucide="arrow-left" class="text-dark-950 w-5 h-5"></i>
+                </div>
+                <span class="font-display uppercase tracking-tighter text-xl text-pitch-500">SABO<span class="text-white light:text-dark-950">LEAGUE</span></span>
+            </a>
+            
+            <div class="hidden md:flex items-center gap-8 font-bold text-xs uppercase tracking-[0.2em] text-slate-100 light:text-slate-600">
+                <a href="#stats" class="hover:text-pitch-500 transition-colors">Tactique</a>
+                <a href="#galerie" class="hover:text-pitch-500 transition-colors">Highlights</a>
+                <a href="#equipe" class="hover:text-pitch-500 transition-colors">Team</a>
+            </div>
+
+            <!--<button id="darkModeToggle" class="w-10 h-10 rounded-full border border-pitch-500/30 flex items-center justify-center hover:bg-pitch-500/10 transition-all">
+                <i id="darkModeIcon" data-lucide="sun" class="w-4 h-4 text-pitch-500"></i>
+            </button> -->
+        </div>
+    </nav>
+
+    <!-- Hero Stadium Section -->
+    <section class="min-h-screen flex items-center pt-20 relative">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col lg:flex-row items-center gap-16">
+                <div class="flex-1 space-y-10 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-pitch-500/10 border border-pitch-500/30 text-pitch-500 font-black text-[10px] uppercase tracking-[0.3em]">
+                        <span class="w-2 h-2 rounded-full bg-pitch-500 animate-ping"></span>
+                        Match Day Live • Season 2025
+                    </div>
+                    
+                    <h1 class="text-7xl lg:text-[120px] font-display uppercase leading-[0.85] tracking-tighter italic text-white light:text-dark-950">
+                        The Next <br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-pitch-500 to-emerald-300">Generation</span><br>
+                        of Football
+                    </h1>
+                    
+                    <p class="text-lg text-slate-400 light:text-slate-600 leading-relaxed max-w-xl mx-auto lg:mx-0 font-medium border-l-4 border-pitch-500 pl-6">
+                        Une immersion totale dans l'univers du ballon rond. Développée avec <span class="text-white light:text-dark-950 font-bold italic">Flutter</span> pour une performance athlétique.
+                    </p>
+                    
+                    <div class="flex flex-wrap gap-6 justify-center lg:justify-start">
+                        <a href="#video-demo" class="group relative">
+                            <div class="absolute -inset-1 bg-pitch-500 rounded-2xl blur opacity-25 group-hover:opacity-75 transition duration-1000"></div>
+                            <button class="relative px-10 py-5 bg-pitch-500 text-dark-950 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center gap-3 hover:scale-105 transition-all">
+                                <i class="fas fa-play"></i> Démo Live
+                            </button>
+                        </a>
+                        <div class="flex items-center gap-4 px-6 py-4 rounded-2xl glass-sport">
+                            <i class="devicon-flutter-plain text-blue-400 text-3xl"></i>
+                            <div class="text-left">
+                                <p class="text-[10px] font-black uppercase opacity-50 text-slate-400 light:text-slate-500">Built with</p>
+                                <p class="text-sm font-bold text-white light:text-dark-950">Flutter SDK</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3D Phone Mockup -->
+                <div class="flex-1 perspective-container">
+                    <div class="relative w-full max-w-sm mx-auto animate-float-3d">
+                        <div class="phone-stack relative z-10 rounded-[3rem] overflow-hidden border-[12px] border-dark-800 light:border-slate-200 shadow-[0_50px_100px_-20px_rgba(16,185,129,0.4)]">
+                            <img src="images/SABOLeague/saboleague_Cover.png" alt="SABO League Main" class="w-full h-auto">
+                        </div>
+                        <!-- Background Glow -->
+                        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] bg-pitch-500/10 light:bg-pitch-500/5 blur-[120px] -z-10 rounded-full"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tactical Stats Section -->
+    <section id="stats" class="py-32 relative">
+        <div class="container mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-20 items-center">
+                <div class="order-2 lg:order-1">
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="p-8 rounded-3xl glass-sport hover:bg-pitch-500/5 transition-all group border-b-4 border-b-pitch-500">
+                            <i data-lucide="zap" class="text-pitch-500 mb-6 w-8 h-8 group-hover:scale-125 transition-transform"></i>
+                            <h4 class="font-display uppercase text-2xl mb-2 text-white light:text-dark-950">Vitesse</h4>
+                            <p class="text-xs text-slate-500 light:text-slate-500 font-bold uppercase tracking-widest leading-relaxed">Architecture asynchrone pour des scores instantanés.</p>
+                        </div>
+                        <div class="p-8 rounded-3xl glass-sport hover:bg-pitch-500/5 transition-all group border-b-4 border-b-blue-500">
+                            <i data-lucide="map" class="text-blue-500 mb-6 w-8 h-8 group-hover:scale-125 transition-transform"></i>
+                            <h4 class="font-display uppercase text-2xl mb-2 text-white light:text-dark-950">Précision</h4>
+                            <p class="text-xs text-slate-500 light:text-slate-500 font-bold uppercase tracking-widest leading-relaxed">Géolocalisation des stades via Google Maps API.</p>
+                        </div>
+                        <div class="p-8 rounded-3xl glass-sport hover:bg-pitch-500/5 transition-all group border-b-4 border-b-emerald-500">
+                            <i data-lucide="database" class="text-emerald-500 mb-6 w-8 h-8 group-hover:scale-125 transition-transform"></i>
+                            <h4 class="font-display uppercase text-2xl mb-2 text-white light:text-dark-950">Endurance</h4>
+                            <p class="text-xs text-slate-500 light:text-slate-500 font-bold uppercase tracking-widest leading-relaxed">Base de données Sqflite pour un mode hors-ligne total.</p>
+                        </div>
+                        <div class="p-8 rounded-3xl glass-sport hover:bg-pitch-500/5 transition-all group border-b-4 border-b-white light:border-b-dark-950">
+                            <i data-lucide="layout" class="text-white light:text-dark-950 mb-6 w-8 h-8 group-hover:scale-125 transition-transform"></i>
+                            <h4 class="font-display uppercase text-2xl mb-2 text-white light:text-dark-950">Style</h4>
+                            <p class="text-xs text-slate-500 light:text-slate-500 font-bold uppercase tracking-widest leading-relaxed">UI adaptive respectant les codes du Material Design 3.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="order-1 lg:order-2 space-y-8">
+                    <h2 class="text-5xl lg:text-7xl font-display uppercase italic text-pitch-500">Tactical <br>Core</h2>
+                    <p class="text-xl text-slate-400 light:text-slate-600 font-medium">L'envers du décor d'une application de classe mondiale.</p>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-6 p-4 rounded-2xl bg-white/5 light:bg-slate-200/50 border border-white/10 light:border-slate-300">
+                            <div class="w-12 h-12 rounded-full bg-pitch-500 flex items-center justify-center font-black text-dark-950">01</div>
+                            <div>
+                                <h5 class="font-bold text-white light:text-dark-950">API Integration</h5>
+                                <p class="text-xs text-slate-500 light:text-slate-500 font-bold uppercase tracking-widest">Football-Data.org REST API</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-6 p-4 rounded-2xl bg-white/5 light:bg-slate-200/50 border border-white/10 light:border-slate-300">
+                            <div class="w-12 h-12 rounded-full bg-pitch-500 flex items-center justify-center font-black text-dark-950">02</div>
+                            <div>
+                                <h5 class="font-bold text-white light:text-dark-950">State Management</h5>
+                                <p class="text-xs text-slate-500 light:text-slate-500 font-bold uppercase tracking-widest">Provider / Riverpod Logic</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3D Gallery Carousel Unique -->
+    <section id="galerie" class="py-32 bg-dark-900/50 light:bg-slate-100">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-24">
+                <h2 class="text-[10px] font-black uppercase tracking-[0.5em] text-pitch-500 mb-4">Match Highlights</h2>
+                <h3 class="text-6xl font-display uppercase italic text-white light:text-dark-950">Interface Preview</h3>
+            </div>
+
+            <div class="flex overflow-x-auto pb-20 gap-12 no-scrollbar snap-x snap-mandatory">
+                <!-- Screen 1 (Video Demo) -->
+                <div id="video-demo" class="flex-shrink-0 w-64 md:w-80 snap-center group">
+                    <div class="relative perspective-container">
+                        <div class="rounded-[2.5rem] overflow-hidden border-4 border-pitch-500/40 group-hover:scale-[1.02] transition-all duration-500 shadow-[0_0_50px_rgba(16,185,129,0.2)] bg-dark-900 aspect-[9/16]">
+                            <video 
+                                id="demo-video"
+                                class="w-full h-full object-cover"
+                                loop muted playsinline poster="images/SABOLeague/saboleague_Cover.png">
+                                <source src="images/SABOLeague/sabo.mp4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                            
+                            <!-- Premium Overlay -->
+                            <div class="absolute inset-0 bg-gradient-to-t from-dark-950 via-transparent to-transparent opacity-60"></div>
+                            
+                            <!-- Play/Pause Control Overlay -->
+                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button onclick="toggleVideo()" class="w-20 h-20 rounded-full bg-pitch-500 text-dark-950 flex items-center justify-center shadow-[0_0_30px_#10b981] hover:scale-110 transition-transform">
+                                    <i id="play-icon" class="fas fa-play text-2xl ml-1"></i>
+                                </button>
+                            </div>
+
+                            <!-- Live Badge -->
+                            <div class="absolute top-6 left-6 px-4 py-1.5 rounded-full bg-red-600 text-white text-[10px] font-black uppercase tracking-widest flex items-center gap-2 animate-pulse">
+                                <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+                                Live Demo
+                            </div>
+                        </div>
+                        <div class="mt-8 text-center">
+                            <h4 class="font-display uppercase tracking-widest text-pitch-500 text-xl">Gameplay Preview</h4>
+                            <p class="text-[10px] text-slate-500 font-bold uppercase mt-1">SABO League v1.0.4</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Screen 2 -->
+                <div class="flex-shrink-0 w-72 snap-center group">
+                    <div class="relative perspective-container">
+                        <div class="rounded-[2.5rem] overflow-hidden border-4 border-pitch-500/20 rotate-y-12 transition-transform duration-500 shadow-2xl">
+                            <img src="images/SABOLeague/Recherche Sportive.jpg" alt="Search" class="w-full h-auto">
+                        </div>
+                        <p class="mt-8 text-center font-display uppercase tracking-widest text-pitch-500">Recherche Pro</p>
+                    </div>
+                </div>
+                <!-- Screen 3 -->
+                <div class="flex-shrink-0 w-72 snap-center group">
+                    <div class="relative perspective-container">
+                        <div class="rounded-[2.5rem] overflow-hidden border-4 border-pitch-500/20 rotate-y-12 transition-transform duration-500 shadow-2xl">
+                            <img src="images/SABOLeague/saboleague_List_équipe.jpg" alt="Teams" class="w-full h-auto">
+                        </div>
+                        <p class="mt-8 text-center font-display uppercase tracking-widest text-pitch-500">Data Visualisation</p>
+                    </div>
+                </div>
+                <!-- Screen 4 -->
+                <div class="flex-shrink-0 w-72 snap-center group">
+                    <div class="relative perspective-container">
+                        <div class="rounded-[2.5rem] overflow-hidden border-4 border-pitch-500/20 rotate-y-12 transition-transform duration-500 shadow-2xl">
+                            <img src="images/SABOLeague/saboleague_Carte.jpg" alt="Map" class="w-full h-auto">
+                        </div>
+                        <p class="mt-8 text-center font-display uppercase tracking-widest text-pitch-500">Tactical Map</p>
+                    </div>
+                </div>
+                <!-- Screen 5 -->
+                <div class="flex-shrink-0 w-72 snap-center group">
+                    <div class="relative perspective-container">
+                        <div class="rounded-[2.5rem] overflow-hidden border-4 border-pitch-500/20 rotate-y-12 transition-transform duration-500 shadow-2xl">
+                            <img src="images/SABOLeague/saboleague_favoirs.jpg" alt="Favs" class="w-full h-auto">
+                        </div>
+                        <p class="mt-8 text-center font-display uppercase tracking-widest text-pitch-500">Personal Locker</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="equipe" class="py-32 relative overflow-hidden">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col lg:flex-row items-end justify-between mb-20 gap-8">
+                <div>
+                    <h2 class="text-6xl font-display uppercase italic text-pitch-500">The Squad</h2>
+                    <p class="text-slate-400 light:text-slate-600 font-bold uppercase tracking-widest mt-4">Les architectes de SABO League</p>
+                </div>
+                <div class="h-px flex-1 bg-gradient-to-r from-pitch-500/50 to-transparent mx-12 hidden lg:block"></div>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-12">
+                <div class="group">
+                    <div class="p-1 rounded-[3rem] bg-gradient-to-b from-pitch-500 to-transparent">
+                        <div class="bg-dark-950 light:bg-white rounded-[2.9rem] p-12 text-center group-hover:bg-pitch-500/10 transition-all duration-500 shadow-xl">
+                            <div class="w-24 h-24 bg-dark-800 light:bg-slate-100 rounded-full mx-auto mb-8 flex items-center justify-center text-4xl font-display text-pitch-500 neon-border">BC</div>
+                            <h4 class="text-2xl font-display uppercase text-white light:text-dark-950">Boubker Cheyoukh</h4>
+                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-500 mt-2">Lead Mobile Dev</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="p-1 rounded-[3rem] bg-gradient-to-b from-blue-500 to-transparent">
+                        <div class="bg-dark-950 light:bg-white rounded-[2.9rem] p-12 text-center group-hover:bg-blue-500/10 transition-all duration-500 shadow-xl">
+                            <div class="w-24 h-24 bg-dark-800 light:bg-slate-100 rounded-full mx-auto mb-8 flex items-center justify-center text-4xl font-display text-blue-500 neon-border" style="border-color: #3b82f6">SF</div>
+                            <h4 class="text-2xl font-display uppercase text-white light:text-dark-950">Saad Fettah</h4>
+                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-500 mt-2">System Architect</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="p-1 rounded-[3rem] bg-gradient-to-b from-emerald-500 to-transparent">
+                        <div class="bg-dark-950 light:bg-white rounded-[2.9rem] p-12 text-center group-hover:bg-emerald-500/10 transition-all duration-500 shadow-xl">
+                            <div class="w-24 h-24 bg-dark-800 light:bg-slate-100 rounded-full mx-auto mb-8 flex items-center justify-center text-4xl font-display text-emerald-500 neon-border" style="border-color: #10b981">AE</div>
+                            <h4 class="text-2xl font-display uppercase text-white light:text-dark-950">Abderrazzak E.</h4>
+                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-500 mt-2">Backend Master</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Sport -->
+    <footer class="py-20 border-t border-pitch-500/10 bg-dark-950 light:bg-slate-900 text-center relative overflow-hidden">
+        <div class="container mx-auto px-6 relative z-10">
+            <p class="text-slate-500 text-[10px] font-black uppercase tracking-[0.5em]">
+                © 2025 SABO League — Elite Digital Sports
+            </p>
+        </div>
+        <!-- Decorative Ball -->
+        <div class="absolute -bottom-20 -right-20 w-64 h-64 border-[40px] border-pitch-500/5 rounded-full"></div>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav div');
+            if (window.scrollY > 50) {
+                nav.classList.add('py-2', 'w-[80%]');
+                nav.classList.remove('py-4', 'w-[90%]');
+            } else {
+                nav.classList.remove('py-2', 'w-[80%]');
+                nav.classList.add('py-4', 'w-[90%]');
+            }
+        });
+
+        // Dark Mode Toggle (Fixed for this unique page)
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const darkModeIcon = document.getElementById('darkModeIcon');
+
+        darkModeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            darkModeIcon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
+            lucide.createIcons();
+        });
+
+        // Video Control Logic
+        function toggleVideo() {
+            const video = document.getElementById('demo-video');
+            const icon = document.getElementById('play-icon');
+            
+            if (video.paused) {
+                video.play();
+                icon.className = 'fas fa-pause text-2xl';
+            } else {
+                video.pause();
+                icon.className = 'fas fa-play text-2xl ml-1';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>

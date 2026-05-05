@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Projet : Analyse et Prévision de la Consommation Énergétique Résidentielle">
+    <title>Projet - Prévision Énergétique</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                        },
+                        dark: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        },
+                        energy: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/url-handler.js"></script>
+    <script src="js/protection.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .fade-in { animation: fadeIn 1s ease-in; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Design spécifique "Energy" - Verre / Néon */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark .glass-card {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .neon-border {
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+        }
+        
+        /* Focus styles for accessibility */
+        a:focus, button:focus {
+            outline: 2px solid #f59e0b; /* Energy-500 */
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-dark-900 text-gray-800 dark:text-gray-200 transition-colors duration-300">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-white/80 dark:bg-dark-800/80 backdrop-blur-md shadow-sm z-50 border-b border-gray-100 dark:border-gray-800">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <a href="index.html" class="text-2xl font-bold text-energy-500 hover:text-energy-600 transition-colors flex items-center" aria-label="Retour au portfolio">
+                <i data-lucide="arrow-left" class="mr-2 w-6 h-6"></i> Retour
+            </a>
+            
+            <button id="darkModeToggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors" aria-label="Basculer mode sombre">
+                <i id="darkModeIcon" data-lucide="moon" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section avec layout asymétrique -->
+    <section class="pt-32 pb-20 px-4 overflow-hidden relative">
+        <!-- Décorations de fond -->
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
+            <div class="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] rounded-full bg-energy-400/20 blur-[100px]"></div>
+            <div class="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] rounded-full bg-blue-400/10 blur-[100px]"></div>
+        </div>
+
+        <div class="container mx-auto max-w-6xl fade-in">
+            <div class="flex flex-col lg:flex-row gap-12 items-center">
+                <!-- Contenu Textuel -->
+                <div class="flex-1 space-y-6">
+                    <div class="inline-flex items-center px-4 py-2 rounded-full bg-energy-100 dark:bg-energy-900/30 text-energy-600 dark:text-energy-400 font-medium text-sm">
+                        <i class="fas fa-bolt mr-2"></i> Data Science & IoT
+                    </div>
+                    <h1 class="text-4xl lg:text-5xl font-extrabold text-gray-900 dark:text-white leading-tight">
+                        Analyse et Prévision de la Consommation Énergétique <span class="text-energy-500">⚡</span>
+                    </h1>
+                    <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+                        Analyse et modélisation de la consommation énergétique d’un foyer résidentiel à partir d’un dataset réel, en suivant l'approche <strong>CRISP-DM</strong>.
+                    </p>
+                    
+                    <div class="pt-4 flex flex-col sm:flex-row gap-4">
+                        <a href="#presentation" class="inline-flex justify-center items-center px-8 py-3 bg-energy-500 text-white font-semibold rounded-xl hover:bg-energy-600 transition-all shadow-lg hover:shadow-energy-500/30 transform hover:-translate-y-1">
+                            <i class="fas fa-desktop mr-2"></i> Voir la présentation
+                        </a>
+                    </div>
+                    
+                    <div class="pt-6 border-t border-gray-200 dark:border-gray-700 mt-8">
+                        <p class="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold mb-3">Équipe de projet</p>
+                        <div class="flex flex-wrap gap-4">
+                            <div class="flex items-center"><div class="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center mr-2 text-sm font-bold">BC</div><span>Boubker C.</span></div>
+                            <div class="flex items-center"><div class="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center mr-2 text-sm font-bold">SF</div><span>Saad F.</span></div>
+                            <div class="flex items-center"><div class="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center mr-2 text-sm font-bold">AE</div><span>Abderrazzak E.</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visuel -->
+                <div class="flex-1 w-full relative">
+                    <div class="glass-card neon-border rounded-2xl p-2 relative z-10 transform rotate-2 hover:rotate-0 transition-transform duration-500">
+                        <img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=800&q=80" alt="Dashboard Énergétique" class="rounded-xl w-full object-cover aspect-[4/3]">
+                    </div>
+                    <!-- Élément de design flottant -->
+                    <div class="absolute -bottom-6 -left-6 glass-card rounded-xl p-4 shadow-xl z-20 flex items-center animate-bounce" style="animation-duration: 3s;">
+                        <div class="w-12 h-12 rounded-full bg-energy-100 text-energy-600 flex items-center justify-center text-xl mr-3">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 font-semibold uppercase">Modèle Prophet</p>
+                            <p class="text-lg font-bold text-gray-900 dark:text-white">Prévision Active</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Détails : Grid asymétrique -->
+    <section class="py-20 relative">
+        <div class="container mx-auto max-w-6xl px-4">
+            
+            <div class="grid lg:grid-cols-12 gap-8">
+                
+                <!-- Bloc Travail Réalisé (Prend 7 colonnes) -->
+                <div class="lg:col-span-7 space-y-6 fade-in">
+                    <h2 class="text-3xl font-bold text-gray-900 dark:text-white flex items-center">
+                        <span class="w-10 h-10 rounded-lg bg-energy-500 text-white flex items-center justify-center mr-4 text-lg">
+                            <i class="fas fa-tasks"></i>
+                        </span>
+                        Travail Réalisé
+                    </h2>
+                    
+                    <div class="space-y-4">
+                        <!-- Card 1 -->
+                        <div class="glass-card p-6 rounded-2xl flex items-start">
+                            <div class="text-energy-500 text-2xl mr-4 mt-1"><i class="fas fa-search-plus"></i></div>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Analyse & Nettoyage</h3>
+                                <p class="text-gray-600 dark:text-gray-400">Data Profiling, compréhension des données, gestion rigoureuse des valeurs manquantes et interpolation.</p>
+                            </div>
+                        </div>
+                        <!-- Card 2 -->
+                        <div class="glass-card p-6 rounded-2xl flex items-start">
+                            <div class="text-energy-500 text-2xl mr-4 mt-1"><i class="fas fa-chart-area"></i></div>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Analyse Exploratoire (EDA)</h3>
+                                <p class="text-gray-600 dark:text-gray-400">Extraction des tendances, de la saisonnalité et mise en évidence des comportements journaliers (semaine vs week-end).</p>
+                            </div>
+                        </div>
+                        <!-- Card 3 -->
+                        <div class="glass-card p-6 rounded-2xl flex items-start">
+                            <div class="text-energy-500 text-2xl mr-4 mt-1"><i class="fas fa-robot"></i></div>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Modélisation & Anomalies</h3>
+                                <p class="text-gray-600 dark:text-gray-400">Détection de pics de consommation avec <strong>Isolation Forest</strong> et prévision temporelle avec <strong>Prophet</strong>.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bloc latéral : Résultats et Compétences (Prend 5 colonnes) -->
+                <div class="lg:col-span-5 space-y-8 fade-in" style="animation-delay: 0.2s;">
+                    
+                    <!-- Résultats -->
+                    <div class="bg-gray-900 text-white rounded-3xl p-8 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-energy-500 rounded-full blur-[50px] opacity-50"></div>
+                        <h3 class="text-2xl font-bold mb-6 flex items-center relative z-10">
+                            <i class="fas fa-award text-energy-400 mr-3"></i> Résultats Clés
+                        </h3>
+                        <ul class="space-y-4 relative z-10">
+                            <li class="flex items-center"><i class="fas fa-check-circle text-energy-400 mr-3"></i> Identification des cycles saisonniers</li>
+                            <li class="flex items-center"><i class="fas fa-check-circle text-energy-400 mr-3"></i> Comparaison Semaine / Week-end</li>
+                            <li class="flex items-center"><i class="fas fa-check-circle text-energy-400 mr-3"></i> Détection de pics anormaux isolés</li>
+                            <li class="flex items-center"><i class="fas fa-check-circle text-energy-400 mr-3"></i> Prévision énergétique à court terme</li>
+                        </ul>
+                    </div>
+
+                    <!-- Compétences -->
+                    <div class="glass-card p-8 rounded-3xl">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Compétences</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-full text-sm font-medium border border-gray-200 dark:border-gray-700">Time Series</span>
+                            <span class="px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-full text-sm font-medium border border-gray-200 dark:border-gray-700">Data Science</span>
+                            <span class="px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-full text-sm font-medium border border-gray-200 dark:border-gray-700">Machine Learning</span>
+                            <span class="px-4 py-2 bg-energy-100 text-energy-700 dark:bg-energy-900/30 dark:text-energy-400 rounded-full text-sm font-medium">Prophet</span>
+                            <span class="px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-full text-sm font-medium border border-gray-200 dark:border-gray-700">Isolation Forest</span>
+                            <span class="px-4 py-2 bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 rounded-full text-sm font-medium">CRISP-DM</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Présentation PPT (PDF Viewer) Section -->
+    <section id="presentation" class="py-20 bg-gray-100 dark:bg-dark-900 border-t border-gray-200 dark:border-gray-800">
+        <div class="container mx-auto max-w-5xl px-4 fade-in">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-gray-900 dark:text-white">
+                    Support de Présentation
+                </h2>
+                <p class="text-gray-600 dark:text-gray-400 mt-2">Le document récapitulatif de l'ensemble de notre étude.</p>
+            </div>
+            
+            <div class="glass-card p-2 rounded-2xl shadow-2xl neon-border focus-within:ring-2 focus-within:ring-energy-500">
+                <!-- Le PDF est intégré ici -->
+                <iframe src="ML/Consommation_Energétique.pdf" width="100%" height="700px" class="rounded-xl border-0 bg-white" title="Présentation Consommation Energétique">
+                    Votre navigateur ne supporte pas l'affichage des PDF. <a href="ML/Consommation_Energétique.pdf" class="text-energy-600 underline">Téléchargez-le ici</a>.
+                </iframe>
+            </div>
+            
+            <div class="mt-8 text-center">
+                <a href="ML/Consommation_Energétique.pdf" download class="inline-flex items-center px-8 py-3 bg-gray-900 dark:bg-gray-700 text-white font-medium rounded-full hover:bg-gray-800 dark:hover:bg-gray-600 transition-all shadow-md hover:shadow-xl transform hover:-translate-y-1">
+                    <i class="fas fa-download mr-3 text-energy-400"></i> Télécharger la présentation
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Simple -->
+    <footer class="bg-white dark:bg-dark-800 py-8 border-t border-gray-200 dark:border-gray-700">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-gray-600 dark:text-gray-400">© 2026 Boubker Cheyoukh. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Dark Mode Logic
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const darkModeIcon = document.getElementById('darkModeIcon');
+
+        function initializeDarkMode() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                darkModeIcon.setAttribute('data-lucide', 'sun');
+            } else {
+                document.documentElement.classList.remove('dark');
+                darkModeIcon.setAttribute('data-lucide', 'moon');
+            }
+            lucide.createIcons();
+        }
+
+        darkModeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.theme = isDark ? 'dark' : 'light';
+            darkModeIcon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
+            lucide.createIcons();
+        });
+
+        document.addEventListener('DOMContentLoaded', initializeDarkMode);
+    </script>
+</body>
+</html>

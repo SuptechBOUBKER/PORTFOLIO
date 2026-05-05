@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Projet : Configuration d'un VPN Site-to-Site avec Cisco IOS">
+    <title>VPN.TUNNEL - Cisco Site-to-Site Laboratory</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'tech': ['JetBrains Mono', 'monospace'],
+                        'network': ['Orbitron', 'sans-serif'],
+                    },
+                    colors: {
+                        tunnel: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        cisco: {
+                            50: '#fef7ed',
+                            100: '#fdedd3',
+                            200: '#fdba74',
+                            300: '#fb923c',
+                            400: '#f97316',
+                            500: '#ea580c',
+                            600: '#dc2626',
+                            700: '#b91c1c',
+                            800: '#991b1b',
+                            900: '#7f1d1d',
+                        },
+                        secure: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    },
+                    animation: {
+                        'tunnel-flow': 'tunnelFlow 3s ease-in-out infinite',
+                        'data-stream': 'dataStream 2s linear infinite',
+                        'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
+                        'terminal-typing': 'terminalTyping 3s steps(40) infinite',
+                        'network-pulse': 'networkPulse 4s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        tunnelFlow: {
+                            '0%': { transform: 'translateX(-100%)', opacity: '0' },
+                            '50%': { transform: 'translateX(0%)', opacity: '1' },
+                            '100%': { transform: 'translateX(100%)', opacity: '0' },
+                        },
+                        dataStream: {
+                            '0%': { transform: 'translateY(0%)', opacity: '0.3' },
+                            '50%': { transform: 'translateY(-20%)', opacity: '1' },
+                            '100%': { transform: 'translateY(-40%)', opacity: '0.3' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 20px rgba(14, 165, 233, 0.5)' },
+                            '50%': { boxShadow: '0 0 40px rgba(14, 165, 233, 0.8)' },
+                        },
+                        terminalTyping: {
+                            '0%, 100%': { width: '0%' },
+                            '50%': { width: '100%' },
+                        },
+                        networkPulse: {
+                            '0%, 100%': { transform: 'scale(1)', opacity: '0.8' },
+                            '50%': { transform: 'scale(1.1)', opacity: '1' },
+                        },
+                    },
+                    backgroundImage: {
+                        'tunnel-gradient': 'linear-gradient(135deg, #0ea5e9 0%, #0369a1 50%, #0c4a6e 100%)',
+                        'cisco-gradient': 'linear-gradient(135deg, #ea580c 0%, #dc2626 50%, #7f1d1d 100%)',
+                        'secure-gradient': 'linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #14532d 100%)',
+                        'grid-pattern': 'radial-gradient(circle at 1px 1px, rgba(14, 165, 233, 0.15) 1px, transparent 1px)',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/url-handler.js"></script>
+    <script src="js/protection.js"></script>
+    <style>
+        body { 
+            font-family: 'JetBrains Mono', monospace;
+            background: #0f172a;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(14, 165, 233, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(234, 88, 12, 0.1) 0%, transparent 50%),
+                linear-gradient(0deg, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 1) 100%);
+            background-size: 100% 100%, 100% 100%, 40px 40px;
+            background-position: 0 0, 0 0, 0 0;
+        }
+        
+        .tunnel-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(14, 165, 233, 0.1), transparent);
+            animation: tunnelFlow 8s linear infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .data-particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #0ea5e9;
+            border-radius: 50%;
+            animation: dataStream 3s linear infinite;
+        }
+        
+        .terminal {
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .terminal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #0ea5e9, transparent);
+            animation: terminalTyping 4s linear infinite;
+        }
+        
+        .tunnel-card {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tunnel-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(14, 165, 233, 0.5), transparent);
+            animation: tunnelFlow 3s linear infinite;
+        }
+        
+        .network-node {
+            background: rgba(15, 23, 42, 0.9);
+            border: 2px solid rgba(14, 165, 233, 0.5);
+            border-radius: 12px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .network-node:hover {
+            border-color: rgba(14, 165, 233, 0.8);
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .cisco-badge {
+            background: linear-gradient(135deg, #ea580c, #dc2626);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .secure-badge {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .tunnel-text {
+            background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .fade-in { 
+            animation: fadeIn 1s ease-in; 
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .glitch {
+            position: relative;
+            color: #0ea5e9;
+            font-size: 4rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            text-shadow: 0.05em 0 0 rgba(255, 0, 0, 0.75),
+                        -0.025em -0.05em 0 rgba(0, 255, 0, 0.75),
+                        0.025em 0.05em 0 rgba(0, 0, 255, 0.75);
+            animation: glitch 500ms infinite;
+        }
+        
+        @keyframes glitch {
+            0%, 100% {
+                text-shadow: 0.05em 0 0 rgba(255, 0, 0, 0.75),
+                            -0.025em -0.05em 0 rgba(0, 255, 0, 0.75),
+                            0.025em 0.05em 0 rgba(0, 0, 255, 0.75);
+            }
+            25% {
+                text-shadow: -0.05em -0.025em 0 rgba(255, 0, 0, 0.75),
+                            0.025em 0.025em 0 rgba(0, 255, 0, 0.75),
+                            -0.05em -0.05em 0 rgba(0, 0, 255, 0.75);
+            }
+            50% {
+                text-shadow: 0.025em 0.05em 0 rgba(255, 0, 0, 0.75),
+                            0.05em 0 0 rgba(0, 255, 0, 0.75),
+                            0 -0.05em 0 rgba(0, 0, 255, 0.75);
+            }
+            75% {
+                text-shadow: -0.025em 0 0 rgba(255, 0, 0, 0.75),
+                            -0.025em -0.025em 0 rgba(0, 255, 0, 0.75),
+                            -0.025em -0.05em 0 rgba(0, 0, 255, 0.75);
+            }
+        }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.8);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(14, 165, 233, 0.5);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(14, 165, 233, 0.7);
+        }
+    </style>
+</head>
+<body class="text-gray-100 overflow-x-hidden">
+    <!-- Tunnel Background Animation -->
+    <div class="tunnel-bg"></div>
+    
+    <!-- Data Particles -->
+    <div id="particlesContainer"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 transition-all duration-300" style="background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(14, 165, 233, 0.2);">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 rounded-lg bg-tunnel-500/20 border border-tunnel-500/50 flex items-center justify-center group-hover:bg-tunnel-500/30 transition-all">
+                        <i data-lucide="arrow-left" class="w-5 h-5 text-tunnel-400"></i>
+                    </div>
+                    <div>
+                        <div class="font-network text-sm text-tunnel-400">EXIT_TUNNEL</div>
+                        <div class="font-tech text-xs text-gray-500">Return to Portfolio</div>
+                    </div>
+                </a>
+                
+                <div class="flex items-center gap-4">
+                    <div class="hidden md:flex items-center gap-6">
+                        <a href="#overview" class="font-tech text-sm text-gray-400 hover:text-tunnel-400 transition-colors">Overview</a>
+                        <a href="#topology" class="font-tech text-sm text-gray-400 hover:text-tunnel-400 transition-colors">Topology</a>
+                        <a href="#configuration" class="font-tech text-sm text-gray-400 hover:text-tunnel-400 transition-colors">Configuration</a>
+                        <a href="#security" class="font-tech text-sm text-gray-400 hover:text-tunnel-400 transition-colors">Security</a>
+                        <a href="#documentation" class="font-tech text-sm text-gray-400 hover:text-tunnel-400 transition-colors">Documentation</a>
+                    </div>
+                    
+                   
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="overview" class="min-h-screen flex items-center justify-center px-6 relative">
+        <div class="container mx-auto max-w-6xl relative z-10">
+            <div class="text-center fade-in">
+                <!-- Status Badge -->
+                <div class="inline-flex items-center gap-2 px-4 py-2 mb-8 rounded-full border border-tunnel-500/30 bg-dark-950/80 backdrop-blur-sm">
+                    <div class="w-2 h-2 rounded-full bg-tunnel-500 animate-pulse"></div>
+                    <span class="font-tech text-xs text-tunnel-500 tracking-widest uppercase">TUNNEL_ESTABLISHED</span>
+                </div>
+
+                <!-- Main Title with Glitch Effect -->
+                <div class="mb-8">
+                    <h1 class="glitch font-network text-6xl md:text-8xl font-black mb-4">VPN.TUNNEL</h1>
+                    <div class="text-2xl md:text-3xl font-network tunnel-text mb-6">Site-to-Site Cisco Laboratory</div>
+                </div>
+
+                <!-- Terminal Description -->
+                <div class="terminal max-w-3xl mx-auto mb-12 p-6">
+                    <div class="text-left font-tech text-sm">
+                        <p class="text-tunnel-400 mb-2">$ establishing_secure_connection...</p>
+                        <p class="text-gray-400 mb-2">> Protocol: IPsec VPN Site-to-Site</p>
+                        <p class="text-gray-400 mb-2">> Platform: Cisco IOS CLI</p>
+                        <p class="text-gray-400 mb-2">> Routing: OSPF Dynamic Protocol</p>
+                        <p class="text-secure-400 animate-pulse">$ connection_established ✓</p>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-wrap justify-center gap-6 mb-16">
+                    <a href="https://github.com/BOUBKERsup07/Lab_configure-site-to-site-vpn-using-cli" target="_blank" 
+                       class="group flex items-center gap-3 px-6 py-3 border border-tunnel-500/50 bg-tunnel-500/10 backdrop-blur-sm rounded-xl hover:bg-tunnel-500/20 transition-all">
+                        <i data-lucide="git-branch" class="w-4 h-4 text-tunnel-400"></i>
+                        <span class="font-tech text-tunnel-400">SOURCE_CODE</span>
+                    </a>
+                    <a href="#documentation" 
+                       class="group flex items-center gap-3 px-6 py-3 border border-cisco-500/50 bg-cisco-500/10 backdrop-blur-sm rounded-xl hover:bg-cisco-500/20 transition-all">
+                        <i data-lucide="file-text" class="w-4 h-4 text-cisco-400"></i>
+                        <span class="font-tech text-cisco-400">LAB_REPORT</span>
+                    </a>
+                </div>
+
+                <!-- Tech Stack Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                    <div class="network-node p-6 text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 rounded-xl bg-tunnel-gradient flex items-center justify-center">
+                            <i class="fab fa-cisco text-2xl text-white"></i>
+                        </div>
+                        <h3 class="font-network text-lg font-bold text-tunnel-400 mb-2">CISCO IOS</h3>
+                        <p class="font-tech text-xs text-gray-400">Enterprise Router Configuration</p>
+                    </div>
+                    
+                    <div class="network-node p-6 text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 rounded-xl bg-secure-gradient flex items-center justify-center">
+                            <i data-lucide="shield" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <h3 class="font-network text-lg font-bold text-secure-400 mb-2">IPSEC VPN</h3>
+                        <p class="font-tech text-xs text-gray-400">Secure Tunnel Protocol</p>
+                    </div>
+                    
+                    <div class="network-node p-6 text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 rounded-xl bg-cisco-gradient flex items-center justify-center">
+                            <i data-lucide="route" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <h3 class="font-network text-lg font-bold text-cisco-400 mb-2">OSPF</h3>
+                        <p class="font-tech text-xs text-gray-400">Dynamic Routing Protocol</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Network Topology Section -->
+    <section id="topology" class="py-20 px-6">
+        <div class="container mx-auto max-w-6xl">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="font-network text-4xl md:text-5xl font-bold tunnel-text mb-4">
+                    NETWORK TOPOLOGY
+                </h2>
+                <p class="font-tech text-tunnel-500 text-lg">
+                    Three-Router VPN Architecture
+                </p>
+            </div>
+
+            <!-- Network Architecture Image -->
+            <div class="tunnel-card p-8 mb-16 fade-in">
+                <div class="text-center">
+                    <img src="Projet_RESAUX/Lab VPN IPsec - Architecture Trois Routeurs.png" 
+                         alt="VPN Architecture Trois Routeurs" 
+                         class="w-full max-w-5xl mx-auto rounded-xl border border-tunnel-500/30">
+                    <div class="mt-6">
+                        <p class="font-tech text-sm text-tunnel-400 mb-2">VPN SITE-TO-SITE ARCHITECTURE</p>
+                        <p class="font-tech text-xs text-gray-400">Three-Router Cisco Network with IPsec Tunnel Configuration</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Configuration Dashboard -->
+    <section id="configuration" class="py-20 px-6">
+        <div class="container mx-auto max-w-6xl">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="font-network text-4xl md:text-5xl font-bold tunnel-text mb-4">
+                    CONFIGURATION DASHBOARD
+                </h2>
+                <p class="font-tech text-tunnel-500 text-lg">
+                    Cisco IOS CLI Implementation
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Phase 1: ISAKMP -->
+                <div class="tunnel-card p-6 fade-in">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 rounded-lg bg-tunnel-gradient flex items-center justify-center">
+                            <i data-lucide="key" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="cisco-badge">PHASE 1</div>
+                    </div>
+                    <h3 class="font-network text-lg font-bold text-tunnel-400 mb-3">ISAKMP POLICY</h3>
+                    <div class="terminal p-4 font-tech text-xs">
+                        <p class="text-tunnel-400 mb-2">R1(config)# crypto isakmp policy 10</p>
+                        <p class="text-gray-400 mb-2">R1(config-isakmp)# encr aes 256</p>
+                        <p class="text-gray-400 mb-2">R1(config-isakmp)# authentication pre-share</p>
+                        <p class="text-gray-400 mb-2">R1(config-isakmp)# group 2</p>
+                        <p class="text-secure-400">$ isakmp_negotiation_complete ✓</p>
+                    </div>
+                </div>
+
+                <!-- Phase 2: IPsec -->
+                <div class="tunnel-card p-6 fade-in" style="animation-delay: 0.2s;">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 rounded-lg bg-secure-gradient flex items-center justify-center">
+                            <i data-lucide="shield" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="cisco-badge">PHASE 2</div>
+                    </div>
+                    <h3 class="font-network text-lg font-bold text-secure-400 mb-3">IPSEC TRANSFORM</h3>
+                    <div class="terminal p-4 font-tech text-xs">
+                        <p class="text-secure-400 mb-2">R1(config)# crypto ipsec transform-set TS esp-aes 256</p>
+                        <p class="text-gray-400 mb-2">R1(cfg-crypto-trans)# mode tunnel</p>
+                        <p class="text-gray-400 mb-2">R1(config)# crypto map CMAP 10 ipsec-isakmp</p>
+                        <p class="text-gray-400 mb-2">R1(config-cmap)# set transform-set TS</p>
+                        <p class="text-tunnel-400">$ ipsec_tunnel_established ✓</p>
+                    </div>
+                </div>
+
+                <!-- OSPF Configuration -->
+                <div class="tunnel-card p-6 fade-in" style="animation-delay: 0.4s;">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 rounded-lg bg-cisco-gradient flex items-center justify-center">
+                            <i data-lucide="route" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="cisco-badge">ROUTING</div>
+                    </div>
+                    <h3 class="font-network text-lg font-bold text-cisco-400 mb-3">OSPF PROTOCOL</h3>
+                    <div class="terminal p-4 font-tech text-xs">
+                        <p class="text-cisco-400 mb-2">R1(config)# router ospf 1</p>
+                        <p class="text-gray-400 mb-2">R1(config-router)# network 192.168.1.0 0.0.0.255 area 0</p>
+                        <p class="text-gray-400 mb-2">R1(config-router)# network 10.0.0.0 0.0.0.255 area 0</p>
+                        <p class="text-gray-400 mb-2">R1(config-router)# passive-interface Gig0/0</p>
+                        <p class="text-cisco-400">$ ospf_adjacency_formed ✓</p>
+                    </div>
+                </div>
+
+                <!-- ACL Configuration -->
+                <div class="tunnel-card p-6 fade-in" style="animation-delay: 0.6s;">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 rounded-lg bg-tunnel-gradient flex items-center justify-center">
+                            <i data-lucide="filter" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="cisco-badge">SECURITY</div>
+                    </div>
+                    <h3 class="font-network text-lg font-bold text-tunnel-400 mb-3">ACCESS CONTROL</h3>
+                    <div class="terminal p-4 font-tech text-xs">
+                        <p class="text-tunnel-400 mb-2">R1(config)# access-list 101 permit ip 192.168.1.0 0.0.0.255 192.168.2.0 0.0.0.255</p>
+                        <p class="text-gray-400 mb-2">R1(config)# crypto map CMAP 10 match address 101</p>
+                        <p class="text-gray-400 mb-2">R1(config)# crypto map CMAP 10 set peer 10.0.0.3</p>
+                        <p class="text-gray-400 mb-2">R1(config-if)# crypto map CMAP</p>
+                        <p class="text-secure-400">$ interesting_traffic_defined ✓</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Security Analysis Section -->
+    <section id="security" class="py-20 px-6">
+        <div class="container mx-auto max-w-6xl">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="font-network text-4xl md:text-5xl font-bold tunnel-text mb-4">
+                    SECURITY ANALYSIS
+                </h2>
+                <p class="font-tech text-tunnel-500 text-lg">
+                    VPN Tunnel Security Metrics
+                </p>
+            </div>
+
+            <!-- Security Metrics -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+                <div class="tunnel-card p-6 text-center fade-in">
+                    <div class="text-4xl font-network font-bold text-secure-400 mb-2">AES-256</div>
+                    <div class="font-tech text-xs text-gray-400 mb-3">ENCRYPTION</div>
+                    <div class="w-full bg-dark-950/50 rounded-full h-2">
+                        <div class="bg-gradient-to-r from-secure-500 to-green-500 h-2 rounded-full" style="width: 100%"></div>
+                    </div>
+                </div>
+
+                <div class="tunnel-card p-6 text-center fade-in" style="animation-delay: 0.1s;">
+                    <div class="text-4xl font-network font-bold text-tunnel-400 mb-2">SHA-256</div>
+                    <div class="font-tech text-xs text-gray-400 mb-3">INTEGRITY</div>
+                    <div class="w-full bg-dark-950/50 rounded-full h-2">
+                        <div class="bg-gradient-to-r from-tunnel-500 to-blue-500 h-2 rounded-full" style="width: 100%"></div>
+                    </div>
+                </div>
+
+                <div class="tunnel-card p-6 text-center fade-in" style="animation-delay: 0.2s;">
+                    <div class="text-4xl font-network font-bold text-cisco-400 mb-2">DH-2</div>
+                    <div class="font-tech text-xs text-gray-400 mb-3">KEY EXCHANGE</div>
+                    <div class="w-full bg-dark-950/50 rounded-full h-2">
+                        <div class="bg-gradient-to-r from-cisco-500 to-orange-500 h-2 rounded-full" style="width: 100%"></div>
+                    </div>
+                </div>
+
+                <div class="tunnel-card p-6 text-center fade-in" style="animation-delay: 0.3s;">
+                    <div class="text-4xl font-network font-bold text-secure-400 mb-2">100%</div>
+                    <div class="font-tech text-xs text-gray-400 mb-3">UPTIME</div>
+                    <div class="w-full bg-dark-950/50 rounded-full h-2">
+                        <div class="bg-gradient-to-r from-secure-500 to-green-500 h-2 rounded-full" style="width: 99.9%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Status -->
+            <div class="tunnel-card p-8 mb-16 fade-in">
+                <h3 class="font-network text-2xl font-bold text-tunnel-400 mb-6 text-center">TUNNEL STATUS MONITOR</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="font-tech text-sm text-gray-400">ISAKMP PHASE 1</span>
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-secure-500 animate-pulse"></div>
+                                <span class="font-tech text-xs text-secure-500">ESTABLISHED</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="font-tech text-sm text-gray-400">IPSEC PHASE 2</span>
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-secure-500 animate-pulse"></div>
+                                <span class="font-tech text-xs text-secure-500">ACTIVE</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="font-tech text-sm text-gray-400">OSPF ADJACENCY</span>
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-tunnel-500 animate-pulse"></div>
+                                <span class="font-tech text-xs text-tunnel-500">FULL</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="font-tech text-sm text-gray-400">DATA ENCRYPTION</span>
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-secure-500 animate-pulse"></div>
+                                <span class="font-tech text-xs text-secure-500">ENABLED</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="font-tech text-sm text-gray-400">TRAFFIC FILTERING</span>
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-tunnel-500 animate-pulse"></div>
+                                <span class="font-tech text-xs text-tunnel-500">ACL APPLIED</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="font-tech text-sm text-gray-400">TUNNEL INTERFACE</span>
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-cisco-500 animate-pulse"></div>
+                                <span class="font-tech text-xs text-cisco-500">UP</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Documentation Section -->
+    <section id="documentation" class="py-20 px-6">
+        <div class="container mx-auto max-w-6xl">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="font-network text-4xl md:text-5xl font-bold tunnel-text mb-4">
+                    LABORATORY DOCUMENTATION
+                </h2>
+                <p class="font-tech text-tunnel-500 text-lg">
+                    Complete VPN Configuration Report
+                </p>
+            </div>
+
+            <div class="tunnel-card p-8 fade-in">
+                <div class="terminal mb-8">
+                    <div class="font-tech text-sm">
+                        <p class="text-tunnel-400 mb-2">$ ls -la /laboratory/reports/</p>
+                        <p class="text-gray-400 mb-2">drwxr-xr-x 2 admin admin 4096 Dec 15 14:30 .</p>
+                        <p class="text-gray-400 mb-2">-rw-r--r-- 1 admin admin 3.2M Dec 15 14:30 Lab-configure-site-to-site-vpn-using-cli.pdf</p>
+                        <p class="animate-pulse text-tunnel-400">$ file Lab-configure-site-to-site-vpn-using-cli.pdf</p>
+                        <p class="text-secure-400">> PDF document, version 1.4, complete VPN laboratory documentation</p>
+                    </div>
+                </div>
+
+                <div class="bg-dark-950/50 rounded-xl p-6 border border-tunnel-500/30">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                        <div>
+                            <h3 class="font-network text-xl font-bold text-tunnel-400 mb-4">DOCUMENTATION CONTENTS</h3>
+                            <ul class="space-y-3 font-tech text-sm text-gray-400">
+                                <li class="flex items-center gap-3">
+                                    <div class="w-2 h-2 rounded-full bg-tunnel-500"></div>
+                                    <span>Network Topology & IP Planning</span>
+                                </li>
+                                <li class="flex items-center gap-3">
+                                    <div class="w-2 h-2 rounded-full bg-tunnel-500"></div>
+                                    <span>ISAKMP Phase 1 Configuration</span>
+                                </li>
+                                <li class="flex items-center gap-3">
+                                    <div class="w-2 h-2 rounded-full bg-secure-500"></div>
+                                    <span>IPsec Phase 2 Implementation</span>
+                                </li>
+                                <li class="flex items-center gap-3">
+                                    <div class="w-2 h-2 rounded-full bg-cisco-500"></div>
+                                    <span>OSPF Routing Protocol Setup</span>
+                                </li>
+                                <li class="flex items-center gap-3">
+                                    <div class="w-2 h-2 rounded-full bg-tunnel-500"></div>
+                                    <span>Troubleshooting & Verification</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-32 h-32 mx-auto mb-6 rounded-xl bg-tunnel-gradient flex items-center justify-center animate-pulse">
+                                <i data-lucide="file-text" class="w-12 h-12 text-white"></i>
+                            </div>
+                            <div class="space-y-4">
+                                <a href="Projet_RESAUX/Lab-configure-site-to-site-vpn-using-cli.pdf" 
+                                   target="_blank"
+                                   class="group inline-flex items-center gap-3 px-6 py-3 border border-tunnel-500/50 bg-tunnel-500/10 backdrop-blur-sm rounded-xl hover:bg-tunnel-500/20 transition-all">
+                                    <i data-lucide="eye" class="w-4 h-4 text-tunnel-400"></i>
+                                    <span class="font-tech text-tunnel-400">VIEW_REPORT</span>
+                                </a>
+                                <br>
+                                <a href="Projet_RESAUX/Lab-configure-site-to-site-vpn-using-cli.pdf" 
+                                   download
+                                   class="group inline-flex items-center gap-3 px-6 py-3 border border-cisco-500/50 bg-cisco-500/10 backdrop-blur-sm rounded-xl hover:bg-cisco-500/20 transition-all">
+                                    <i data-lucide="download" class="w-4 h-4 text-cisco-400"></i>
+                                    <span class="font-tech text-cisco-400">DOWNLOAD_PDF</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-6 border-t border-tunnel-500/20">
+        <div class="container mx-auto max-w-6xl text-center">
+            <div class="mb-6">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-tunnel-500/30 bg-dark-950/80 backdrop-blur-sm">
+                    <div class="w-2 h-2 rounded-full bg-secure-500 animate-pulse"></div>
+                    <span class="font-tech text-xs text-secure-500 tracking-widest uppercase">TUNNEL_SECURED</span>
+                </div>
+            </div>
+            <p class="font-tech text-sm text-gray-400">
+                © 2026 BOUBKER CHEYOUKH | VPN.TUNNEL SYSTEM | CISCO NETWORK LABORATORY
+            </p>
+            <div class="mt-4 flex justify-center gap-6">
+                <a href="https://github.com/BOUBKERsup07" target="_blank" class="text-tunnel-500 hover:text-tunnel-400 transition-colors">
+                    <i class="fab fa-github text-xl"></i>
+                </a>
+                <!-- <a href="https://linkedin.com/in/boubker-cheyoukh" target="_blank" class="text-tunnel-500 hover:text-tunnel-400 transition-colors">
+                    <i class="fab fa-linkedin text-xl"></i>
+                </a> -->
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide Icons
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            
+            // Initialize animations
+            initializeAnimations();
+            
+            // Initialize scroll effects
+            initializeScrollEffects();
+            
+            // Initialize network interactions
+            initializeNetworkInteractions();
+            
+            // Create data particles
+            createDataParticles();
+        });
+
+        // Smooth Scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Initialize Animations
+        function initializeAnimations() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationPlayState = 'running';
+                        entry.target.style.opacity = '1';
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.fade-in').forEach(el => {
+                el.style.animationPlayState = 'paused';
+                el.style.opacity = '0';
+                observer.observe(el);
+            });
+        }
+
+        // Scroll Effects
+        function initializeScrollEffects() {
+            let lastScroll = 0;
+            const nav = document.querySelector('nav');
+            
+            window.addEventListener('scroll', () => {
+                const currentScroll = window.pageYOffset;
+                
+                if (currentScroll <= 0) {
+                    nav.classList.remove('translate-y-[-100%]');
+                } else if (currentScroll > lastScroll) {
+                    nav.classList.add('translate-y-[-100%]');
+                } else {
+                    nav.classList.remove('translate-y-[-100%]');
+                }
+                
+                lastScroll = currentScroll;
+            });
+        }
+
+        // Network Interactions
+        function initializeNetworkInteractions() {
+            const networkNodes = document.querySelectorAll('.network-node');
+            
+            networkNodes.forEach(node => {
+                node.addEventListener('click', function() {
+                    const pulse = document.createElement('div');
+                    pulse.className = 'absolute inset-0 rounded-inherit bg-tunnel-500/30 animate-ping';
+                    this.appendChild(pulse);
+                    
+                    setTimeout(() => {
+                        pulse.remove();
+                    }, 1000);
+                });
+            });
+        }
+
+        // Create Data Particles
+        function createDataParticles() {
+            const container = document.getElementById('particlesContainer');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'data-particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 3 + 's';
+                particle.style.animationDuration = (3 + Math.random() * 2) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Console logging
+        console.log('%c VPN.TUNNEL SYSTEM INITIALIZED ', 'background: #0ea5e9; color: #fff; font-weight: bold; padding: 4px 8px;');
+        console.log('%c Site-to-Site Cisco Laboratory ', 'background: #ea580c; color: #fff; font-weight: bold; padding: 4px 8px;');
+    </script>
+</body>
+</html>

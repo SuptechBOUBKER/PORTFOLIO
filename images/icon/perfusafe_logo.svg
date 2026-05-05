@@ -1,0 +1,41 @@
+<svg width="100%" viewBox="0 0 680 340" role="img" xmlns="http://www.w3.org/2000/svg" style="">
+  <title style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">PerfuSafe Logo</title>
+  <desc style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">Logo pour la plateforme PerfuSafe - système IoT de monitoring médication et perfusion</desc>
+
+  <defs>
+    
+  <mask id="imagine-text-gaps-ai14u3" maskUnits="userSpaceOnUse"><rect x="0" y="0" width="680" height="340" fill="white"/><rect x="162.5" y="113" width="11" height="14" fill="black" rx="2"/><rect x="211" y="115" width="192.76251220703125" height="50.80000305175781" fill="black" rx="2"/><rect x="212" y="168.40000915527344" width="241.33750915527344" height="18.40000057220459" fill="black" rx="2"/><rect x="212" y="202" width="279.0625" height="16.40000057220459" fill="black" rx="2"/></mask></defs>
+
+  <!-- Icon: circle container -->
+  <circle cx="120" cy="160" r="72" style="fill:none;stroke:rgb(91, 184, 245);color:rgb(255, 255, 255);stroke-width:3px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <circle cx="120" cy="160" r="58" style="fill:none;stroke:rgb(15, 196, 167);color:rgb(255, 255, 255);stroke-width:2px;stroke-dasharray:6px, 3px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <!-- Medical cross -->
+  <rect x="109" y="130" width="22" height="60" rx="4" style="fill:rgb(26, 143, 227);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <rect x="89" y="150" width="62" height="22" rx="4" style="fill:rgb(26, 143, 227);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <!-- IV drop shape above cross -->
+  <ellipse cx="120" cy="118" rx="7" ry="9" opacity="0.85" style="fill:rgb(15, 196, 167);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.85;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <polygon points="120,107 114,118 126,118" opacity="0.85" style="fill:rgb(15, 196, 167);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.85;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <!-- IoT signal arcs (top right of icon) -->
+  <path d="M163 128 Q175 145 163 162" stroke-dasharray="0" style="fill:none;stroke:rgb(15, 196, 167);color:rgb(255, 255, 255);stroke-width:2px;stroke-dasharray:0px;stroke-linecap:round;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <path d="M170 120 Q188 143 170 168" opacity="0.5" mask="url(#imagine-text-gaps-ai14u3)" style="fill:none;stroke:rgb(15, 196, 167);color:rgb(255, 255, 255);stroke-width:2px;stroke-linecap:round;stroke-linejoin:miter;opacity:0.5;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <!-- Alert dot -->
+  <circle cx="168" cy="118" r="7" style="fill:rgb(232, 75, 75);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <text x="168" y="123" text-anchor="middle" font-family="Arial" font-size="9" font-weight="700" fill="white" style="fill:rgb(255, 255, 255);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Arial;font-size:9px;font-weight:700;text-anchor:middle;dominant-baseline:auto">!</text>
+
+  <!-- Brand name -->
+  <text x="215" y="155" style="fill:rgb(91, 184, 245);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Helvetica Neue&quot;, Arial, sans-serif;font-size:42px;font-weight:700;text-anchor:start;dominant-baseline:auto">Perfu<tspan style="fill:rgb(15, 196, 167);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Helvetica Neue&quot;, Arial, sans-serif;font-size:42px;font-weight:300;text-anchor:start;dominant-baseline:auto">Safe</tspan></text>
+
+  <!-- Tagline -->
+  <text x="216" y="182" style="fill:rgb(170, 170, 170);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Helvetica Neue&quot;, Arial, sans-serif;font-size:13px;font-weight:400;text-anchor:start;dominant-baseline:auto">IoT MEDICAL MONITORING</text>
+
+  <!-- Thin separator line -->
+  <line x1="216" y1="196" x2="530" y2="196" stroke="#ddd" stroke-width="0.8" style="fill:rgb(0, 0, 0);stroke:rgb(221, 221, 221);color:rgb(255, 255, 255);stroke-width:0.8px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <!-- Sub-label -->
+  <text x="216" y="214" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#aaa" letter-spacing="1" style="fill:rgb(170, 170, 170);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Helvetica Neue&quot;, Arial, sans-serif;font-size:11px;font-weight:400;text-anchor:start;dominant-baseline:auto">Détection d'anomalies · TinyML · Raspberry Pi</text>
+
+</svg>
