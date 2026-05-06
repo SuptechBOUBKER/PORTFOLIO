@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SahaTech AI — Système Multi-Agents Médical</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="js/protection.js"></script>
+    <script src="js/url-handler.js"></script>
+    <style>
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+        :root{
+            --ink:#0a0a0a;
+            --paper:#f5f2eb;
+            --blue:#0047ff;
+            --teal:#00c896;
+            --red:#e8002a;
+            --muted:#9a9585;
+            --line:rgba(10,10,10,0.15);
+            --mono:'DM Mono',monospace;
+            --display:'Bebas Neue',sans-serif;
+            --body:'DM Sans',sans-serif;
+        }
+
+        html{scroll-behavior:smooth}
+        body{
+            background:var(--paper);
+            color:var(--ink);
+            font-family:var(--body);
+            font-size:16px;
+            line-height:1.5;
+            overflow-x:hidden;
+        }
+
+        /* GRID OVERLAY */
+        .grid-bg{
+            position:fixed;
+            inset:0;
+            pointer-events:none;
+            z-index:0;
+            background-image:
+                linear-gradient(var(--line) 1px,transparent 1px),
+                linear-gradient(90deg,var(--line) 1px,transparent 1px);
+            background-size:60px 60px;
+            opacity:0.4;
+        }
+
+        /* ─── NAV ─── */
+        nav{
+            position:fixed;
+            top:0;left:0;right:0;
+            z-index:100;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            padding:0 40px;
+            height:56px;
+            border-bottom:1px solid var(--ink);
+            background:var(--paper);
+            mix-blend-mode:normal;
+        }
+        .nav-logo{
+            font-family:var(--display);
+            font-size:24px;
+            letter-spacing:0.05em;
+            color:var(--ink);
+            text-decoration:none;
+            display:flex;
+            align-items:center;
+            gap:12px;
+        }
+        .nav-logo-dot{
+            width:10px;height:10px;
+            border-radius:50%;
+            background:var(--blue);
+            animation:blink 2s ease-in-out infinite;
+        }
+        @keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+        .nav-links{
+            display:flex;
+            gap:40px;
+            list-style:none;
+        }
+        .nav-links a{
+            font-family:var(--mono);
+            font-size:11px;
+            letter-spacing:0.1em;
+            text-transform:uppercase;
+            color:var(--muted);
+            text-decoration:none;
+            transition:color 0.2s;
+        }
+        .nav-links a:hover{color:var(--blue)}
+        .nav-status{
+            font-family:var(--mono);
+            font-size:10px;
+            color:var(--teal);
+            display:flex;
+            align-items:center;
+            gap:6px;
+        }
+        .nav-status::before{
+            content:'';
+            width:6px;height:6px;
+            border-radius:50%;
+            background:var(--teal);
+            animation:blink 1.5s ease-in-out infinite;
+        }
+
+        /* ─── HERO ─── */
+        .hero{
+            position:relative;
+            z-index:1;
+            min-height:100vh;
+            padding:100px 40px 0;
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            grid-template-rows:auto 1fr;
+            border-bottom:1px solid var(--ink);
+        }
+        .hero-tag{
+            grid-column:1/-1;
+            font-family:var(--mono);
+            font-size:11px;
+            letter-spacing:0.2em;
+            text-transform:uppercase;
+            color:var(--muted);
+            padding-bottom:24px;
+            border-bottom:1px solid var(--line);
+            margin-bottom:40px;
+            display:flex;
+            align-items:center;
+            gap:20px;
+        }
+        .hero-tag span{color:var(--blue)}
+        .hero-left{
+            padding-right:60px;
+            border-right:1px solid var(--line);
+            padding-bottom:80px;
+        }
+        .hero-title{
+            font-family:var(--display);
+            font-size:clamp(80px,12vw,180px);
+            line-height:0.88;
+            letter-spacing:-0.01em;
+            color:var(--ink);
+            margin-bottom:40px;
+        }
+        .hero-title em{
+            font-style:normal;
+            color:var(--blue);
+            display:block;
+        }
+        .hero-desc{
+            font-size:17px;
+            color:var(--muted);
+            line-height:1.7;
+            max-width:440px;
+            margin-bottom:48px;
+        }
+        .hero-desc strong{color:var(--ink);font-weight:500}
+        .hero-right{
+            position:relative;
+            display:flex;
+            align-items:flex-start;
+            justify-content:center;
+            padding:0 0 80px 60px;
+        }
+        .hero-image-wrapper{
+            width:100%;
+            height:100%;
+            background:var(--ink);
+            overflow:hidden;
+            border:1px solid var(--ink);
+        }
+        .hero-image-wrapper img{
+            width:100%;
+            height:100%;
+            object-fit:cover;
+            filter:grayscale(1) contrast(1.1);
+            transition:filter 0.5s ease;
+        }
+        .hero-image-wrapper:hover img{filter:grayscale(0) contrast(1)}
+
+        /* ─── SECTION ─── */
+        section{
+            position:relative;
+            z-index:1;
+            padding:120px 40px;
+            border-bottom:1px solid var(--line);
+        }
+        .section-header{
+            display:flex;
+            justify-content:space-between;
+            align-items:flex-end;
+            margin-bottom:80px;
+        }
+        .section-title{
+            font-family:var(--display);
+            font-size:80px;
+            line-height:1;
+            text-transform:uppercase;
+        }
+        .section-num{
+            font-family:var(--mono);
+            font-size:12px;
+            color:var(--muted);
+        }
+
+        /* ─── CONTENT BLOCKS ─── */
+        .grid-2{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:80px;
+        }
+        .grid-3{
+            display:grid;
+            grid-template-columns:repeat(3,1fr);
+            gap:40px;
+        }
+        .text-block p{
+            font-size:18px;
+            line-height:1.6;
+            color:var(--muted);
+            margin-bottom:32px;
+        }
+        .text-block strong{color:var(--ink)}
+
+        /* ─── TECH STACK ─── */
+        .tech-card{
+            padding:32px;
+            border:1px solid var(--line);
+            background:rgba(255,255,255,0.5);
+            transition:all 0.3s;
+        }
+        .tech-card:hover{
+            border-color:var(--blue);
+            transform:translateY(-8px);
+        }
+        .tech-icon{
+            font-size:32px;
+            color:var(--blue);
+            margin-bottom:24px;
+        }
+        .tech-name{
+            font-family:var(--display);
+            font-size:24px;
+            margin-bottom:12px;
+        }
+        .tech-list{
+            list-style:none;
+            font-family:var(--mono);
+            font-size:11px;
+            color:var(--muted);
+            text-transform:uppercase;
+            letter-spacing:0.05em;
+        }
+
+        /* ─── AGENTS WORKFLOW ─── */
+        .workflow-step{
+            display:flex;
+            gap:40px;
+            margin-bottom:60px;
+            padding:40px;
+            border:1px solid var(--line);
+            background:rgba(255,255,255,0.3);
+        }
+        .step-num{
+            font-family:var(--display);
+            font-size:48px;
+            color:var(--blue);
+            opacity:0.3;
+        }
+        .step-content h3{
+            font-family:var(--display);
+            font-size:32px;
+            margin-bottom:16px;
+        }
+
+        /* ─── GALLERY ─── */
+        .gallery-grid{
+            display:grid;
+            grid-template-columns:repeat(12, 1fr);
+            gap:24px;
+        }
+        .gallery-item{
+            position:relative;
+            background:var(--ink);
+            overflow:hidden;
+            border:1px solid var(--ink);
+        }
+        .gallery-item img{
+            width:100%;
+            height:100%;
+            object-fit:cover;
+            transition:all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .gallery-item:hover img{
+            transform:scale(1.05);
+            opacity:0.8;
+        }
+        .gallery-item a {
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: zoom-in;
+        }
+        .col-6{grid-column:span 6}
+        .col-4{grid-column:span 4}
+        .col-8{grid-column:span 8}
+        .aspect-video{aspect-ratio:16/9}
+
+        /* ─── FOOTER ─── */
+        footer{
+            padding:80px 40px;
+            background:var(--ink);
+            color:var(--paper);
+            text-align:center;
+        }
+        .footer-logo{
+            font-family:var(--display);
+            font-size:48px;
+            margin-bottom:24px;
+        }
+        .footer-copy{
+            font-family:var(--mono);
+            font-size:10px;
+            letter-spacing:0.1em;
+            opacity:0.5;
+        }
+
+        /* ─── MOBILE ─── */
+        @media (max-width:968px){
+            .hero, .grid-2, .grid-3, .section-header{
+                grid-template-columns:1fr;
+                gap:40px;
+            }
+            .hero-left{border-right:none;padding-right:0}
+            .hero-right{padding-left:0}
+            .section-title{font-size:60px}
+            .col-6, .col-4, .col-8{grid-column:span 12}
+        }
+
+        /* ─── LIGHTBOX ─── */
+        .lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+        .lightbox.active {
+            display: flex;
+        }
+        .lightbox-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .lightbox-image {
+            max-width: 100%;
+            max-height: 90vh;
+            object-fit: contain;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+        }
+        .lightbox-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-family: var(--mono);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            cursor: pointer;
+            padding: 10px;
+            transition: color 0.2s;
+        }
+        .lightbox-close:hover { color: var(--blue); }
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+            padding: 0 20px;
+        }
+        .nav-btn {
+            pointer-events: auto;
+            background: none;
+            border: none;
+            color: white;
+            font-family: var(--display);
+            font-size: 40px;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: all 0.2s;
+        }
+        .nav-btn:hover { opacity: 1; color: var(--blue); }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+
+    <nav>
+        <a href="index.html" class="nav-logo">
+            <div class="nav-logo-dot"></div>
+            SAHATECH AI
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html#projects">Projets</a></li>
+            <li><a href="index.html#skills">Compétences</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+        <!--<div class="nav-status">SYSTÈME ACTIF</div>-->
+    </nav>
+
+    <header class="hero">
+        <div class="hero-tag">
+            <span>[01]</span> AGENTIC WORKFLOW <span>/</span> MULTI-AGENT SYSTEM <span>/</span> HEALTH-TECH
+        </div>
+        <div class="hero-left">
+            <h1 class="hero-title">
+                SahaTech<em>AI</em>
+            </h1>
+            <p class="hero-desc">
+                Un système multi-agents révolutionnaire pour l'<strong>orientation clinique préliminaire</strong>. 
+                Basé sur <strong>LangGraph</strong> et <strong>FastAPI</strong>, il intègre une boucle 
+                <strong>Human-in-the-Loop</strong> pour garantir la sécurité et la pertinence médicale.
+            </p>
+            <div class="hero-ctas">
+                <a href="#overview" class="btn-primary">Découvrir le projet</a>
+                <a href="images/SahaTech AI/rapport_medical_fr.pdf" target="_blank" class="btn-outline">Rapport PDF</a>
+            </div>
+        </div>
+        <div class="hero-right">
+            <div class="hero-image-wrapper">
+                <img src="images/SahaTech AI/full_landing_page.png" alt="SahaTech AI Landing">
+            </div>
+        </div>
+    </header>
+
+    <section id="overview">
+        <div class="section-header">
+            <h2 class="section-title">Aperçu du<br>Projet</h2>
+            <div class="section-num">/01</div>
+        </div>
+        <div class="grid-2">
+            <div class="text-block">
+                <p>
+                    SahaTech AI est un projet académique de pointe conçu pour simuler un workflow d'orientation clinique complet. 
+                    Il orchestre plusieurs agents spécialisés pour recueillir les données patient, analyser les symptômes, 
+                    et générer des recommandations structurées sous la supervision d'un médecin.
+                </p>
+                <p>
+                    L'architecture repose sur <strong>LangGraph</strong> pour la gestion de l'état et du flux, 
+                    <strong>FastAPI</strong> pour l'exposition des services, et <strong>Angular 17</strong> 
+                    pour une interface utilisateur moderne et réactive.
+                </p>
+            </div>
+            <div class="text-block">
+                <p><strong>Points Clés :</strong></p>
+                <ul class="tech-list" style="list-style:disc; padding-left:20px;">
+                    <li style="margin-bottom:12px">Workflow Multi-Agents complexe</li>
+                    <li style="margin-bottom:12px">Interruption Human-in-the-Loop (Validation Médecin)</li>
+                    <li style="margin-bottom:12px">Intégration du Model Context Protocol (MCP)</li>
+                    <li style="margin-bottom:12px">Génération de rapports structurés avec export PDF</li>
+                    <li style="margin-bottom:12px">Conformité aux contraintes éthiques médicales</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="architecture">
+        <div class="section-header">
+            <h2 class="section-title">Architecture<br>Système</h2>
+            <div class="section-num">/02</div>
+        </div>
+        <div class="flex-center" style="display:flex; justify-content:center; gap:40px; flex-wrap:wrap;">
+            <div class="gallery-item" style="max-width:400px; border:none; background:transparent;">
+                <div style="border:1px solid var(--line); background:white; padding:20px; margin-bottom:15px;">
+                    <img src="images/SahaTech AI/ARCHITECTURE_BACKEND.png" alt="Architecture Backend" style="width:100%; height:auto; filter:none; object-fit:contain;">
+                </div>
+                <p class="hero-tag" style="border:none; justify-content:center;"><span>[BACKEND]</span> Architecture LangGraph</p>
+            </div>
+            <div class="gallery-item" style="max-width:400px; border:none; background:transparent;">
+                <div style="border:1px solid var(--line); background:white; padding:20px; margin-bottom:15px;">
+                    <img src="images/SahaTech AI/ARCHITECTURE_Frontend.png" alt="Architecture Frontend" style="width:100%; height:auto; filter:none; object-fit:contain;">
+                </div>
+                <p class="hero-tag" style="border:none; justify-content:center;"><span>[FRONTEND]</span> Architecture Angular</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="agents">
+        <div class="section-header">
+            <h2 class="section-title">Le Chœur des<br>Agents</h2>
+            <div class="section-num">/03</div>
+        </div>
+        <div class="workflow-step">
+            <div class="step-num">01</div>
+            <div class="step-content">
+                <h3>Supervisor Agent</h3>
+                <p>L'orchestrateur central. Il dirige le flux de données entre les agents en fonction de l'état partagé (MedicalState), assurant une transition fluide du diagnostic vers la revue humaine.</p>
+            </div>
+        </div>
+        <div class="workflow-step">
+            <div class="step-num">02</div>
+            <div class="step-content">
+                <h3>Diagnostic Agent</h3>
+                <p>Interagit avec le patient via un outil dédié (ask_patient_question). Il pose exactement 5 questions ciblées pour construire une synthèse clinique et identifier les signes d'alerte.</p>
+            </div>
+        </div>
+        <div class="workflow-step" style="border-color:var(--blue); background:rgba(0, 71, 255, 0.05);">
+            <div class="step-num">03</div>
+            <div class="step-content">
+                <h3>Physician Review (HITL)</h3>
+                <p>Le point critique du système. Le workflow s'interrompt pour permettre à un médecin réel de valider la synthèse, d'ajuster le score de gravité et de prescrire une conduite à tenir.</p>
+            </div>
+        </div>
+        <div class="workflow-step">
+            <div class="step-num">04</div>
+            <div class="step-content">
+                <h3>Report Agent</h3>
+                <p>Assemble l'intégralité des données (symptômes, Q/R, revue médecin) dans un rapport professionnel bilingue, incluant les mentions légales obligatoires.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="tech">
+        <div class="section-header">
+            <h2 class="section-title">Stack<br>Technique</h2>
+            <div class="section-num">/04</div>
+        </div>
+        <div class="grid-3">
+            <div class="tech-card">
+                <i class="fas fa-brain tech-icon"></i>
+                <h3 class="tech-name">Intelligence Artificielle</h3>
+                <ul class="tech-list">
+                    <li>LangGraph (Agentic Workflow)</li>
+                    <li>MCP (Model Context Protocol)</li>
+                    <li>LLM (OpenAI / Anthropic)</li>
+                    <li>Python Agentic Design</li>
+                </ul>
+            </div>
+            <div class="tech-card">
+                <i class="fas fa-server tech-icon"></i>
+                <h3 class="tech-name">Backend & API</h3>
+                <ul class="tech-list">
+                    <li>FastAPI (REST API)</li>
+                    <li>JSON-RPC (MCP Communication)</li>
+                    <li>Pytest (Validation)</li>
+                    <li>MemorySaver (Persistence)</li>
+                </ul>
+            </div>
+            <div class="tech-card">
+                <i class="fas fa-code tech-icon"></i>
+                <h3 class="tech-name">Frontend & UX</h3>
+                <ul class="tech-list">
+                    <li>Angular 17</li>
+                    <li>Tailwind CSS</li>
+                    <li>jspdf (Export PDF)</li>
+                    <li>LocalStorage (History)</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="gallery">
+        <div class="section-header">
+            <h2 class="section-title">Interface &<br>Résultats</h2>
+            <div class="section-num">/05</div>
+        </div>
+        <div class="gallery-grid">
+            <div class="gallery-item col-8 aspect-video">
+                <a href="images/SahaTech AI/landign_page.png" target="_blank">
+                    <img src="images/SahaTech AI/landign_page.png" alt="Landing Page">
+                </a>
+            </div>
+            <div class="gallery-item col-4 aspect-video">
+                <a href="images/SahaTech AI/initial-case.png" target="_blank">
+                    <img src="images/SahaTech AI/initial-case.png" alt="Initial Case">
+                </a>
+            </div>
+            <div class="gallery-item col-4 aspect-video">
+                <a href="images/SahaTech AI/patient-question.png" target="_blank">
+                    <img src="images/SahaTech AI/patient-question.png" alt="Patient Q&A">
+                </a>
+            </div>
+            <div class="gallery-item col-8 aspect-video">
+                <a href="images/SahaTech AI/Cas_Red_Flags_SURWEB.png" target="_blank">
+                    <img src="images/SahaTech AI/Cas_Red_Flags_SURWEB.png" alt="Physician Review">
+                </a>
+            </div>
+            <div class="gallery-item col-6 aspect-video">
+                <a href="images/SahaTech AI/final-report.png" target="_blank">
+                    <img src="images/SahaTech AI/final-report.png" alt="Final Report">
+                </a>
+            </div>
+            <div class="gallery-item col-6 aspect-video">
+                <a href="images/SahaTech AI/Cas_Red_Flags_surLangraph.png" target="_blank">
+                    <img src="images/SahaTech AI/Cas_Red_Flags_surLangraph.png" alt="LangGraph Execution">
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="ethics" style="background:rgba(232, 0, 42, 0.03);">
+        <div class="section-header">
+            <h2 class="section-title" style="color:var(--red);">Éthique &<br>Conformité</h2>
+            <div class="section-num">/06</div>
+        </div>
+        <div class="text-block">
+            <p>
+                Ce système a été développé avec une attention stricte portée à l'éthique médicale. 
+                Il ne remplace en aucun cas une consultation médicale réelle. 
+                Toutes les sorties sont marquées comme "orientation clinique préliminaire" et 
+                la validation humaine est <strong>obligatoire</strong> pour finaliser le processus.
+            </p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-logo">SAHATECH AI</div>
+        <p class="hero-tag" style="justify-content:center; border:none; margin-bottom:20px;">
+            <span>PROJET ACADÉMIQUE 2025-2026</span>
+        </p>
+        <p class="footer-copy">DESIGN & DÉVELOPPEMENT PAR BOUBKER CHEYOUKH</p>
+    </footer>
+
+    <!-- LIGHTBOX STRUCTURE -->
+    <div class="lightbox" id="lightbox">
+        <div class="lightbox-content">
+            <span class="lightbox-close" id="close-lightbox">[ FERMER ]</span>
+            <img src="" alt="Zoom" class="lightbox-image" id="lightbox-img">
+            <div class="lightbox-nav">
+                <button class="nav-btn" id="prev-img">←</button>
+                <button class="nav-btn" id="next-img">→</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const closeBtn = document.getElementById('close-lightbox');
+        const prevBtn = document.getElementById('prev-img');
+        const nextBtn = document.getElementById('next-img');
+        const galleryLinks = document.querySelectorAll('.gallery-item a');
+        
+        let currentIndex = 0;
+        const images = Array.from(galleryLinks).map(link => link.getAttribute('href'));
+
+        function openLightbox(index) {
+            currentIndex = index;
+            lightboxImg.src = images[currentIndex];
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function showNext() {
+            currentIndex = (currentIndex + 1) % images.length;
+            lightboxImg.src = images[currentIndex];
+        }
+
+        function showPrev() {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            lightboxImg.src = images[currentIndex];
+        }
+
+        galleryLinks.forEach((link, index) => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                openLightbox(index);
+            });
+        });
+
+        closeBtn.addEventListener('click', closeLightbox);
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) closeLightbox();
+        });
+
+        nextBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showNext();
+        });
+
+        prevBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showPrev();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (!lightbox.classList.contains('active')) return;
+            
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowRight') showNext();
+            if (e.key === 'ArrowLeft') showPrev();
+        });
+    </script>
+</body>
+</html>
