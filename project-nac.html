@@ -87,8 +87,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="js/url-handler.js"></script>
     <script src="js/protection.js"></script>
+    <script src="js/url-handler.js"></script>
     <style>
         * {
             margin: 0;
@@ -316,7 +316,22 @@
         /* Responsive */
         @media (max-width: 768px) {
             .glitch {
-                font-size: 2.5em;
+                font-size: clamp(2rem, 10vw, 4rem);
+            }
+            .terminal {
+                font-size: 11px;
+                padding: 15px;
+            }
+            .holo-card {
+                padding: 1.5rem;
+            }
+            section {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            .container {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
             }
         }
     </style>
@@ -327,32 +342,41 @@
     <div class="cyber-grid-overlay"></div>
 
     <!-- Navigation -->
-    <nav class="fixed w-full h-16 holo-card border-0 z-50">
-        <div class="container mx-auto px-6 h-full flex items-center justify-between">
+    <nav class="fixed w-full h-16 holo-card border-0 z-50 bg-dark-950/50 !overflow-visible">
+        <div class="container mx-auto px-4 md:px-6 h-full flex items-center justify-between">
             <a href="index.html" class="flex items-center group">
-                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-cyber-500 to-primary-500 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                    <i data-lucide="arrow-left" class="w-5 h-5 text-dark-950"></i>
+                <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-r from-cyber-500 to-primary-500 flex items-center justify-center mr-2 md:mr-3 group-hover:scale-110 transition-transform">
+                    <i data-lucide="arrow-left" class="w-4 h-4 md:w-5 md:h-5 text-dark-950"></i>
                 </div>
-                <span class="font-cyber text-lg font-bold neon-text">NAC.SECURE</span>
+                <span class="font-cyber text-sm md:text-lg font-bold neon-text">NAC.SECURE</span>
             </a>
             
-            <div class="flex items-center gap-4">
-                <div class="hidden md:flex items-center gap-6 font-tech text-sm">
+            <div class="flex items-center gap-2 md:gap-4">
+                <div class="hidden lg:flex items-center gap-6 font-tech text-sm">
                     <a href="#overview" class="text-cyber-500 hover:text-cyber-400 transition-colors">Overview</a>
                     <a href="#topology" class="text-cyber-500 hover:text-cyber-400 transition-colors">Topology</a>
                     <a href="#implementation" class="text-cyber-500 hover:text-cyber-400 transition-colors">Implementation</a>
                     <a href="#results" class="text-cyber-500 hover:text-cyber-400 transition-colors">Results</a>
                 </div>
                 
-                 <!--<button class="w-10 h-10 rounded-full neon-border flex items-center justify-center hover:bg-cyber-500/10 transition-all">
-                    <i data-lucide="settings" class="w-4 h-4 text-cyber-500"></i>
-                </button>-->
+                <!-- Mobile Menu Toggle -->
+                <button id="mobileMenuToggle" class="lg:hidden w-10 h-10 rounded-full neon-border flex items-center justify-center hover:bg-cyber-500/10 transition-all cursor-pointer">
+                    <i data-lucide="menu" class="w-5 h-5 text-cyber-500 pointer-events-none"></i>
+                </button>
             </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden lg:hidden absolute top-16 left-0 w-full bg-black border-b border-cyber-500/30 p-8 flex flex-col gap-6 z-[100] shadow-[0_20px_50px_rgba(0,255,136,0.2)]">
+            <a href="#overview" class="font-tech text-cyber-500 hover:text-cyber-400 py-3 border-b border-cyber-500/10 transition-colors">_OVERVIEW</a>
+            <a href="#topology" class="font-tech text-cyber-500 hover:text-cyber-400 py-3 border-b border-cyber-500/10 transition-colors">_TOPOLOGY</a>
+            <a href="#implementation" class="font-tech text-cyber-500 hover:text-cyber-400 py-3 border-b border-cyber-500/10 transition-colors">_IMPLEMENTATION</a>
+            <a href="#results" class="font-tech text-cyber-500 hover:text-cyber-400 py-3 transition-colors">_RESULTS</a>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section id="overview" class="min-h-screen flex items-center justify-center px-6 relative">
+    <section id="overview" class="min-h-screen flex items-center justify-center px-6 pt-30 md:pt-35 relative">
         <!-- Network Animation Background -->
         <div class="network-bg">
             <div class="network-line" style="top: 20%; animation-delay: 0s;"></div>
@@ -365,7 +389,7 @@
             <div class="network-node" style="top: 85%; left: 80%;"></div>
         </div>
 
-        <div class="container mx-auto max-w-6xl relative z-10">
+        <div class="container mx-auto max-w-6xl relative z-10 mt-16 md:mt-24">
             <div class="text-center fade-in">
                 <!-- Status Badge 
                 <div class="inline-flex items-center gap-2 px-4 py-2 mb-8 rounded-full neon-border bg-dark-950/80 backdrop-blur-sm">
@@ -375,7 +399,7 @@
 
                 <!-- Main Title with Glitch Effect -->
                 <div class="mb-8">
-                    <h1 class="glitch font-cyber text-6xl md:text-8xl font-black">
+                    <h1 class="glitch font-cyber text-5xl md:text-8xl font-black">
                         NAC.SECURE
                     </h1>
                     <div class="mt-4 text-2xl md:text-3xl font-cyber text-cyber-500">
@@ -838,6 +862,41 @@
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
             
+            // Mobile Menu Toggle
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const mobileLinks = mobileMenu.querySelectorAll('a');
+
+            mobileMenuToggle.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                const icon = mobileMenuToggle.querySelector('svg') || mobileMenuToggle.querySelector('i');
+                if (mobileMenu.classList.contains('hidden')) {
+                    icon.setAttribute('data-lucide', 'menu');
+                } else {
+                    icon.setAttribute('data-lucide', 'x');
+                }
+                lucide.createIcons();
+            });
+
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                    const icon = mobileMenuToggle.querySelector('svg') || mobileMenuToggle.querySelector('i');
+                    icon.setAttribute('data-lucide', 'menu');
+                    lucide.createIcons();
+                });
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!mobileMenu.classList.contains('hidden') && !mobileMenu.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+                    mobileMenu.classList.add('hidden');
+                    const icon = mobileMenuToggle.querySelector('svg') || mobileMenuToggle.querySelector('i');
+                    icon.setAttribute('data-lucide', 'menu');
+                    lucide.createIcons();
+                }
+            });
+
             // Initialize animations
             initializeAnimations();
             

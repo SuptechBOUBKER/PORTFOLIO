@@ -615,23 +615,95 @@
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 900px) {
-            nav { padding: 16px 24px; }
+            nav { 
+                padding: 15px 20px; 
+                flex-direction: row;
+                justify-content: space-between;
+            }
             .nav-title, .nav-meta { display: none; }
-            .masthead-inner { padding: 0 24px; }
-            .hero-layout { grid-template-columns: 1fr; gap: 40px; }
-            .hero-aside { border-top: 1px solid var(--rule); padding-top: 40px; }
-            .col-2, .col-3 { grid-template-columns: 1fr; }
-            .pipeline-visual { flex-direction: column; }
+            
+            .masthead { padding-top: 80px; }
+            .masthead-inner { padding: 0 20px; }
+            
+            .issue-line { 
+                flex-direction: column; 
+                gap: 10px; 
+                text-align: center; 
+                margin-bottom: 40px;
+                font-size: 9px;
+            }
+
+            .hero-layout { 
+                grid-template-columns: 1fr; 
+                gap: 40px; 
+                padding-bottom: 40px;
+            }
+            .hero-headline { font-size: 42px; margin-bottom: 20px; }
+            .hero-standfirst { font-size: 16px; padding-left: 15px; }
+            
+            .hero-aside { 
+                border-top: 1px solid var(--rule); 
+                padding-top: 40px; 
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+            }
+            .stat-block { border-top: none; padding: 0; }
+            .stat-num { font-size: 40px; }
+            .hero-ctas { grid-column: span 2; margin-top: 20px; }
+
+            .page-section { padding: 60px 20px; }
+            .section-heading { font-size: 32px; margin-bottom: 32px; }
+            
+            .col-2, .col-3 { grid-template-columns: 1fr; gap: 32px; }
+            
+            .pipeline-visual { 
+                flex-direction: column; 
+                border: none;
+            }
+            .pipe-stage {
+                border: 1px solid var(--rule);
+                margin-bottom: 10px;
+                padding: 24px;
+            }
             .pipe-stage::after { display: none; }
+            
+            .schema-grid { 
+                grid-template-columns: 1fr; 
+                grid-template-rows: auto; 
+                gap: 10px;
+            }
+            .schema-fact, .schema-dim { grid-column: 1 !important; grid-row: auto !important; }
+            
             .kpi-grid { grid-template-columns: 1fr 1fr; }
-            .team-grid { grid-template-columns: 1fr 1fr; }
-            .page-section { padding: 60px 24px; }
-            .question-grid { grid-template-columns: 1fr; }
-            .question-item:nth-child(even) { border-right: 1px solid var(--rule); }
-            .schema-grid { grid-template-columns: 1fr; grid-template-rows: auto; }
-            .schema-fact { grid-column: 1; grid-row: auto; }
-            footer { flex-direction: column; gap: 24px; text-align: center; padding: 40px 24px; }
+            .kpi-card { border-bottom: 1px solid rgba(255,255,255,0.08); padding: 24px 15px; }
+            .kpi-card:nth-child(even) { border-right: none; }
+
+            .cluster-row { grid-template-columns: 1fr; gap: 15px; }
+            .cluster-num { font-size: 36px; }
+            .cluster-badge { align-self: flex-start; }
+
+            .img-placeholder { height: auto !important; min-height: 200px; }
+            
+            .team-grid { grid-template-columns: 1fr 1fr; gap: 15px; }
+            .team-card { padding: 20px 10px; }
+            .team-initial { width: 56px; height: 56px; font-size: 24px; }
+
+            footer { 
+                flex-direction: column; 
+                gap: 24px; 
+                text-align: center; 
+                padding: 40px 20px; 
+            }
             .footer-right { text-align: center; }
+        }
+
+        @media (max-width: 480px) {
+            .kpi-grid { grid-template-columns: 1fr; }
+            .kpi-card { border-right: none; }
+            .team-grid { grid-template-columns: 1fr; }
+            .hero-aside { grid-template-columns: 1fr; }
+            .hero-ctas { grid-column: span 1; }
         }
     </style>
 </head>

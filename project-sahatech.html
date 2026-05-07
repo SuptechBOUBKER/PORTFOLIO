@@ -22,6 +22,7 @@
             --mono:'DM Mono',monospace;
             --display:'Bebas Neue',sans-serif;
             --body:'DM Sans',sans-serif;
+            --gold:#d4a556;
         }
 
         html{scroll-behavior:smooth}
@@ -74,7 +75,7 @@
         .nav-logo-dot{
             width:10px;height:10px;
             border-radius:50%;
-            background:var(--blue);
+            background:var(--gold);
             animation:blink 2s ease-in-out infinite;
         }
         @keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
@@ -150,7 +151,7 @@
         }
         .hero-title em{
             font-style:normal;
-            color:var(--blue);
+            color:var(--gold);
             display:block;
         }
         .hero-desc{
@@ -333,15 +334,79 @@
 
         /* ─── MOBILE ─── */
         @media (max-width:968px){
-            .hero, .grid-2, .grid-3, .section-header{
-                grid-template-columns:1fr;
-                gap:40px;
+            nav {
+                padding: 0 20px;
+                height: auto;
+                min-height: 56px;
+                flex-direction: column;
+                gap: 10px;
+                padding: 15px 20px;
+                position: absolute; /* Eviter de cacher le hero sur mobile si fixe */
             }
-            .hero-left{border-right:none;padding-right:0}
-            .hero-right{padding-left:0}
-            .section-title{font-size:60px}
-            .col-6, .col-4, .col-8{grid-column:span 12}
-        }
+            .nav-links {
+                gap: 20px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .nav-status { display: none; }
+
+            .hero {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto;
+                padding: 120px 20px 40px;
+                min-height: auto;
+            }
+            .hero-tag {
+                font-size: 9px;
+                gap: 10px;
+                flex-wrap: wrap;
+                margin-bottom: 30px;
+            }
+            .hero-left {
+                padding-right: 0;
+                border-right: none;
+                padding-bottom: 40px;
+            }
+            .hero-right {
+                padding-left: 0;
+                padding-bottom: 40px;
+            }
+            .hero-title {
+                font-size: clamp(50px, 18vw, 80px);
+                margin-bottom: 24px;
+            }
+            .hero-desc {
+                font-size: 15px;
+                margin-bottom: 32px;
+            }
+            .hero-ctas {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .btn-primary, .btn-outline {
+                justify-content: center;
+            }
+
+            .grid-2, .grid-3, .section-header {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .section-title { font-size: 48px; }
+             .col-6, .col-4, .col-8 { grid-column: span 12; }
+
+             .workflow-step {
+                 flex-direction: column;
+                 gap: 20px;
+                 padding: 30px 20px;
+             }
+             .step-num { font-size: 36px; }
+             .step-content h3 { font-size: 24px; }
+         }
 
         /* ─── LIGHTBOX ─── */
         .lightbox {
