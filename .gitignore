@@ -1,2 +1,12 @@
 # Spécification de design de référence (contenu fictif, ne pas publier)
 DESIGN_SPEC.md
+
+# Captures AWS originales : elles affichent l'ID de compte AWS.
+# Seules les versions masquées de images/ProjetAWS/web/ sont publiées.
+images/ProjetAWS/3 tâches.png
+images/ProjetAWS/déploiement blue-green.png
+images/ProjetAWS/les deux dépôts ECR.png
+images/ProjetAWS/les deux services actifs.png
+images/ProjetAWS/les règles d'écouteur de l'ALB.png
+images/ProjetAWS/pipeline au vert.png
+images/ProjetAWS/docker ps avec les deux conteneurs.png
