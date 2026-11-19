@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portfolio de Boubker Cheyoukh, étudiant en développement logiciel et IA">
+    <meta name="author" content="Boubker Cheyoukh">
+    <meta name="keywords" content="Boubker Cheyoukh, développeur, IA, Machine Learning, Portfolio">
+    <title>Portfolio - Boubker Cheyoukh</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                        },
+                        dark: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="portfolio.png" type="image/png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/url-handler.js"></script>
+    <script src="js/protection.js"></script>
+    <style>
+        .fade-in {
+            animation: fadeIn 1s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .progress-bar {
+            transition: width 1.5s ease-in-out;
+        }
+        .skill-progress {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .skill-progress.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Ajout pour améliorer l'accessibilité */
+        :focus {
+            outline: 2px solid #7c3aed;
+            outline-offset: 2px;
+        }
+        /* Correction pour les images responsives */
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        .project-card {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .filter-btn.active {
+            box-shadow: 0 4px 6px -1px rgba(124, 58, 237, 0.2), 0 2px 4px -1px rgba(124, 58, 237, 0.1);
+        }
+    </style>
+</head>
+<body class="font-['Inter'] bg-gray-50 dark:bg-dark-900">
+    <!-- Progress Bar -->
+    <div id="progressBar" class="fixed top-0 left-0 h-1 bg-primary-600 z-40 transition-all duration-300" style="width: 0%" aria-hidden="true"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-white/80 dark:bg-dark-800/80 backdrop-blur-md shadow-sm z-30">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <a href="#home" class="text-2xl font-bold bg-gradient-to-r from-primary-600 to-blue-500 text-transparent bg-clip-text">
+                BC
+            </a>
+            
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#home" class="text-sm font-medium transition-colors duration-300 text-primary-600 dark:text-primary-400">Accueil</a>
+                <a href="#about" class="text-sm font-medium transition-colors duration-300 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">À propos</a>
+                <a href="#skills" class="text-sm font-medium transition-colors duration-300 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Compétences</a>
+                <a href="#projects" class="text-sm font-medium transition-colors duration-300 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Projets</a>
+                
+                <!-- Dark Mode Toggle (Desktop) -->
+                <button id="darkModeToggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200" aria-label="Basculer mode sombre">
+                    <i id="darkModeIcon" data-lucide="moon" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <!-- Mobile Menu Button -->
+            <div class="flex items-center space-x-4 md:hidden">
+                <!-- Dark Mode Toggle (Mobile) -->
+                <button id="darkModeToggleMobile" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200" aria-label="Basculer mode sombre">
+                    <i id="darkModeIconMobile" data-lucide="moon" class="w-5 h-5"></i>
+                </button>
+                
+                <button id="mobileMenuButton" class="text-gray-600 dark:text-gray-300" aria-label="Menu mobile" aria-expanded="false" aria-controls="mobileMenu">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+                <a href="https://wa.me/212644435752" target="_blank" rel="noopener noreferrer" class="text-gray-600 dark:text-gray-300" aria-label="Contact WhatsApp">
+                    <i class="fab fa-whatsapp text-2xl"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="fixed inset-0 bg-white dark:bg-dark-800 z-20 pt-20 hidden">
+        <div class="flex flex-col items-center space-y-8 p-8" id="mobileMenuContent">
+            <a href="#home" class="menu-link text-xl font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Accueil</a>
+            <a href="#about" class="menu-link text-xl font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">À propos</a>
+            <a href="#skills" class="menu-link text-xl font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Compétences</a>
+            <a href="#projects" class="menu-link text-xl font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Projets</a>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="home" class="pt-32 pb-20 px-4">
+        <div class="container mx-auto max-w-6xl">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6">
+                    <h1 class="text-5xl md:text-6xl font-bold leading-tight dark:text-white">
+                        Boubker
+                        <span class="bg-gradient-to-r from-primary-600 to-blue-500 text-transparent bg-clip-text">
+                            Cheyoukh
+                        </span>
+                    </h1>
+                    <p class="text-xl text-gray-600 dark:text-gray-300">
+                        Développeur passionné par l'IA et l'innovation technologique
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#projects" class="inline-flex items-center px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors duration-300">
+                            Voir mes projets
+                            <i data-lucide="chevron-right" class="ml-2 w-5 h-5"></i>
+                        </a>
+                        <a href="#contact" class="inline-flex items-center px-6 py-3 border-2 border-primary-600 text-primary-600 dark:text-primary-400 rounded-lg hover:bg-purple-50 dark:hover:bg-dark-700 transition-colors duration-300">
+                            Contact
+                        </a>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="aspect-square rounded-full bg-gradient-to-br from-primary-600 to-blue-500 opacity-20 absolute inset-0 blur-3xl" aria-hidden="true"></div>
+                    <img src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&q=80" alt="Photo de Boubker Cheyoukh" class="rounded-2xl shadow-2xl relative z-10 w-full h-auto">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-white dark:bg-dark-800 fade-in">
+        <div class="container mx-auto max-w-6xl px-4 text-center">
+            <h2 class="text-4xl font-bold mb-6 text-primary-600 dark:text-primary-400">À propos de moi</h2>
+            <p class="text-gray-700 dark:text-gray-300 text-lg max-w-3xl mx-auto leading-relaxed mb-6">
+                Développeur spécialisé en <strong class="dark:text-white">intelligence artificielle</strong> et en <strong class="dark:text-white">développement logiciel</strong>, je suis actuellement en 5ᵉ année du cycle ingénieur d’État en Génie Informatique, spécialité Intelligence Artificielle, à HESTIM. Lors de mon expérience chez Holokia, j’ai conçu et déployé un agent intelligent basé sur une architecture <strong class="dark:text-white">RAG</strong>, intégrant des <strong class="dark:text-white">LLM</strong>, <strong class="dark:text-white">Python</strong>, <strong class="dark:text-white">LangChain</strong> et des API REST. Mes compétences couvrent également le <strong class="dark:text-white">machine learning</strong>, l’<strong class="dark:text-white">analyse de données</strong> et le développement full stack. Passionné par l’innovation et la résolution de problèmes, je souhaite concevoir des solutions intelligentes, fiables et évolutives répondant à des besoins concrets.
+            </p>
+            <img src="image_cv.jpg" alt="Boubker Cheyoukh" class="rounded-full mx-auto mt-8 shadow-lg hover:scale-105 transition-transform w-40 h-40 object-cover">
+            <div class="mt-6 space-y-4 text-left md:text-center">
+                <p class="flex items-center justify-center text-gray-800 dark:text-gray-200">
+                    <i data-lucide="mail" class="text-primary-600 dark:text-primary-400 mr-3 w-5 h-5"></i>
+                    <a href="mailto:cheyoukheboubker@gmail.com" class="hover:underline">cheyoukheboubker@gmail.com</a>
+                </p>
+                <p class="flex items-center justify-center text-gray-800 dark:text-gray-200">
+                    <i data-lucide="phone" class="text-primary-600 dark:text-primary-400 mr-3 w-5 h-5"></i>
+                    +212 6 44 43 57 52
+                </p>
+                <p class="flex items-center justify-center text-gray-800 dark:text-gray-200">
+                    <i class="fab fa-github text-primary-600 dark:text-primary-400 mr-3 w-5 h-5"></i>
+                    <a href="https://github.com/BOUBKERsup07" target="_blank" rel="noopener noreferrer" class="hover:underline">github.com/BOUBKERsup07</a>
+                </p>
+                <p class="flex items-center justify-center text-gray-800 dark:text-gray-200">
+                    <i class="fab fa-linkedin text-primary-600 dark:text-primary-400 mr-3 w-5 h-5"></i>
+                    <a href="https://www.linkedin.com/in/boubker-cheyoukh-4696a4276/" target="_blank" rel="noopener noreferrer" class="hover:underline">linkedin.com/in/boubker-cheyoukh</a>
+                </p>
+            </div>
+            <div class="mt-8 flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#projects" class="inline-flex items-center justify-center px-6 py-3 bg-primary-600 text-white rounded-md shadow hover:bg-primary-700 transition duration-300">
+                    Voir mes projets
+                </a>
+                <a href="https://wa.me/212644435752" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-6 py-3 bg-gray-900 dark:bg-gray-700 text-white rounded-md shadow hover:bg-gray-800 dark:hover:bg-gray-600 transition duration-300">
+                    Contactez-moi
+                </a>
+                <div class="relative inline-block">
+                    <button id="cvDropdownButton" class="inline-flex items-center justify-center px-6 py-3 bg-primary-600 text-white rounded-md shadow hover:bg-primary-700 transition duration-300" aria-expanded="false" aria-haspopup="true" aria-controls="cvDropdown">
+                        <i data-lucide="download" class="mr-2 w-5 h-5"></i>
+                        Télécharger mon CV
+                    </button>
+                    <div id="cvDropdown" class="absolute mt-2 bg-white dark:bg-dark-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg z-50 hidden" role="menu" aria-labelledby="cvDropdownButton">
+                        <button onclick="downloadCV('fr')" class="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-dark-600" role="menuitem">
+                            Télécharger mon CV (Français)
+                        </button>
+                        <button onclick="downloadCV('en')" class="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-dark-600" role="menuitem">
+                            Download my CV (English)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Expertise Section -->
+    <section id="expertise" class="py-20 bg-gray-50 dark:bg-dark-900 fade-in">
+        <div class="container mx-auto max-w-6xl px-4">
+            <h2 class="text-4xl font-bold mb-12 text-center text-primary-600 dark:text-primary-400">Niveaux d'Expertise</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div class="space-y-8">
+                    <!-- Langages de programmation -->
+                    <h3 class="text-2xl font-semibold mb-6 dark:text-white">Langages de programmation</h3>
+                    
+                    <div class="skill-progress space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium text-gray-700 dark:text-gray-300">Python</span>
+                            <span class="text-primary-600 dark:text-primary-400 font-medium">90%</span>
+                        </div>
+                        <div class="h-2.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <div class="progress-bar h-full bg-gradient-to-r from-primary-600 to-primary-400 rounded-full" data-percent="90" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="skill-progress space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium text-gray-700 dark:text-gray-300">Java</span>
+                            <span class="text-primary-600 dark:text-primary-400 font-medium">85%</span>
+                        </div>
+                        <div class="h-2.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <div class="progress-bar h-full bg-gradient-to-r from-primary-600 to-primary-400 rounded-full" data-percent="85" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="skill-progress space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium text-gray-700 dark:text-gray-300">JavaScript</span>
+                            <span class="text-primary-600 dark:text-primary-400 font-medium">80%</span>
+                        </div>
+                        <div class="h-2.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <div class="progress-bar h-full bg-gradient-to-r from-primary-600 to-primary-400 rounded-full" data-percent="80" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="skill-progress space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium text-gray-700 dark:text-gray-300">PHP</span>
+                            <span class="text-primary-600 dark:text-primary-400 font-medium">75%</span>
+                        </div>
+                        <div class="h-2.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <div class="progress-bar h-full bg-gradient-to-r from-primary-600 to-primary-400 rounded-full" data-percent="75" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Frameworks -->
+                    <h3 class="text-2xl font-semibold mb-6 dark:text-white">Frameworks</h3>
+                    
+                    <div class="skill-progress space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium text-gray-700 dark:text-gray-300">Spring Boot</span>
+                            <span class="text-primary-600 dark:text-primary-400 font-medium">85%</span>
+                        </div>
+                        <div class="h-2.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <div class="progress-bar h-full bg-gradient-to-r from-primary-600 to-primary-400 rounded-full" data-percent="85" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="skill-progress space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium text-gray-700 dark:text-gray-300">Django</span>
+                            <span class="text-primary-600 dark:text-primary-400 font-medium">80%</span>
+                        </div>
+                        <div class="h-2.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <div class="progress-bar h-full bg-gradient-to-r from-primary-600 to-primary-400 rounded-full" data-percent="80" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-8">
+                    <!-- Front-end -->
+                    <h3 class="text-2xl font-semibold mb-6 dark:text-white">Front-end</h3>
+                    
+                    <div class="skill-progress space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium text-gray-700 dark:text-gray-300">HTML/CSS</span>
+                            <span class="text-primary-600 dark:text-primary-400 font-medium">90%</span>
+                        </div>
+                        <div class="h-2.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <div class="progress-bar h-full bg-gradient-to-r from-primary-600 to-primary-400 rounded-full" data-percent="90" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="skill-progress space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium text-gray-700 dark:text-gray-300">React/Angular</span>
+                            <span class="text-primary-600 dark:text-primary-400 font-medium">75%</span>
+                        </div>
+                        <div class="h-2.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <div class="progress-bar h-full bg-gradient-to-r from-primary-600 to-primary-400 rounded-full" data-percent="75" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="skill-progress space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium text-gray-700 dark:text-gray-300">Tailwind CSS</span>
+                            <span class="text-primary-600 dark:text-primary-400 font-medium">85%</span>
+                        </div>
+                        <div class="h-2.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <div class="progress-bar h-full bg-gradient-to-r from-primary-600 to-primary-400 rounded-full" data-percent="85" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- IA & Data Science -->
+                    <h3 class="text-2xl font-semibold mb-6 dark:text-white">IA & Data Science</h3>
+                    
+                    <div class="skill-progress space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium text-gray-700 dark:text-gray-300">ML (TensorFlow/Scikit-learn)</span>
+                            <span class="text-primary-600 dark:text-primary-400 font-medium">60%</span>
+                        </div>
+                        <div class="h-2.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <div class="progress-bar h-full bg-gradient-to-r from-primary-600 to-primary-400 rounded-full" data-percent="75" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="skill-progress space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium text-gray-700 dark:text-gray-300">Data Analysis (Pandas/NumPy)</span>
+                            <span class="text-primary-600 dark:text-primary-400 font-medium">50%</span>
+                        </div>
+                        <div class="h-2.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <div class="progress-bar h-full bg-gradient-to-r from-primary-600 to-primary-400 rounded-full" data-percent="85" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="skill-progress space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium text-gray-700 dark:text-gray-300">Visualisation (Matplotlib/Seaborn)</span>
+                            <span class="text-primary-600 dark:text-primary-400 font-medium">50%</span>
+                        </div>
+                        <div class="h-2.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <div class="progress-bar h-full bg-gradient-to-r from-primary-600 to-primary-400 rounded-full" data-percent="80" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience" class="py-20 bg-white dark:bg-dark-800 fade-in">
+        <div class="container mx-auto max-w-6xl px-4">
+            <h2 class="text-4xl font-bold mb-12 text-center text-primary-600 dark:text-primary-400">Expérience professionnelle</h2>
+
+            <!-- ATM VIEW Experience -->
+            <div class="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 mb-8">
+                <div class="flex flex-col md:flex-row justify-between mb-4">
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800 dark:text-white">Stage de développement – ATM VIEW</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mt-1">
+                            <i class="fas fa-map-marker-alt mr-2"></i>207 Bd Mohammed Zerktouni, Casablanca 20100
+                        </p>
+                    </div>
+                    <div class="mt-2 md:mt-0">
+                        <p class="text-primary-600 dark:text-primary-400 font-medium">
+                            <i class="far fa-calendar-alt mr-2"></i>2 juin 2025 – 31 août 2025
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="font-semibold text-gray-700 dark:text-gray-200 mb-2">Sujet :</h4>
+                    <p class="text-gray-600 dark:text-gray-300">Intégration des fonctionnalités de Cash Management dans la V5 du système interne.</p>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="font-semibold text-gray-700 dark:text-gray-200 mb-2">Missions principales :</h4>
+                    <ul class="text-gray-600 dark:text-gray-300 space-y-1 pl-5 list-disc">
+                        <li>Analyse des besoins fonctionnels liés à la gestion de trésorerie.</li>
+                        <li>Développement et intégration des modules de Cash Management.</li>
+                        <li>Tests, correction des anomalies et rédaction de la documentation technique.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-gray-700 dark:text-gray-200 mb-2">Technologies utilisées :</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm text-gray-700 dark:text-gray-300">HTML</span>
+                        <span class="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm text-gray-700 dark:text-gray-300">CSS</span>
+                        <span class="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm text-gray-700 dark:text-gray-300">JavaScript</span>
+                        <span class="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm text-gray-700 dark:text-gray-300">C#</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Holokia Experience -->
+            <div class="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 mb-8">
+                <div class="flex flex-col md:flex-row justify-between mb-4">
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800 dark:text-white">
+                            Stage d’ingénieur IA – Holokia
+                        </h3>
+                        <p class="text-gray-600 dark:text-gray-300 mt-1">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            Technopark, Casablanca
+                        </p>
+                    </div>
+                    <div class="mt-2 md:mt-0">
+                        <p class="text-primary-600 dark:text-primary-400 font-medium">
+                            <i class="far fa-calendar-alt mr-2"></i>
+                            Mai 2026 – août 2026
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="font-semibold text-gray-700 dark:text-gray-200 mb-2">Sujet :</h4>
+                    <p class="text-gray-600 dark:text-gray-300">
+                        Conception et développement d’un agent intelligent d’analyse automatique de rapports d’activité, basé sur une architecture RAG (Retrieval-Augmented Generation).
+                    </p>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="font-semibold text-gray-700 dark:text-gray-200 mb-2">Missions principales :</h4>
+                    <ul class="text-gray-600 dark:text-gray-300 space-y-1 pl-5 list-disc">
+                        <li>Développement d’un agent IA capable d’extraire et de structurer automatiquement 22 champs stratégiques, financiers, RH, data et de cybersécurité à partir de documents PDF, Word et TXT.</li>
+                        <li>Évaluation de 4 approches d’extraction sur 12 rapports annotés et mise en place d’une architecture RAG avec validation Pydantic, correction itérative et traçabilité des réponses par page et par extrait source.</li>
+                        <li>Développement d’une API REST avec FastAPI intégrant l’extraction asynchrone, le chat et la comparaison multidocuments.</li>
+                        <li>Création d’une interface web proposant le diagnostic éditable, l’historique, le profil client et un tableau de bord analytique.</li>
+                        <li>Intégration de l’authentification Supabase (JWT, OAuth Google), de l’isolation des données par Row Level Security et d’une architecture multimodèle (Groq/Ollama).</li>
+                        <li>Contribution à l’intégration et au déploiement de la solution dans le Copilot Holokia.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-gray-700 dark:text-gray-200 mb-2">Technologies utilisées :</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm text-gray-700 dark:text-gray-300">Python</span>
+                        <span class="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm text-gray-700 dark:text-gray-300">LangChain</span>
+                        <span class="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm text-gray-700 dark:text-gray-300">RAG</span>
+                        <span class="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm text-gray-700 dark:text-gray-300">LLM</span>
+                        <span class="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm text-gray-700 dark:text-gray-300">FAISS</span>
+                        <span class="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm text-gray-700 dark:text-gray-300">ChromaDB</span>
+                        <span class="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm text-gray-700 dark:text-gray-300">FastAPI</span>
+                        <span class="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm text-gray-700 dark:text-gray-300">Pydantic</span>
+                        <span class="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm text-gray-700 dark:text-gray-300">Groq</span>
+                        <span class="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm text-gray-700 dark:text-gray-300">Ollama</span>
+                        <span class="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm text-gray-700 dark:text-gray-300">Supabase</span>
+                        <span class="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm text-gray-700 dark:text-gray-300">JavaScript</span>
+                        <span class="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm text-gray-700 dark:text-gray-300">HTML / CSS</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-20 bg-gray-50 dark:bg-dark-900 fade-in">
+        <div class="container mx-auto max-w-6xl px-4">
+            <h2 class="text-4xl font-bold mb-12 text-center text-primary-600 dark:text-primary-400">Mes Compétences</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- Frontend -->
+                <div class="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
+                    <div class="flex justify-center space-x-4 mb-4">
+                        <div class="flex flex-col items-center">
+                            <i class="fab fa-html5 text-orange-500 text-4xl" aria-hidden="true"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">HTML5</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fab fa-css3-alt text-blue-500 text-4xl" aria-hidden="true"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">CSS3</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fab fa-js text-yellow-500 text-4xl" aria-hidden="true"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">JS</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fab fa-react text-blue-400 text-4xl" aria-hidden="true"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">React</span>
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-lg mb-3 text-gray-700 dark:text-gray-200">Frontend</h3>
+                    <ul class="text-gray-600 dark:text-gray-300 text-sm space-y-2">
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
+                            <span>Développement d'interfaces modernes avec React/Angular</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
+                            <span>Responsive design avec Tailwind/Bootstrap</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
+                            <span>Single Page Applications (SPA)</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Backend -->
+                <div class="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
+                    <div class="flex justify-center space-x-4 mb-4">
+                        <div class="flex flex-col items-center">
+                            <i class="fab fa-java text-red-500 text-4xl" aria-hidden="true"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">Java</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fab fa-python text-blue-400 text-4xl" aria-hidden="true"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">Python</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="devicon-spring-plain text-green-500 text-4xl" aria-hidden="true"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">Spring</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fas fa-server text-primary-500 text-4xl" aria-hidden="true"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">API</span>
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-lg mb-3 text-primary-600 dark:text-primary-400">Backend</h3>
+                    <ul class="text-gray-600 dark:text-gray-300 text-sm space-y-2">
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
+                            <span>Spring Boot (REST APIs, Microservices)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
+                            <span>Django/Python pour le backend</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
+                            <span>Authentification JWT/OAuth2</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Databases -->
+                <div class="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
+                    <div class="flex justify-center space-x-4 mb-4">
+                        <div class="flex flex-col items-center">
+                            <i class="fas fa-database text-blue-500 text-4xl" aria-hidden="true"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">SQL</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="devicon-postgresql-plain text-blue-600 text-4xl" aria-hidden="true"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">PostgreSQL</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fas fa-fire text-orange-500 text-4xl" aria-hidden="true"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">NoSQL</span>
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-lg mb-3 text-gray-700 dark:text-gray-200">Bases de Données</h3>
+                    <ul class="text-gray-600 dark:text-gray-300 text-sm space-y-2">
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
+                            <span>MySQL, PostgreSQL, SQLite</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
+                            <span>Hibernate, Django ORM, JPA</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
+                            <span>Optimisation des requêtes SQL</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Frameworks -->
+                <div class="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
+                    <div class="flex justify-center space-x-4 mb-4">
+                        <div class="flex flex-col items-center">
+                            <i class="devicon-spring-plain text-green-500 text-4xl" aria-hidden="true"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">Spring</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fab fa-python text-green-500 text-4xl" aria-hidden="true"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">Django</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fab fa-laravel text-red-500 text-4xl" aria-hidden="true"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">Laravel</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fas fa-cubes text-primary-500 text-4xl" aria-hidden="true"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">Maven</span>
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-lg mb-3 text-primary-600 dark:text-primary-400">Frameworks</h3>
+                    <ul class="text-gray-600 dark:text-gray-300 text-sm space-y-2">
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
+                            <span>Spring Boot, Spring Security, Spring Data</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
+                            <span>Django REST Framework</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
+                            <span>Gestion des dépendances (Maven, Pip)</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- AI/ML -->
+                <div class="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
+                    <div class="flex justify-center space-x-4 mb-4">
+                        <div class="flex flex-col items-center">
+                            <i class="fas fa-brain text-primary-500 text-4xl" aria-hidden="true"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">ML</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fas fa-chart-line text-green-500 text-4xl" aria-hidden="true"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">Data</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fas fa-robot text-blue-400 text-4xl" aria-hidden="true"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">AI</span>
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-lg mb-3 text-gray-700 dark:text-gray-200">Data Science & IA</h3>
+                    <ul class="text-gray-600 dark:text-gray-300 text-sm space-y-2">
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
+                            <span>Machine Learning (TensorFlow)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
+                            <span>Traitement de données (Pandas, NumPy)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
+                            <span>Visualisation (Matplotlib)</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- DevOps -->
+                <div class="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
+                    <div class="flex justify-center space-x-4 mb-4">
+                        <div class="flex flex-col items-center">
+                            <i class="fab fa-docker text-blue-400 text-4xl" aria-hidden="true"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">Docker</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fab fa-git-alt text-red-500 text-4xl" aria-hidden="true"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">Git</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fas fa-project-diagram text-orange-500 text-4xl" aria-hidden="true"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">UML</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fas fa-bolt text-yellow-500 text-4xl" aria-hidden="true"></i>
+                            <span class="text-xs mt-1 dark:text-gray-300">CI/CD</span>
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-lg mb-3 text-primary-600 dark:text-primary-400">Outils & Méthodes</h3>
+                    <ul class="text-gray-600 dark:text-gray-300 text-sm space-y-2">
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
+                            <span>Conteneurisation (Docker)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
+                            <span>Git, GitHub Actions, CI/CD</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check" class="text-green-500 mr-2 mt-0.5 w-4 h-4" aria-hidden="true"></i>
+                            <span>Méthodologies Agile/Scrum</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Education Section -->
+    <section id="education" class="py-24 bg-white dark:bg-dark-800">
+        <div class="container mx-auto max-w-6xl px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-black text-gray-900 dark:text-white tracking-tight">
+                    Parcours <span class="text-primary-600">Académique</span>
+                </h2>
+                <div class="w-24 h-1.5 bg-primary-600 mx-auto mt-4 rounded-full"></div>
+            </div>
+
+            <div class="relative border-l-2 border-slate-200 dark:border-slate-700 ml-4 md:ml-12 space-y-12">
+                <!-- Master -->
+                <div class="relative pl-8 md:pl-12 group">
+                    <span class="absolute -left-[11px] top-1 flex items-center justify-center w-5 h-5 rounded-full bg-white dark:bg-dark-800 border-2 border-primary-600 group-hover:bg-primary-600 transition-colors duration-300"></span>
+                    <div class="bg-slate-50 dark:bg-dark-900/50 p-8 rounded-3xl border border-transparent hover:border-primary-100 dark:hover:border-primary-900 transition-all duration-300 shadow-sm">
+                        <span class="inline-block px-3 py-1 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-[10px] font-black uppercase tracking-widest mb-2">2025 — PRÉSENT</span>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 uppercase">Master Génie Informatique & Intelligence Artificielle</h3>
+                        <p class="text-primary-600 dark:text-primary-400 font-bold mb-3">BIG DATA & IA | 1ÈRE ANNÉE</p>
+                        <p class="text-gray-700 dark:text-gray-300 font-medium flex items-center">
+                            <i class="fas fa-university mr-2 text-primary-600"></i> HESTIM, Casablanca
+                        </p>
+                    </div>
+                </div>
+
+                <!-- LP DIM -->
+                <div class="relative pl-8 md:pl-12 group">
+                    <span class="absolute -left-[11px] top-1 flex items-center justify-center w-5 h-5 rounded-full bg-white dark:bg-dark-800 border-2 border-primary-600 group-hover:bg-primary-600 transition-colors duration-300"></span>
+                    <div class="bg-slate-50 dark:bg-dark-900/50 p-8 rounded-3xl border border-transparent hover:border-primary-100 dark:hover:border-primary-900 transition-all duration-300 shadow-sm">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-4">
+                            <div>
+                                <span class="inline-block px-3 py-1 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-[10px] font-black uppercase tracking-widest mb-2">2024 — 2025</span>
+                                <h3 class="text-xl font-bold text-gray-900 dark:text-white">Licence Professionnelle — Développement Internet & Mobile</h3>
+                            </div>
+                            <div class="text-right">
+                                <span class="inline-block px-3 py-1 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-xs font-bold">Mention : Très Bien</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 dark:text-gray-300 font-medium mb-4 flex items-center">
+                            <i class="fas fa-university mr-2 text-primary-600"></i> Université du Littoral Côte d'Opale (ULCO)
+                        </p>
+                        <div class="flex flex-wrap gap-4 items-center text-sm text-gray-500">
+                            <span class="flex items-center"><i class="fas fa-link mr-2 opacity-50"></i> Double diplomation avec SupTechnologie</span>
+                            <span class="flex items-center"><i class="fas fa-graduation-cap mr-2 opacity-50"></i> 180 ECTS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Licence MIAGE -->
+                <div class="relative pl-8 md:pl-12 group">
+                    <span class="absolute -left-[11px] top-1 flex items-center justify-center w-5 h-5 rounded-full bg-white dark:bg-dark-800 border-2 border-primary-600 group-hover:bg-primary-600 transition-colors duration-300"></span>
+                    <div class="bg-slate-50 dark:bg-dark-900/50 p-8 rounded-3xl border border-transparent hover:border-primary-100 dark:hover:border-primary-900 transition-all duration-300 shadow-sm">
+                        <span class="inline-block px-3 py-1 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-[10px] font-black uppercase tracking-widest mb-2">2022 — 2025</span>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Licence MIAGE — Informatique Appliquée à la Gestion des Entreprises</h3>
+                        <p class="text-gray-700 dark:text-gray-300 font-medium flex items-center">
+                            <i class="fas fa-university mr-2 text-primary-600"></i> École Supérieure SupTechnologie, Casablanca
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Baccalauréat -->
+                <div class="relative pl-8 md:pl-12 group">
+                    <span class="absolute -left-[11px] top-1 flex items-center justify-center w-5 h-5 rounded-full bg-white dark:bg-dark-800 border-2 border-primary-600 group-hover:bg-primary-600 transition-colors duration-300"></span>
+                    <div class="bg-slate-50 dark:bg-dark-900/50 p-8 rounded-3xl border border-transparent hover:border-primary-100 dark:hover:border-primary-900 transition-all duration-300 shadow-sm">
+                        <span class="inline-block px-3 py-1 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-[10px] font-black uppercase tracking-widest mb-2">2021 — 2022</span>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 text-sm">Baccalauréat Scientifique — Sciences Physiques</h3>
+                        <p class="text-gray-700 dark:text-gray-300 font-medium flex items-center">
+                            <i class="fas fa-school mr-2 text-primary-600"></i> Lycée Anouar Al Madina, Casablanca
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certifications Section -->
+    <section id="certifications" class="py-24 bg-slate-50 dark:bg-dark-900 overflow-hidden">
+        <div class="container mx-auto max-w-6xl px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-black text-gray-900 dark:text-white tracking-tight">
+                    Expertise <span class="text-primary-600">Certifiée</span>
+                </h2>
+                <div class="w-24 h-1.5 bg-primary-600 mx-auto mt-4 rounded-full"></div>
+            </div>
+            
+            <div class="space-y-12">
+                <!-- Group 1: Data Science & AI -->
+                <div class="bg-white dark:bg-dark-800 rounded-3xl p-8 shadow-sm border border-gray-100 dark:border-gray-700">
+                    <h3 class="text-xl font-bold mb-8 flex items-center text-gray-900 dark:text-white uppercase tracking-widest text-sm">
+                        <i class="fas fa-brain text-primary-600 mr-3"></i> Data Science & AI
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="group p-4 rounded-2xl bg-slate-50 dark:bg-dark-900/50 hover:bg-white dark:hover:bg-dark-700 border border-transparent hover:border-primary-100 dark:hover:border-primary-900 transition-all duration-300">
+                            <p class="text-[10px] font-black text-primary-600 mb-1 uppercase tracking-tighter">IBM Certification</p>
+                            <h4 class="text-sm font-bold text-gray-800 dark:text-gray-200 leading-snug">Machine Learning with Python</h4>
+                        </div>
+                        <div class="group p-4 rounded-2xl bg-slate-50 dark:bg-dark-900/50 hover:bg-white dark:hover:bg-dark-700 border border-transparent hover:border-primary-100 dark:hover:border-primary-900 transition-all duration-300">
+                            <p class="text-[10px] font-black text-primary-600 mb-1 uppercase tracking-tighter">IBM Certification</p>
+                            <h4 class="text-sm font-bold text-gray-800 dark:text-gray-200 leading-snug">Python for Data Science & AI</h4>
+                        </div>
+                        <div class="group p-4 rounded-2xl bg-slate-50 dark:bg-dark-900/50 hover:bg-white dark:hover:bg-dark-700 border border-transparent hover:border-primary-100 dark:hover:border-primary-900 transition-all duration-300">
+                            <p class="text-[10px] font-black text-primary-600 mb-1 uppercase tracking-tighter">IBM Certification</p>
+                            <h4 class="text-sm font-bold text-gray-800 dark:text-gray-200 leading-snug">Exploratory Data Analysis</h4>
+                        </div>
+                        <div class="group p-4 rounded-2xl bg-slate-50 dark:bg-dark-900/50 hover:bg-white dark:hover:bg-dark-700 border border-transparent hover:border-primary-100 dark:hover:border-primary-900 transition-all duration-300">
+                            <p class="text-[10px] font-black text-primary-600 mb-1 uppercase tracking-tighter">IBM Certification</p>
+                            <h4 class="text-sm font-bold text-gray-800 dark:text-gray-200 leading-snug">Data Science Methodology</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Group 2: Infrastructure & Networks -->
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white dark:bg-dark-800 rounded-3xl p-8 shadow-sm border border-gray-100 dark:border-gray-700">
+                        <h3 class="text-xl font-bold mb-6 flex items-center text-gray-900 dark:text-white uppercase tracking-widest text-sm">
+                            <i class="fas fa-network-wired text-primary-600 mr-3"></i> Réseaux & Cloud
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center p-4 rounded-2xl bg-slate-50 dark:bg-dark-900/50 border border-transparent hover:border-primary-100 transition-all">
+                                <div class="w-10 h-10 bg-white dark:bg-dark-800 rounded-xl flex items-center justify-center shadow-sm mr-4 text-primary-600 font-bold">HW</div>
+                                <div>
+                                    <h4 class="text-sm font-bold">HCIA Cloud Computing V5.5</h4>
+                                    <p class="text-[10px] text-gray-500 font-medium">Huawei ICT Academy</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center p-4 rounded-2xl bg-slate-50 dark:bg-dark-900/50 border border-transparent hover:border-primary-100 transition-all">
+                                <div class="w-10 h-10 bg-white dark:bg-dark-800 rounded-xl flex items-center justify-center shadow-sm mr-4 text-blue-600 font-bold text-[10px]">CISCO</div>
+                                <div>
+                                    <h4 class="text-sm font-bold">CCNA 1 & 2 (Routing & Switching)</h4>
+                                    <p class="text-[10px] text-gray-500 font-medium">Cisco Networking Academy</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-dark-800 rounded-3xl p-8 shadow-sm border border-gray-100 dark:border-gray-700">
+                        <h3 class="text-xl font-bold mb-6 flex items-center text-gray-900 dark:text-white uppercase tracking-widest text-sm">
+                            <i class="fas fa-shield-alt text-primary-600 mr-3"></i> Sécurité & Fondations
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center p-4 rounded-2xl bg-slate-50 dark:bg-dark-900/50 border border-transparent hover:border-primary-100 transition-all">
+                                <div class="w-10 h-10 bg-white dark:bg-dark-800 rounded-xl flex items-center justify-center shadow-sm mr-4 text-orange-600"><i class="fas fa-shield-virus"></i></div>
+                                <div>
+                                    <h4 class="text-sm font-bold">Threat Landscape Intro</h4>
+                                    <p class="text-[10px] text-gray-500 font-medium">Cybersecurity Foundations</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center p-4 rounded-2xl bg-slate-50 dark:bg-dark-900/50 border border-transparent hover:border-primary-100 transition-all">
+                                <div class="w-10 h-10 bg-white dark:bg-dark-800 rounded-xl flex items-center justify-center shadow-sm mr-4 text-blue-400 font-bold text-[10px]">IBM</div>
+                                <div>
+                                    <h4 class="text-sm font-bold">Foundations of Data Science</h4>
+                                    <p class="text-[10px] text-gray-500 font-medium">Tools & Methodologies</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-24 bg-white dark:bg-dark-800">
+        <div class="container mx-auto max-w-7xl px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-black text-gray-900 dark:text-white tracking-tight">
+                    <span class="text-primary-600">Projets</span>
+                </h2>
+                <div class="w-24 h-1.5 bg-primary-600 mx-auto mt-4 rounded-full"></div>
+            </div>
+
+            <!-- Filtres de Projets -->
+            <div class="flex flex-wrap justify-center gap-3 mb-16">
+                <button data-filter="all" class="filter-btn active px-8 py-2.5 rounded-full text-sm font-bold transition-all duration-300 border-2 border-primary-600 bg-primary-600 text-white shadow-lg shadow-primary-600/20">
+                    Tous les projets
+                </button>
+                <button data-filter="dev" class="filter-btn px-8 py-2.5 rounded-full text-sm font-bold transition-all duration-300 border-2 border-transparent bg-slate-100 dark:bg-dark-900 text-gray-600 dark:text-gray-400 hover:bg-slate-200">
+                    Développement
+                </button>
+                <button data-filter="ia" class="filter-btn px-8 py-2.5 rounded-full text-sm font-bold transition-all duration-300 border-2 border-transparent bg-slate-100 dark:bg-dark-900 text-gray-600 dark:text-gray-400 hover:bg-slate-200">
+                    Intelligence Artificielle
+                </button>
+                <button data-filter="reseaux" class="filter-btn px-8 py-2.5 rounded-full text-sm font-bold transition-all duration-300 border-2 border-transparent bg-slate-100 dark:bg-dark-900 text-gray-600 dark:text-gray-400 hover:bg-slate-200">
+                    Infrastructure & Réseaux
+                </button>
+            </div>
+
+            <div id="projects-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+                <!-- SahaTech AI (Nouveau projet 2026 - Master GIIA) -->
+                <div data-category="ia" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-blue-100 dark:border-blue-900">
+                    <div class="aspect-video overflow-hidden relative">
+                        <div class="absolute top-2 left-2 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded-full z-10 shadow-md flex items-center">
+                            <i class="fas fa-robot mr-1"></i> Multi-Agent System
+                        </div>
+                        <div class="absolute top-2 right-2 bg-teal-500 text-white text-xs font-bold px-2 py-1 rounded-full z-10 shadow-md">LangGraph & FastAPI</div>
+                        <img src="images/SahaTech AI/logo_Projet.png" alt="SahaTech AI" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">SahaTech AI ⚕️</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Système multi-agents médical avec LangGraph. Workflow d'orientation clinique avec boucle Human-in-the-Loop et protocole MCP.</p>
+                        <a href="project-sahatech.html" class="inline-flex items-center mt-4 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">
+                            En savoir plus
+                            <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+                <!-- PerfuSafe (Nouveau projet 2026 - 3ème place) -->
+                <div data-category="ia" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-red-100 dark:border-red-900">
+                    <div class="aspect-video overflow-hidden relative">
+                        <div class="absolute top-2 left-2 bg-amber-500 text-white text-[10px] font-bold px-2 py-1 rounded-full z-10 shadow-md flex items-center">
+                            <i class="fas fa-trophy mr-1"></i> 3ème Place HESTIM
+                        </div>
+                        <div class="absolute top-2 right-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full z-10 shadow-md">IoT & Edge AI</div>
+                        <img src="images/PerfuSafe/landig_page.png" alt="PerfuSafe" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">PerfuSafe 🚨</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Monitoring intelligent de perfusion avec Edge AI (TinyML, FastAPI, Next.js). Détection d'anomalies en temps réel.</p>
+                        <a href="project-perfusafe.html" class="inline-flex items-center mt-4 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300">
+                            En savoir plus
+                            <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+                <!-- ShadowDay (Nouveau projet 2026) -->
+                <div data-category="ia" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-indigo-100 dark:border-indigo-900">
+                    <div class="aspect-video overflow-hidden relative">
+                        <div class="absolute top-2 right-2 bg-indigo-600 text-white text-xs font-bold px-2 py-1 rounded-full z-10 shadow-md">FullStack & IA</div>
+                        <img src="images/shadowday/Page d'accueil.png" alt="ShadowDay" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">ShadowDay 🔍</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Plateforme d'immersion professionnelle interactive boostée par l'IA (Express.js, React, WebRTC).</p>
+                        <a href="project-shadowday.html" class="inline-flex items-center mt-4 text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300">
+                            En savoir plus
+                            <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Business Intelligence Hospitalière (Nouveau projet 2026) -->
+                <div data-category="ia" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-cyan-100 dark:border-cyan-900">
+                    <div class="aspect-video overflow-hidden relative">
+                        <div class="absolute top-2 right-2 bg-cyan-600 text-white text-xs font-bold px-2 py-1 rounded-full z-10 shadow-md">BI & Data Warehouse</div>
+                        <img src="Projet_Power_BI/dw.png" alt="BI Hospitalière" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">BI Hospitalière 🏥</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Solution décisionnelle complète (SQL Server, SSIS, SSAS, Power BI) pour l'optimisation des ressources hospitalières.</p>
+                        <a href="project-hospital-bi.html" class="inline-flex items-center mt-4 text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300">
+                            En savoir plus
+                            <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Analyse Énergétique -->
+                <div data-category="ia" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-yellow-200 dark:border-yellow-900">
+                    <div class="aspect-video overflow-hidden relative">
+                        <div class="absolute top-2 right-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full z-10 shadow-md">Data Science & Énergie</div>
+                        <img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=600&q=80" alt="Analyse et Prévision de la Consommation Énergétique" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">Prévision Énergétique ⚡</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Analyse de séries temporelles et détection d'anomalies (Prophet, Isolation Forest).</p>
+                        <a href="project-energy.html" class="inline-flex items-center mt-4 text-yellow-600 dark:text-yellow-500 hover:text-yellow-700 dark:hover:text-yellow-400">
+                            En savoir plus
+                            <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Machine Learning -->
+                <div data-category="ia" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-rose-100 dark:border-rose-900">
+                    <div class="aspect-video overflow-hidden relative">
+                        <div class="absolute top-2 right-2 bg-rose-600 text-white text-xs font-bold px-2 py-1 rounded-full z-10">Machine Learning</div>
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80" alt="Analyse Prédictive du Risque de Maladie Cardiaque" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">Analyse Risque Cardiaque</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Pipeline ML et application Streamlit pour prédire le risque de maladie coronarienne.</p>
+                        <a href="project-heart-disease.html" class="inline-flex items-center mt-4 text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-500">
+                            En savoir plus
+                            <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Ndafatech - Smart Waste Management (Nouveau projet IoT 2026) -->
+                <div data-category="ia" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-green-200 dark:border-green-900">
+                    <div class="aspect-video overflow-hidden relative">
+                        <div class="absolute top-2 right-2 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full z-10 shadow-md">IoT & Smart City</div>
+                        <img src="images/icon/nadafaTech.png" alt="Ndafatech - Smart Waste Management" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">Ndafatech Smart Waste 🚮</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Système intelligent de gestion des déchets basé sur LoRaWAN et IoT pour optimiser la collecte urbaine.</p>
+                        <a href="project-nadafatech.html" class="inline-flex items-center mt-4 text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300">
+                            En savoir plus
+                            <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div data-category="reseaux" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-primary-100 dark:border-primary-900">
+                    <div class="aspect-video overflow-hidden relative">
+                        <div class="absolute top-2 right-2 bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded-full z-10">Cisco & VPN</div>
+                        <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80" alt="Configuration d'un VPN Site-to-Site avec Cisco IOS" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">VPN Site-to-Site Cisco</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Mise en place d'un tunnel VPN IPsec sécurisé pour connecter deux réseaux distants (Routage OSPF).</p>
+                        <a href="project-vpn.html" class="inline-flex items-center mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-500">
+                            En savoir plus
+                            <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div data-category="reseaux" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-primary-100 dark:border-primary-900">
+                    <div class="aspect-video overflow-hidden relative">
+                        <div class="absolute top-2 right-2 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-full z-10">AWS & Docker</div>
+                        <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=600&q=80" alt="Monitoring avec AWS et Zabbix" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">Monitoring AWS & Zabbix</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Déploiement d'une infrastructure cloud pour la supervision de serveurs avec Zabbix et Docker.</p>
+                        <a href="project-zabbix.html" class="inline-flex items-center mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-500">
+                            En savoir plus
+                            <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div data-category="reseaux" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-primary-100 dark:border-primary-900">
+                    <div class="aspect-video overflow-hidden relative">
+                        <div class="absolute top-2 right-2 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full z-10">Sécurité & NAC</div>
+                        <img src="Projet_RESAUX/packetfence_logo.png" alt="Solution NAC PacketFence" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">Solution NAC PacketFence</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Déploiement d'une solution de contrôle d'accès réseau avec authentification 802.1X et Active Directory.</p>
+                        <a href="project-nac.html" class="inline-flex items-center mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-500">
+                            En savoir plus
+                            <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div data-category="dev" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                    <div class="aspect-video overflow-hidden">
+                        <img src="images/TKINTER7.png" alt="Capture d'écran du projet de gestion des données scolaires" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">Gestion des données scolaires</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Outils Python pour manipuler et analyser les données des écoles.</p>
+                        <a href="schoolplus.html" class="inline-flex items-center mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-500">
+                            En savoir plus
+                            <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+                <div data-category="dev" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                    <div class="aspect-video overflow-hidden">
+                        <img src="images/resto1.png" alt="Capture d'écran du projet de gestion des restaurants" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">Gestion des restaurants</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Plateforme de gestion des restaurants pour améliorer l'expérience client.</p>
+                        <a href="Resto.html" class="inline-flex items-center mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-500">
+                            En savoir plus
+                            <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+                <div data-category="dev" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                    <div class="aspect-video overflow-hidden">
+                        <img src="images/eco1.png" alt="Capture d'écran du site éducatif full-stack" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">Site éducatif full-stack</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Plateforme éducative avec design interactif et gestion de données sécurisée.</p>
+                        <a href="Edweb.html" class="inline-flex items-center mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-500">
+                            En savoir plus
+                            <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+                <div data-category="dev" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                    <div class="aspect-video overflow-hidden">
+                        <img src="images/NextStepJob/NextstepJob4.png" alt="Capture d'écran de NextStepJobs" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">NextStepJobs</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Plateforme de recrutement en ligne développée avec Django et SQLite.</p>                        
+                        <a href="NextStepJobs.html" class="inline-flex items-center mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-500">
+                            En savoir plus
+                            <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                 <!-- SABO League (Nouveau projet) -->
+                <div data-category="dev" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-emerald-100 dark:border-emerald-900">
+                    <div class="aspect-video overflow-hidden relative">
+                        <div class="absolute top-2 right-2 bg-emerald-500 text-white text-xs font-bold px-2 py-1 rounded-full z-10 shadow-md">Développement Mobile</div>
+                        <img src="images/SABOLeague/saboleague_Cover.png" alt="SABO League - Application Mobile" class="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">SABO League ⚽</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Application mobile Flutter (Sqflite, API REST) dédiée aux passionnés de football.</p>
+                        <a href="project-saboleague.html" class="inline-flex items-center mt-4 text-emerald-600 dark:text-emerald-500 hover:text-emerald-700 dark:hover:text-emerald-400">
+                            En savoir plus
+                            <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div data-category="dev" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                    <div class="aspect-video overflow-hidden">
+                        <img src="images/Eventhub/Eventhub.png" alt="Capture d'écran de Eventhub" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">Eventhub</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Plateforme de gestion d'événements avec inscription en temps réel, QR codes et tableau de bord interactif.</p>                        
+                        <a href="Eventhub.html" class="inline-flex items-center mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-500">
+                            En savoir plus
+                            <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div data-category="dev" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                    <div class="aspect-video overflow-hidden">
+                        <img src="images/Pokemon/Pokemon.png" alt="Capture d'écran du jeu Échecs Pokémon" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">Échecs Pokémon</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Jeu d'échecs innovant développé en JavaFX et MG2D, combinant les règles classiques des échecs avec l'univers Pokémon.</p>                        
+                        <a href="Échecs_Pokémon.html" class="inline-flex items-center mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-500">
+                            En savoir plus
+                            <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- KurrencyConvert (Nouveau projet Android 2026) -->
+                <div data-category="dev" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-emerald-100 dark:border-emerald-900">
+                    <div class="aspect-video overflow-hidden relative">
+                        <div class="absolute top-2 right-2 bg-emerald-600 text-white text-xs font-bold px-2 py-1 rounded-full z-10 shadow-md">Android & Kotlin</div>
+                        <img src="images/icon/kurrencyConvert.png" alt="KurrencyConvert" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 dark:text-white">KurrencyConvert 💸</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Application Android de conversion de devises en temps réel avec Kotlin, MVVM et Firebase Realtime Database.</p>
+                        <a href="project-kurrency.html" class="inline-flex items-center mt-4 text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300">
+                            En savoir plus
+                            <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Bloc Rakeb & Exam Platform centré -->
+                <div class="col-span-full flex flex-wrap justify-center gap-10">
+                    <!-- Exam Platform -->
+                    <div data-category="dev" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 max-w-md w-full">
+                        <div class="aspect-video overflow-hidden">
+                            <img src="images/Exam Platform/principale.png" alt="Capture d'écran de Exam Platform"
+                                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold mb-2 dark:text-white">Exam Platform</h3>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                Application web permettant aux professeurs de créer des examens en ligne avec minuterie et calcul automatique des scores, développée avec Spring Boot et Angular.
+                            </p>
+                            <a href="Exam_Platform.html"
+                                class="inline-flex items-center mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-500">
+                                En savoir plus
+                                <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- Rakeb -->
+                    <div data-category="dev" class="project-card group relative overflow-hidden rounded-xl bg-white dark:bg-dark-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 max-w-md w-full">
+                        <div class="aspect-video overflow-hidden">
+                            <img src="images/icon/rakeb-bg.png" alt="Logo Rakeb — Covoiturage & Transport"
+                                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold mb-2 dark:text-white">Rakeb — Covoiturage & Transport</h3>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                Application et interface web de covoiturage/transport multi-plateforme bâtie avec Flutter. Réservation, suivi en temps réel, paiement, messagerie et géolocalisation pour Passagers et Conducteurs.
+                            </p>
+                            <a href="rakeb.html"
+                                class="inline-flex items-center mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-500">
+                                En savoir plus
+                                <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-white dark:bg-dark-800">
+        <div class="container mx-auto max-w-6xl px-4">
+            <h2 class="text-3xl font-bold mb-12 text-center dark:text-white">Contact</h2>
+            <div class="grid md:grid-cols-2 gap-12">
+                <div class="space-y-6">
+                    <div class="flex items-center space-x-4">
+                        <i data-lucide="mail" class="text-primary-600 dark:text-primary-400 w-6 h-6" aria-hidden="true"></i>
+                        <a href="mailto:cheyoukheboubker@gmail.com" class="hover:underline dark:text-gray-300">
+                            cheyoukheboubker@gmail.com
+                        </a>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <i data-lucide="phone" class="text-primary-600 dark:text-primary-400 w-6 h-6" aria-hidden="true"></i>
+                        <a href="tel:+212644435752" class="hover:underline dark:text-gray-300">
+                            +212 6 44 43 57 52
+                        </a>
+                    </div>
+                   <div class="flex space-x-4">
+                        <a href="https://github.com/BOUBKERsup07" target="_blank" rel="noopener noreferrer" class="p-2 rounded-full bg-gray-100 dark:bg-dark-700 hover:bg-gray-200 dark:hover:bg-dark-600 transition-colors" aria-label="Profil GitHub">
+                            <i class="fab fa-github w-6 h-6 flex items-center justify-center dark:text-gray-300"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/boubker-cheyoukh-4696a4276/" target="_blank" rel="noopener noreferrer" class="p-2 rounded-full bg-gray-100 dark:bg-dark-700 hover:bg-gray-200 dark:hover:bg-dark-600 transition-colors" aria-label="Profil LinkedIn">
+                            <i class="fab fa-linkedin w-6 h-6 flex items-center justify-center dark:text-gray-300"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <button onclick="downloadCV('fr')" class="w-full flex items-center justify-center px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors duration-300">
+                        <i data-lucide="download" class="mr-2 w-5 h-5" aria-hidden="true"></i>
+                        Télécharger CV (FR)
+                    </button>
+                    <button onclick="downloadCV('en')" class="w-full flex items-center justify-center px-6 py-3 border-2 border-primary-600 text-primary-600 dark:text-primary-400 rounded-lg hover:bg-purple-50 dark:hover:bg-dark-700 transition-colors duration-300">
+                        <i data-lucide="download" class="mr-2 w-5 h-5" aria-hidden="true"></i>
+                        Download CV (EN)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 dark:bg-dark-800 text-white py-8">
+        <div class="container mx-auto max-w-6xl px-4 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+            <div>
+                <h3 class="text-lg font-bold mb-4 dark:text-white">À propos</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    Développeur passionné par l'intelligence artificielle et le développement d'applications.
+                </p>
+            </div>
+            <div>
+                <h3 class="text-lg font-bold mb-4 dark:text-white">Liens utiles</h3>
+                <ul class="space-y-2">
+                    <li><a href="#about" class="text-gray-400 hover:text-primary-400 transition">À propos</a></li>
+                    <li><a href="#skills" class="text-gray-400 hover:text-primary-400 transition">Compétences</a></li>
+                    <li><a href="#projects" class="text-gray-400 hover:text-primary-400 transition">Projets</a></li>
+                    <li><a href="#contact" class="text-gray-400 hover:text-primary-400 transition">Contact</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-lg font-bold mb-4 dark:text-white">Contact</h3>
+                <p class="text-gray-400 text-sm">Email : <a href="mailto:cheyoukheboubker@gmail.com" class="hover:text-primary-400">cheyoukheboubker@gmail.com</a></p>
+                <p class="text-gray-400 text-sm">Téléphone : <a href="tel:+212644435752" class="hover:text-primary-400">+212 6 44 43 57 52</a></p>
+                <div class="flex justify-center md:justify-start space-x-4 mt-4">
+                    <a href="https://github.com/BOUBKERsup07" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary-400" aria-label="Profil GitHub">
+                        <i data-lucide="github" class="w-5 h-5"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/boubker-cheyoukh-4696a4276/" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary-400" aria-label="Profil LinkedIn">
+                        <i data-lucide="linkedin" class="w-5 h-5"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-gray-700 dark:border-gray-600 mt-8 pt-4 text-gray-400 text-sm text-center">
+            <p>© 2025 Boubker Cheyoukh. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Icon -->
+    <a href="https://wa.me/212644435752" target="_blank" rel="noopener noreferrer" class="fixed bottom-6 right-6 bg-green-500 text-white rounded-full p-4 shadow-lg hover:bg-green-600 transition-colors duration-300 z-40" aria-label="Contact WhatsApp">
+        <i class="fab fa-whatsapp text-2xl"></i>
+    </a>
+
+    <script>
+        // Initialisation des icônes Lucide
+        lucide.createIcons();
+        
+        // Fonction pour animer les barres de progression
+        function animateProgressBars() {
+            const progressBars = document.querySelectorAll('.progress-bar');
+            const skillElements = document.querySelectorAll('.skill-progress');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const progressBar = entry.target.querySelector('.progress-bar');
+                        const percent = progressBar.getAttribute('data-percent');
+                        
+                        // Animation de la barre de progression
+                        progressBar.style.width = `${percent}%`;
+                        
+                        // Animation d'apparition
+                        entry.target.classList.add('visible');
+                        
+                        // Ne plus observer cet élément
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            skillElements.forEach(skill => {
+                observer.observe(skill);
+            });
+        }
+        
+        // Dark Mode Toggle
+        const setupDarkModeToggle = (toggleButton, iconElement) => {
+            toggleButton.addEventListener('click', () => {
+                document.documentElement.classList.toggle('dark');
+                const isDark = document.documentElement.classList.contains('dark');
+                localStorage.setItem('darkMode', isDark);
+                
+                if (isDark) {
+                    iconElement.setAttribute('data-lucide', 'sun');
+                } else {
+                    iconElement.setAttribute('data-lucide', 'moon');
+                }
+                lucide.createIcons();
+            });
+        };
+
+        // Initialize dark mode
+        const initializeDarkMode = () => {
+            const darkModeIcon = document.getElementById('darkModeIcon');
+            const darkModeIconMobile = document.getElementById('darkModeIconMobile');
+            
+            // Check for saved user preference or use system preference
+            if (localStorage.getItem('darkMode') === 'true' || 
+                (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                darkModeIcon.setAttribute('data-lucide', 'sun');
+                darkModeIconMobile.setAttribute('data-lucide', 'sun');
+            } else {
+                document.documentElement.classList.remove('dark');
+                darkModeIcon.setAttribute('data-lucide', 'moon');
+                darkModeIconMobile.setAttribute('data-lucide', 'moon');
+            }
+            lucide.createIcons();
+            
+            // Setup toggle buttons
+            setupDarkModeToggle(
+                document.getElementById('darkModeToggle'),
+                darkModeIcon
+            );
+            
+            setupDarkModeToggle(
+                document.getElementById('darkModeToggleMobile'),
+                darkModeIconMobile
+            );
+        };
+
+        // Mobile menu functionality
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileMenuContent = document.getElementById('mobileMenuContent');
+        const menuLinks = document.querySelectorAll('.menu-link');
+
+        function toggleMenu() {
+            const isHidden = mobileMenu.classList.toggle('hidden');
+            mobileMenuButton.setAttribute('aria-expanded', !isHidden);
+            updateIcon();
+        }
+
+        function closeMenu() {
+            if (!mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.add('hidden');
+                mobileMenuButton.setAttribute('aria-expanded', 'false');
+                updateIcon();
+            }
+        }
+
+        function updateIcon() {
+            const icon = mobileMenuButton.querySelector('[data-lucide]');
+            if (icon) {
+                icon.setAttribute('data-lucide', mobileMenu.classList.contains('hidden') ? 'menu' : 'x');
+                lucide.createIcons();
+            }
+        }
+
+        mobileMenuButton.addEventListener('click', (event) => {
+            event.stopPropagation();
+            toggleMenu();
+        });
+
+        mobileMenuContent.addEventListener('click', (event) => {
+            event.stopPropagation();
+        });
+
+        document.addEventListener('click', () => {
+            closeMenu();
+        });
+
+        menuLinks.forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+
+        // CV Dropdown
+        const cvDropdownButton = document.getElementById('cvDropdownButton');
+        const cvDropdown = document.getElementById('cvDropdown');
+
+        cvDropdownButton.addEventListener('click', (event) => {
+            event.stopPropagation();
+            const isHidden = cvDropdown.classList.toggle('hidden');
+            cvDropdownButton.setAttribute('aria-expanded', !isHidden);
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!cvDropdownButton.contains(event.target) && !cvDropdown.contains(event.target)) {
+                cvDropdown.classList.add('hidden');
+                cvDropdownButton.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        // Filtrage des Projets
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const projectCards = document.querySelectorAll('.project-card');
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Mise à jour des classes actives sur les boutons
+                filterButtons.forEach(btn => {
+                    btn.classList.remove('active', 'bg-primary-600', 'text-white', 'border-primary-600', 'shadow-lg', 'shadow-primary-600/20');
+                    btn.classList.add('border-transparent', 'bg-slate-100', 'dark:bg-dark-900', 'text-gray-600', 'dark:text-gray-400');
+                });
+                button.classList.add('active', 'bg-primary-600', 'text-white', 'border-primary-600', 'shadow-lg', 'shadow-primary-600/20');
+                button.classList.remove('border-transparent', 'bg-slate-100', 'dark:bg-dark-900', 'text-gray-600', 'dark:text-gray-400');
+
+                const filterValue = button.getAttribute('data-filter');
+
+                projectCards.forEach(card => {
+                    // Animation de sortie
+                    card.style.opacity = '0';
+                    card.style.transform = 'scale(0.95)';
+                    
+                    setTimeout(() => {
+                        if (filterValue === 'all' || card.getAttribute('data-category') === filterValue) {
+                            card.classList.remove('hidden');
+                            // Animation d'entrée
+                            setTimeout(() => {
+                                card.style.opacity = '1';
+                                card.style.transform = 'scale(1)';
+                            }, 50);
+                        } else {
+                            card.classList.add('hidden');
+                        }
+                    }, 300);
+                });
+            });
+        });
+
+        // Scroll progress bar
+        window.addEventListener('scroll', () => {
+            const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (window.scrollY / totalScroll) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+
+            // Update active nav link
+            const sections = ['home', 'about', 'skills', 'projects', 'contact'];
+            const navLinks = document.querySelectorAll('nav a');
+
+            sections.forEach(section => {
+                const element = document.getElementById(section);
+                if (element) {
+                    const rect = element.getBoundingClientRect();
+                    if (rect.top <= 100 && rect.bottom >= 100) {
+                        navLinks.forEach(link => {
+                            if (link.getAttribute('href') === `#${section}`) {
+                                link.classList.add('text-primary-600', 'dark:text-primary-400');
+                                link.classList.remove('text-gray-600', 'dark:text-gray-300');
+                            } else if (link.getAttribute('href').startsWith('#')) {
+                                link.classList.add('text-gray-600', 'dark:text-gray-300');
+                                link.classList.remove('text-primary-600', 'dark:text-primary-400');
+                            }
+                        });
+                    }
+                }
+            });
+        });
+
+        // Download CV function
+        function downloadCV(language) {
+            const fileName = language === 'fr' ? 'CV_BOUBKER_FR.pdf' : 'CV_BOUBKER_EN.pdf';
+            const link = document.createElement('a');
+            link.href = fileName;
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            cvDropdown.classList.add('hidden');
+            cvDropdownButton.setAttribute('aria-expanded', 'false');
+        }
+
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeDarkMode();
+            animateProgressBars();
+            
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

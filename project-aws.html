@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projet AWS — Microservices &amp; CI/CD — Boubker Cheyoukh</title>
+<meta name="description" content="Projet AWS de Boubker Cheyoukh : du monolithe Node.js à la production sur AWS — microservices Docker, Amazon ECR, ECS Fargate, Application Load Balancer, CodeDeploy et CodePipeline en blue/green.">
+<meta name="author" content="Boubker Cheyoukh">
+<meta name="theme-color" content="#08080a">
+<link rel="icon" href="portfolio.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add("js");</script>
+<style>
+/* ---------- Reset ---------- */
+*{margin:0;padding:0;box-sizing:border-box}
+img,video{display:block;max-width:100%}
+ul,ol{list-style:none}
+button,a{font:inherit;color:inherit;background:none;border:0;appearance:none;-webkit-appearance:none;text-decoration:none;cursor:pointer}
+
+/* ---------- Tokens ---------- */
+:root{
+  --font-display:"Anton",sans-serif;
+  --font-sans:"Onest",sans-serif;
+  --background:#08080a;--foreground:#f3f1ea;--surface:#111114;--surface-2:#17171b;
+  --muted:#807f78;--line:rgba(243,241,234,0.1);--line-strong:rgba(243,241,234,0.22);
+  --accent:#ff3b1d;--accent-2:#ff6a3d;
+  --gutter:2.5rem;--section:9rem;
+  --fs-hero:28rem;--fs-mega:13rem;--fs-display:7.5rem;--fs-h1:5rem;--fs-h2:3.25rem;--fs-h3:1.75rem;--fs-lead:1.375rem;--fs-body:1.0625rem;--fs-eyebrow:0.8125rem;
+  --ease-expo:cubic-bezier(0.16,1,0.3,1);
+  --ease-quart:cubic-bezier(0.165,0.84,0.44,1);
+  --ease-wipe:cubic-bezier(0.22,1,0.36,1);
+}
+
+/* ---------- Rem-based adaptive grid ---------- */
+html{font-size:16px;background:#08080a}
+@media (max-width:1920px){html{font-size:0.833333vw}}
+@media (max-width:1440px){html{font-size:1.111111vw}}
+@media (max-width:1024px){html{font-size:1.5625vw}}
+@media (max-width:640px){html{font-size:4.444444vw}:root{--gutter:16px}}
+
+/* Lenis recommended styles */
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto !important}
+.lenis.lenis-smooth [data-lenis-prevent]{overscroll-behavior:contain}
+.lenis.lenis-stopped{overflow:clip}
+
+body{background:#08080a;color:#f3f1ea;font-family:var(--font-sans);font-size:var(--fs-body);line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+::selection{background:#ff3b1d;color:#08080a}
+:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:2px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.skip-link{position:fixed;top:1rem;left:1rem;z-index:200;padding:0.75rem 1rem;background:var(--accent);color:var(--background);font-weight:600;transform:translateY(-200%);transition:transform .2s}
+.skip-link:focus{transform:none}
+
+main{position:relative;width:100%;overflow-x:hidden}
+
+/* ---------- Shared type ---------- */
+.display{font-family:var(--font-display);font-weight:400;text-transform:uppercase;letter-spacing:-0.01em}
+.eyebrow{display:flex;align-items:center;gap:0.75rem;font-size:var(--fs-eyebrow);line-height:1.2;font-weight:500;text-transform:uppercase;letter-spacing:0.22em;color:var(--muted)}
+.eyebrow::before{content:"";flex:none;width:0.5rem;height:0.5rem;border-radius:9999px;background:var(--accent)}
+.section{padding:var(--section) var(--gutter)}
+.sec-title{margin-top:1.5rem;line-height:0.95;font-size:var(--fs-h2)}
+@media (min-width:640px){.sec-title.grow{font-size:var(--fs-h1)}}
+.sec-title.flat{line-height:1}
+.sec-head{display:flex;flex-direction:column;gap:2rem}
+@media (min-width:640px){.sec-head{flex-direction:row;align-items:flex-end;justify-content:space-between}}
+.sec-count{font-size:var(--fs-eyebrow);line-height:1.2;text-transform:uppercase;letter-spacing:0.22em;color:var(--muted);flex:none}
+
+/* ---------- Reveal primitives ---------- */
+.line{display:block;clip-path:inset(-1em -1em -0.06em -1em)}
+.line-in{display:block}
+.js .split-lines:not(.is-split){visibility:hidden}
+.js [data-split] .line-in{transform:translateY(110%);opacity:0;transition:transform var(--dur,900ms) var(--ease-expo),opacity var(--dur,900ms) var(--ease-expo);transition-delay:var(--d,0ms)}
+.js [data-split].in-view .line-in{transform:none;opacity:1}
+.js .reveal{opacity:0;transform:translateY(var(--y,16px));transition:opacity var(--dur,520ms) var(--ease-expo),transform var(--dur,520ms) var(--ease-expo);transition-delay:var(--d,0ms)}
+.js .reveal.in-view{opacity:1;transform:none}
+
+/* ---------- Preloader ---------- */
+.preloader{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;gap:0.75rem;padding:var(--gutter);transition:transform 650ms var(--ease-wipe)}
+.preloader::before{content:"";position:absolute;inset:0;z-index:-10;background:var(--background)}
+@media (min-width:640px){.preloader{flex-direction:row;align-items:flex-end;justify-content:space-between;gap:1rem}}
+.preloader.is-wiped{transform:translateY(-100%)}
+.preloader.is-done{pointer-events:none;visibility:hidden}
+.pre-label,.pre-count{transition:opacity 300ms ease-out}
+.preloader.is-fading .pre-label,.preloader.is-fading .pre-count{opacity:0}
+.pre-label{font-family:var(--font-display);font-size:var(--fs-h3);text-transform:uppercase;line-height:1;letter-spacing:-0.01em;color:var(--foreground)}
+.pre-count{font-family:var(--font-display);font-size:var(--fs-display);line-height:1;font-variant-numeric:tabular-nums;color:var(--foreground)}
+.pre-count b{font-weight:400}
+.pre-count span{color:var(--accent)}
+html:not(.js) .preloader{display:none}
+
+/* ---------- Nav ---------- */
+.site-header{position:fixed;inset-inline:0;top:0;z-index:50;pointer-events:none}
+.site-nav{pointer-events:auto;display:flex;align-items:center;justify-content:space-between;padding:1.5rem var(--gutter)}
+.logo{display:flex;align-items:center;gap:0.75rem;position:relative;z-index:60}
+.monogram{display:grid;place-items:center;width:2.5rem;height:2.5rem;border-radius:9999px;border:1px solid var(--line-strong);font-weight:600;letter-spacing:-0.01em;font-size:var(--fs-body);line-height:1}
+.logo-name{display:none;font-size:var(--fs-eyebrow);line-height:1.2;font-weight:500;text-transform:uppercase;letter-spacing:0.22em;color:var(--muted)}
+@media (min-width:640px){.logo-name{display:inline}}
+.nav-links{display:none;gap:2.5rem;align-items:center}
+@media (min-width:768px){.nav-links{display:flex}}
+.nav-link{position:relative;font-size:var(--fs-eyebrow);line-height:1.2;font-weight:500;text-transform:uppercase;letter-spacing:0.18em;color:var(--muted);transition:color 340ms ease-out}
+.nav-link::after{content:"";position:absolute;bottom:-0.25rem;left:0;height:1px;width:0;background:var(--accent);transition:width 340ms ease-out}
+.nav-link:hover,.nav-link:focus-visible{color:var(--foreground)}
+.nav-link:hover::after,.nav-link:focus-visible::after{width:100%}
+.nav-link.back{color:var(--foreground)}
+.burger{position:relative;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.375rem;width:2.5rem;height:2.5rem}
+@media (min-width:768px){.burger{display:none}}
+.burger span{display:block;height:0.125rem;width:1.5rem;background:var(--foreground);transition:transform 420ms var(--ease-expo),opacity 300ms ease-out}
+.burger[aria-expanded="true"] span:nth-child(1){transform:translateY(0.5rem) rotate(45deg)}
+.burger[aria-expanded="true"] span:nth-child(2){opacity:0}
+.burger[aria-expanded="true"] span:nth-child(3){transform:translateY(-0.5rem) rotate(-45deg)}
+.mobile-menu{position:fixed;inset:0;z-index:50;background:var(--background);display:flex;flex-direction:column;justify-content:center;padding-inline:var(--gutter);opacity:0;visibility:hidden;pointer-events:none;transition:opacity 450ms ease-out,visibility 0s linear 450ms}
+.mobile-menu.is-open{opacity:1;visibility:visible;pointer-events:auto;transition:opacity 450ms ease-out,visibility 0s}
+.mobile-menu ul{display:flex;flex-direction:column;gap:1rem}
+.mobile-menu a{display:inline-block;font-family:var(--font-display);font-size:var(--fs-h2);text-transform:uppercase;line-height:1;letter-spacing:-0.01em;opacity:0;transform:translateY(48px);transition:transform 420ms ease-out,opacity 420ms ease-out;transition-delay:0ms}
+.mobile-menu a.back{color:var(--accent)}
+.mobile-menu.is-open a{opacity:1;transform:none;transition-delay:var(--d)}
+@media (min-width:768px){.mobile-menu{display:none}}
+
+/* ---------- Hero ---------- */
+.hero{position:relative;display:flex;flex-direction:column;min-height:100vh;min-height:100svh;overflow:hidden}
+.hero-top{position:relative;z-index:30;display:flex;flex-direction:column;gap:2rem;padding:7rem var(--gutter) 0}
+@media (min-width:640px){.hero-top{flex-direction:row;align-items:flex-start;justify-content:space-between;padding-top:8rem}}
+.hero-roles{font-family:var(--font-display);font-weight:400;text-transform:uppercase;line-height:1.05;letter-spacing:-0.01em;color:var(--foreground);font-size:var(--fs-h3)}
+@media (min-width:640px){.hero-roles{font-size:var(--fs-h2)}}
+.hero-roles .line-in{--dur:760ms}
+.hero-desc{max-width:26rem}
+@media (min-width:640px){.hero-desc{text-align:right}}
+.hero-sub{font-size:var(--fs-h3);line-height:1.15;font-weight:600;letter-spacing:-0.01em;color:var(--foreground)}
+.hero-desc p+p{margin-top:0.75rem;font-size:var(--fs-body);color:var(--muted)}
+/* Portrait slot holds the AWS Academy badge. Unlike the design's see-through cutout the badge is an
+   opaque shape, so it is smaller and sits to the right — composited in front of the name without hiding it. */
+.hero-portrait{position:absolute;z-index:20;pointer-events:none;bottom:0;right:var(--gutter);transform:translateY(6%);height:min(46vh,44vw);width:min(46vh,44vw)}
+.hero-portrait .liquid{width:100%;height:100%;pointer-events:auto}
+/* Phones: the name block is short, so lift the badge above it and keep the fade off the letters */
+@media (max-width:639.98px){
+  .hero .hero-name{bottom:4.5rem;transform:none}
+  .hero-portrait{width:36vw;height:36vw;bottom:calc(4.5rem + 56vw);transform:none}
+  .hero-fade{height:12vh}
+}
+.hero-portrait img{object-fit:contain;object-position:center bottom}
+.hero-fade{position:absolute;inset-inline:0;bottom:0;z-index:20;height:26vh;background:linear-gradient(to bottom,transparent,#08080a);pointer-events:none}
+.hero-name{position:absolute;z-index:10;inset-inline:0;bottom:0;transform:translateY(6%);display:flex;flex-direction:column;align-items:center;font-family:var(--font-display);font-weight:400;text-transform:uppercase;line-height:0.78;letter-spacing:-0.01em;color:var(--accent);
+  /* min(): keeps "PROJET" inside narrow phone viewports */
+  font-size:min(var(--fs-mega),34vw)}
+/* vh cap keeps the two lines below the roles/description block on short viewports */
+@media (min-width:640px){.hero-name{font-size:min(var(--fs-hero),36vw,40vh)}}
+.hero-name .name-line{display:block;white-space:nowrap;clip-path:inset(-1em -1em 0 -1em)}
+.hero-name .ch{display:inline-block}
+.js .hero-name .ch{transform:translateY(100%);opacity:0;transition:transform 900ms var(--ease-expo),opacity 900ms var(--ease-expo);transition-delay:var(--d)}
+.js .hero-name.in-view .ch{transform:none;opacity:1}
+.scroll-cue{position:absolute;z-index:30;bottom:2rem;left:var(--gutter);display:flex;align-items:center;gap:0.75rem;font-size:var(--fs-eyebrow);line-height:1.2;text-transform:uppercase;letter-spacing:0.22em;color:var(--muted)}
+.scroll-cue::before{content:"";width:2.5rem;height:1px;background:var(--accent)}
+
+/* ---------- Marquee ---------- */
+.marquee{overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding-block:2rem}
+.marquee-track{display:flex;width:max-content;flex-wrap:nowrap;animation:marquee 22s linear infinite}
+.marquee-item{display:flex;align-items:center;font-family:var(--font-display);font-size:var(--fs-h2);line-height:1;text-transform:uppercase;letter-spacing:-0.01em;white-space:nowrap}
+.marquee-item::after{content:"";margin-inline:2rem;width:0.625rem;height:0.625rem;border-radius:9999px;background:var(--accent)}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ---------- Story (Le projet) ---------- */
+.grid-12{display:grid;grid-template-columns:1fr;gap:3rem}
+@media (min-width:1024px){.grid-12{grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gutter)}.col-6{grid-column:span 6}.col-3{grid-column:span 3}}
+.story-title{max-width:16ch}
+.story-body{margin-top:2rem;max-width:46ch;font-size:var(--fs-lead);line-height:1.45;color:var(--muted)}
+.story-body + .story-body{margin-top:1.25rem}
+.story-body strong{color:var(--foreground);font-weight:500}
+@media (min-width:1024px){.story-list{padding-top:0.5rem}}
+.principle{display:grid;grid-template-columns:auto 1fr;column-gap:1.5rem;border-top:1px solid var(--line);padding:2rem 0;--dur:560ms}
+.principle:last-child{border-bottom:1px solid var(--line)}
+.p-num{font-size:var(--fs-h3);line-height:1.15;font-weight:600;font-variant-numeric:tabular-nums;color:var(--accent)}
+.p-title{font-size:var(--fs-h3);line-height:1.15;font-weight:600;letter-spacing:-0.01em}
+.p-text{margin-top:0.75rem;max-width:44ch;font-size:var(--fs-body);color:var(--muted)}
+
+/* ---------- LiquidImage ---------- */
+.liquid{position:relative;overflow:hidden;margin:0;background:var(--surface)}
+.liquid.bare{background:none}
+.liquid > svg{position:absolute;width:0;height:0}
+.liquid img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
+.liquid .ph{position:absolute;inset:0;background:radial-gradient(130% 130% at 30% 15%,var(--surface-2),var(--background));display:flex;flex-direction:column;justify-content:space-between;padding:1.5rem;font-size:var(--fs-eyebrow);line-height:1.2;text-transform:uppercase;letter-spacing:0.22em;color:var(--muted)}
+.liquid .ph-num{font-family:var(--font-display);font-size:var(--fs-display);line-height:0.9;letter-spacing:-0.01em;color:var(--line-strong)}
+.liquid .veil{position:absolute;inset:0;background:var(--background);mix-blend-mode:color;opacity:0.88;transition:opacity 380ms ease-out;pointer-events:none}
+.liquid .glow{position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,color-mix(in srgb,var(--accent) 35%,transparent) 50%,transparent 70%);opacity:0;transition:opacity 340ms ease-out;pointer-events:none}
+.liquid .vignette{position:absolute;inset:0;background:radial-gradient(120% 120% at 50% 120%,color-mix(in srgb,#08080a 70%,transparent),transparent 60%);pointer-events:none}
+.liquid.is-hover .veil{opacity:0}
+.liquid.is-hover .glow{opacity:1}
+
+/* ---------- Phases (Ventures) ---------- */
+.v-title{max-width:14ch}
+.v-grid{margin-top:4rem;display:grid;grid-template-columns:1fr;column-gap:var(--gutter);row-gap:4rem}
+.v-grid > li{--y:60px;--dur:620ms}
+@media (min-width:768px){.v-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.v-grid > li:nth-child(even){margin-top:6rem;--d:120ms}}
+.venture .liquid{aspect-ratio:16/11;width:100%;border-radius:0.125rem}
+.v-row{margin-top:1.5rem;border-top:1px solid var(--line);padding-top:1.25rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1.5rem}
+.v-name{font-size:var(--fs-h3);line-height:1.15;font-weight:600;letter-spacing:-0.01em;transition:color 340ms ease-out}
+.venture:hover .v-name{color:var(--accent)}
+.v-blurb{margin-top:0.5rem;max-width:42ch;font-size:var(--fs-body);color:var(--muted)}
+.v-meta{flex:none;text-align:right}
+.v-year{font-size:var(--fs-eyebrow);line-height:1.2;text-transform:uppercase;letter-spacing:0.18em;color:var(--muted)}
+.v-out{margin-top:0.5rem;font-size:var(--fs-eyebrow);line-height:1.2;font-weight:500;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent)}
+.v-cat{margin-top:0.75rem;font-size:var(--fs-eyebrow);line-height:1.2;text-transform:uppercase;letter-spacing:0.22em;color:var(--muted)}
+
+/* ---------- Impact ---------- */
+.stats{margin-top:4rem;display:grid;grid-template-columns:1fr;border-top:1px solid var(--line)}
+@media (min-width:640px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:1024px){.stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.stat{display:flex;flex-direction:column;gap:1rem;border-bottom:1px solid var(--line);padding:2.5rem 0;--dur:560ms}
+@media (min-width:640px) and (max-width:1023.98px){.stat:nth-child(even){border-left:1px solid var(--line);padding-left:2rem}}
+@media (min-width:1024px){.stat{padding-block:3rem}.stat:not(:nth-child(4n+1)){border-left:1px solid var(--line);padding-left:2rem}}
+.stat dd{order:-1;font-family:var(--font-display);font-size:var(--fs-display);line-height:1;letter-spacing:-0.01em;transition:color 340ms ease-out}
+.stat:hover dd{color:var(--accent)}
+.stat dt{max-width:20ch;font-size:var(--fs-body);line-height:1.4;text-transform:uppercase;letter-spacing:0.14em;color:var(--muted)}
+
+/* ---------- Le rapport ---------- */
+.report{margin-top:4rem;align-items:start}
+.report-figure{--dur:640ms}
+.report-figure .liquid{aspect-ratio:4/5;width:100%;border-radius:0.125rem}
+.report-figure img{object-fit:contain;padding:12%}
+.js .report-figure.reveal{transform:scale(1.06)}
+.js .report-figure.reveal.in-view{transform:none}
+.report-list{border-top:1px solid var(--line)}
+.report-list li{display:flex;justify-content:space-between;gap:1.5rem;border-bottom:1px solid var(--line);padding:1.25rem 0;font-size:var(--fs-body)}
+.report-list span:first-child{font-size:var(--fs-eyebrow);line-height:1.6;text-transform:uppercase;letter-spacing:0.18em;color:var(--muted)}
+.report-list span:last-child{text-align:right}
+.btns{margin-top:2.5rem;display:flex;flex-wrap:wrap;gap:1rem}
+.btn{display:inline-flex;align-items:center;gap:0.75rem;padding:1.1rem 1.75rem;border:1px solid var(--line-strong);border-radius:9999px;font-size:var(--fs-eyebrow);line-height:1.2;font-weight:500;text-transform:uppercase;letter-spacing:0.18em;transition:background-color 340ms ease-out,border-color 340ms ease-out,color 340ms ease-out}
+.btn span{color:var(--accent);transition:color 340ms ease-out}
+.btn:hover,.btn:focus-visible{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--background)}
+.btn.primary span{color:var(--background)}
+.btn.primary:hover,.btn.primary:focus-visible{background:var(--accent-2);border-color:var(--accent-2);color:var(--background)}
+.note{margin-top:1.5rem;font-size:var(--fs-eyebrow);line-height:1.6;letter-spacing:0.06em;color:var(--muted)}
+
+/* ---------- Contact / Footer ---------- */
+.contact{padding-top:var(--section);padding-inline:var(--gutter)}
+.contact-title{margin-top:1.5rem;max-width:18ch;line-height:0.95;font-size:var(--fs-h1)}
+@media (min-width:640px){.contact-title{font-size:var(--fs-display)}}
+.contact-text{margin-top:2rem;max-width:44ch;font-size:var(--fs-lead);line-height:1.45;color:var(--muted)}
+.email-wrap{margin-top:3rem}
+.email{display:inline-flex;align-items:baseline;gap:0.75rem;font-size:var(--fs-h3);line-height:1.15;font-weight:600;letter-spacing:-0.01em;word-break:break-all;transition:transform 340ms ease-out,color 340ms ease-out}
+@media (min-width:640px){.email{gap:1rem;font-size:var(--fs-h1);line-height:1}}
+.email span{color:var(--accent)}
+.email:hover,.email:focus-visible{transform:translateX(14px);color:var(--accent)}
+.footer-bar{margin-top:var(--section);border-top:1px solid var(--line);padding:3rem 0;display:grid;grid-template-columns:1fr;gap:2.5rem}
+@media (min-width:1024px){.footer-bar{grid-template-columns:repeat(12,minmax(0,1fr))}}
+.sig{font-family:var(--font-display);font-size:var(--fs-h2);text-transform:uppercase;line-height:1;letter-spacing:-0.01em}
+.sig-sub{margin-top:1rem;font-size:var(--fs-eyebrow);line-height:1.2;text-transform:uppercase;letter-spacing:0.22em;color:var(--muted)}
+.sig-sub a{color:var(--foreground);transition:color 340ms ease-out}
+.sig-sub a:hover,.sig-sub a:focus-visible{color:var(--accent)}
+.social{display:flex;flex-direction:column;gap:0.5rem}
+.social a{display:inline-flex;align-items:center;font-size:var(--fs-body);color:var(--muted);transition:color 340ms ease-out}
+.social a::before{content:"";height:1px;width:0;margin-right:0;background:var(--accent);transition:width 340ms ease-out,margin-right 340ms ease-out}
+.social a:hover,.social a:focus-visible{color:var(--foreground)}
+.social a:hover::before,.social a:focus-visible::before{width:1.5rem;margin-right:0.75rem}
+.copy{font-size:var(--fs-eyebrow);line-height:1.6;text-transform:uppercase;letter-spacing:0.18em;color:var(--muted)}
+@media (min-width:1024px){.copy{text-align:right}}
+
+/* ---------- PDF modal ---------- */
+.pdf-modal{position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;padding:var(--gutter);border:0;background:rgba(8,8,10,0.94);color:var(--foreground);display:none}
+.pdf-modal[open]{display:flex;flex-direction:column;gap:1.25rem}
+.pdf-modal::backdrop{background:rgba(8,8,10,0.7)}
+.pdf-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem 2rem;border-bottom:1px solid var(--line);padding-bottom:1rem}
+.pdf-title{font-family:var(--font-display);font-weight:400;font-size:var(--fs-h3);text-transform:uppercase;letter-spacing:-0.01em;line-height:1}
+.pdf-tools{display:flex;flex-wrap:wrap;align-items:center;gap:0.5rem 2rem}
+.pdf-tool{position:relative;font-size:var(--fs-eyebrow);line-height:1.2;font-weight:500;text-transform:uppercase;letter-spacing:0.18em;padding-block:0.5rem}
+.pdf-tool span{color:var(--accent)}
+.pdf-tool::after{content:"";position:absolute;bottom:0.25rem;left:0;height:1px;width:0;background:var(--accent);transition:width 340ms ease-out}
+.pdf-tool:hover::after,.pdf-tool:focus-visible::after{width:100%}
+.pdf-close{display:grid;place-items:center;width:2.5rem;height:2.5rem;border-radius:9999px;border:1px solid var(--line-strong);font-size:1.25rem;line-height:1;transition:border-color 340ms ease-out,color 340ms ease-out}
+.pdf-close:hover{border-color:var(--accent);color:var(--accent)}
+.pdf-frame{flex:1;min-height:0;background:var(--surface);border-radius:0.125rem;overflow:hidden}
+.pdf-frame object{display:block;width:100%;height:100%;border:0}
+.pdf-fallback{height:100%;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:1.5rem;padding:var(--gutter);color:var(--muted);font-size:var(--fs-lead)}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion:reduce){
+  .preloader{display:none !important}
+  .marquee-track{animation:none}
+  .js .reveal,.js [data-split] .line-in,.js .hero-name .ch{opacity:1 !important;transform:none !important;transition:none !important}
+  .js .split-lines:not(.is-split){visibility:visible}
+  *,*::before,*::after{transition-duration:0.01ms !important;scroll-behavior:auto !important}
+}
+</style>
+<noscript><style>.js .reveal,.js [data-split] .line-in,.js .hero-name .ch{opacity:1;transform:none}.js .split-lines:not(.is-split){visibility:visible}</style></noscript>
+<script type="importmap">
+{ "imports": { "lenis": "https://cdn.jsdelivr.net/npm/lenis@1.3.19/dist/lenis.mjs" } }
+</script>
+</head>
+<body>
+<a class="skip-link" href="#main">Aller au contenu</a>
+
+<!-- ============ Preloader ============ -->
+<div class="preloader" id="preloader" role="status" aria-label="Chargement de la page">
+  <p class="pre-label">Projet AWS</p>
+  <p class="pre-count" aria-hidden="true"><b id="pre-num">0</b><span>%</span></p>
+</div>
+
+<!-- ============ SiteNav ============ -->
+<header class="site-header">
+  <nav class="site-nav" aria-label="Navigation principale">
+    <a href="#top" class="logo" aria-label="Haut de page — Projet AWS">
+      <span class="monogram" aria-hidden="true">BC</span>
+      <span class="logo-name">Boubker Cheyoukh</span>
+    </a>
+    <ul class="nav-links">
+      <li><a class="nav-link" href="#projet">Le projet</a></li>
+      <li><a class="nav-link" href="#phases">Les 9 phases</a></li>
+      <li><a class="nav-link" href="#impact">Impact</a></li>
+      <li><a class="nav-link" href="#rapport">Le rapport</a></li>
+      <li><a class="nav-link" href="#contact">Contact</a></li>
+      <li><a class="nav-link back" href="index.html">← Portfolio</a></li>
+    </ul>
+    <button class="burger" id="burger" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobile-menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+</header>
+<div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+  <nav aria-label="Navigation mobile">
+    <ul>
+      <li><a href="#projet" style="--d:120ms" tabindex="-1">Le projet</a></li>
+      <li><a href="#phases" style="--d:180ms" tabindex="-1">Les 9 phases</a></li>
+      <li><a href="#impact" style="--d:240ms" tabindex="-1">Impact</a></li>
+      <li><a href="#rapport" style="--d:300ms" tabindex="-1">Le rapport</a></li>
+      <li><a href="#contact" style="--d:360ms" tabindex="-1">Contact</a></li>
+      <li><a class="back" href="index.html" style="--d:420ms" tabindex="-1">← Portfolio</a></li>
+    </ul>
+  </nav>
+</div>
+
+<main id="main">
+  <!-- ============ Hero ============ -->
+  <section id="top" class="hero" aria-label="Introduction">
+    <div class="hero-top">
+      <h2 class="hero-roles" id="hero-roles" data-split aria-label="Docker, ECS Fargate, CodePipeline, Blue/Green">
+        <span class="line" aria-hidden="true"><span class="line-in" style="--d:0ms">Docker</span></span>
+        <span class="line" aria-hidden="true"><span class="line-in" style="--d:80ms">ECS Fargate</span></span>
+        <span class="line" aria-hidden="true"><span class="line-in" style="--d:160ms">CodePipeline</span></span>
+        <span class="line" aria-hidden="true"><span class="line-in" style="--d:240ms">Blue/Green</span></span>
+      </h2>
+      <div class="hero-desc reveal" id="hero-desc">
+        <p class="hero-sub">Microservices &amp; CI/CD</p>
+        <p>Du monolithe Node.js à la production sur AWS. Projet final DevOps &amp; MLOps — Cycle ingénieur 5IIIA, HESTIM, 2026–2027.</p>
+      </div>
+    </div>
+
+    <div class="hero-portrait">
+      <figure class="liquid bare" role="img" aria-label="Badge AWS Academy — Microservices and CI/CD Pipeline Builder" data-scale="30">
+        <img src="images/ProjetAWS/aws-academy-graduate-microservices-and-ci-cd-pipeli.png" alt="" width="601" height="601" fetchpriority="high">
+      </figure>
+    </div>
+    <div class="hero-fade" aria-hidden="true"></div>
+
+    <h1 class="hero-name" id="hero-name" aria-label="Projet AWS — Microservices &amp; CI/CD">
+      <span class="name-line" aria-hidden="true" data-letters data-line="0">Projet</span>
+      <span class="name-line" aria-hidden="true" data-letters data-line="1">AWS</span>
+    </h1>
+
+    <p class="scroll-cue reveal" id="scroll-cue">Faire défiler</p>
+  </section>
+
+  <!-- ============ Marquee ============ -->
+  <section class="marquee" aria-label="Services du projet">
+    <div class="marquee-track" aria-hidden="true">
+      <span class="marquee-item">Docker</span><span class="marquee-item">ECR</span><span class="marquee-item">ECS Fargate</span><span class="marquee-item">ALB</span><span class="marquee-item">CodeDeploy</span><span class="marquee-item">CodePipeline</span><span class="marquee-item">Blue/Green</span>
+      <span class="marquee-item">Docker</span><span class="marquee-item">ECR</span><span class="marquee-item">ECS Fargate</span><span class="marquee-item">ALB</span><span class="marquee-item">CodeDeploy</span><span class="marquee-item">CodePipeline</span><span class="marquee-item">Blue/Green</span>
+    </div>
+    <p class="sr-only">Docker — ECR — ECS Fargate — ALB — CodeDeploy — CodePipeline — Blue/Green</p>
+  </section>
+
+  <!-- ============ Le projet (Story) ============ -->
+  <section id="projet" class="section">
+    <div class="grid-12">
+      <div class="col-6">
+        <p class="eyebrow">Le projet</p>
+        <h2 class="display sec-title grow story-title split-lines" data-split>Du monolithe à la production.</h2>
+        <p class="story-body reveal">Du monolithe Node.js à la production sur AWS : découper, conteneuriser, déployer et livrer en continu.</p>
+        <p class="story-body reveal"><strong>Cas d’étude :</strong> l’application de gestion des fournisseurs de café, découpée en deux microservices — <strong>customer</strong> et <strong>employee</strong>.</p>
+        <p class="story-body reveal"><strong>Environnement :</strong> AWS Academy Lab Project, Microservices and CI/CD Pipeline Builder.</p>
+      </div>
+      <ul class="col-6 story-list">
+        <li class="principle reveal" style="--d:0ms">
+          <span class="p-num">01</span>
+          <div><h3 class="p-title">Le point de départ</h3><p class="p-text">Une chaîne de cafés franchisés rachète un fournisseur de café. Son application de gestion des fournisseurs est un monolithe Node.js : si elle tombe, tout le service tombe.</p></div>
+        </li>
+        <li class="principle reveal" style="--d:90ms">
+          <span class="p-num">02</span>
+          <div><h3 class="p-title">Deux microservices</h3><p class="p-text">customer, en lecture seule, pour les gérants des cafés qui consultent les fournisseurs ; employee, sous /admin, pour les employés du siège qui les ajoutent et les modifient.</p></div>
+        </li>
+        <li class="principle reveal" style="--d:180ms">
+          <span class="p-num">03</span>
+          <div><h3 class="p-title">Conteneurs sur Fargate</h3><p class="p-text">Images Docker stockées dans Amazon ECR, déployées sur un cluster Amazon ECS Fargate derrière un Application Load Balancer qui route le trafic selon le chemin.</p></div>
+        </li>
+        <li class="principle reveal" style="--d:270ms">
+          <span class="p-num">04</span>
+          <div><h3 class="p-title">Livraison en blue/green</h3><p class="p-text">Un pipeline CodePipeline + CodeDeploy par microservice livre chaque nouvelle version en blue/green, sans coupure.</p></div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ Les 9 phases (Ventures) ============ -->
+  <section id="phases" class="section">
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow">Les 9 phases</p>
+        <h2 class="display sec-title grow v-title split-lines" data-split>De la conception à l’évolution.</h2>
+      </div>
+      <p class="sec-count">09 / Phases</p>
+    </div>
+
+    <ul class="v-grid">
+      <li class="reveal"><article class="venture">
+        <figure class="liquid" role="img" aria-label="Phase 1 — diagramme d’architecture cible" data-scale="28"><img src="images/ProjetAWS/web/phase-01-architecture.webp" alt="" loading="lazy" style="object-position:center top"></figure>
+        <div class="v-row"><div><h3 class="v-name">Conception et coût</h3><p class="v-blurb">Disposer d’une vue d’ensemble de la solution et de son coût mensuel avant de la construire : diagramme d’architecture et estimation avec AWS Pricing Calculator.</p></div>
+        <div class="v-meta"><p class="v-year">Phase 01</p><p class="v-out">2 tâches</p></div></div>
+        <p class="v-cat">Exigences R1, R2</p>
+      </article></li>
+
+      <li class="reveal"><article class="venture">
+        <figure class="liquid" role="img" aria-label="Phase 2 — l’application monolithique « Coffee suppliers »" data-scale="28"><img src="images/ProjetAWS/web/phase-02-monolithe.webp" alt="" loading="lazy" style="object-position:left top"></figure>
+        <div class="v-row"><div><h3 class="v-name">Analyse du monolithe</h3><p class="v-blurb">Comprendre ce que fait le monolithe, sur quel port il écoute et à quoi il se connecte.</p></div>
+        <div class="v-meta"><p class="v-year">Phase 02</p><p class="v-out">3 tâches</p></div></div>
+        <p class="v-cat">Exigence R3</p>
+      </article></li>
+
+      <li class="reveal"><article class="venture">
+        <figure class="liquid" role="img" aria-label="Phase 3 — l’IDE AWS Cloud9 avec les répertoires customer et employee" data-scale="28"><img src="images/ProjetAWS/web/phase-03-cloud9.webp" alt="" loading="lazy" style="object-position:left top"></figure>
+        <div class="v-row"><div><h3 class="v-name">Cloud9 et CodeCommit</h3><p class="v-blurb">Disposer d’un IDE dans le cloud et d’un dépôt Git contenant le code de départ des deux microservices.</p></div>
+        <div class="v-meta"><p class="v-year">Phase 03</p><p class="v-out">4 tâches</p></div></div>
+        <p class="v-cat">Exigence R3</p>
+      </article></li>
+
+      <li class="reveal"><article class="venture">
+        <figure class="liquid" role="img" aria-label="Phase 4 — docker ps : le conteneur customer en cours d’exécution" data-scale="28"><img src="images/ProjetAWS/web/phase-04-docker.webp" alt="" loading="lazy" style="object-position:left top"></figure>
+        <div class="v-row"><div><h3 class="v-name">Microservices Docker</h3><p class="v-blurb">Obtenir deux conteneurs qui fonctionnent séparément : customer en lecture seule, employee pour l’administration.</p></div>
+        <div class="v-meta"><p class="v-year">Phase 04</p><p class="v-out">7 tâches</p></div></div>
+        <p class="v-cat">Exigences R3, R4</p>
+      </article></li>
+
+      <li class="reveal"><article class="venture">
+        <figure class="liquid" role="img" aria-label="Phase 5 — push des images customer et employee vers Amazon ECR" data-scale="28"><img src="images/ProjetAWS/web/phase-05-ecr.webp" alt="" loading="lazy" style="object-position:left top"></figure>
+        <div class="v-row"><div><h3 class="v-name">ECR, ECS et AppSpec</h3><p class="v-blurb">Disposer des images dans un registre et des fichiers qui décrivent comment les exécuter et les déployer : définitions de tâches et fichiers AppSpec.</p></div>
+        <div class="v-meta"><p class="v-year">Phase 05</p><p class="v-out">6 tâches</p></div></div>
+        <p class="v-cat">Exigence R3</p>
+      </article></li>
+
+      <li class="reveal"><article class="venture">
+        <figure class="liquid" role="img" aria-label="Phase 6 — règles d’écouteur de l’Application Load Balancer" data-scale="28"><img src="images/ProjetAWS/web/phase-06-alb.webp" alt="" loading="lazy" style="object-position:left top"></figure>
+        <div class="v-row"><div><h3 class="v-name">Groupes cibles et ALB</h3><p class="v-blurb">Envoyer chaque requête vers le bon microservice selon son chemin : quatre groupes cibles et un Application Load Balancer.</p></div>
+        <div class="v-meta"><p class="v-year">Phase 06</p><p class="v-out">2 tâches</p></div></div>
+        <p class="v-cat">Exigence R5</p>
+      </article></li>
+
+      <li class="reveal"><article class="venture">
+        <figure class="liquid" role="img" aria-label="Phase 7 — les deux services ECS actifs" data-scale="28"><img src="images/ProjetAWS/web/phase-07-services.webp" alt="" loading="lazy" style="object-position:left top"></figure>
+        <div class="v-row"><div><h3 class="v-name">Services ECS</h3><p class="v-blurb">Faire tourner chaque microservice comme un service ECS joignable par l’ALB.</p></div>
+        <div class="v-meta"><p class="v-year">Phase 07</p><p class="v-out">2 tâches</p></div></div>
+        <p class="v-cat">Exigence R5</p>
+      </article></li>
+
+      <li class="reveal"><article class="venture">
+        <figure class="liquid" role="img" aria-label="Phase 8 — pipeline update-customer-microservice au vert" data-scale="28"><img src="images/ProjetAWS/web/phase-08-pipeline.webp" alt="" loading="lazy" style="object-position:left top"></figure>
+        <div class="v-row"><div><h3 class="v-name">CodeDeploy et CodePipeline</h3><p class="v-blurb">Disposer de deux pipelines qui déploient automatiquement en blue/green.</p></div>
+        <div class="v-meta"><p class="v-year">Phase 08</p><p class="v-out">6 tâches</p></div></div>
+        <p class="v-cat">Exigences R5, R6</p>
+      </article></li>
+
+      <li class="reveal"><article class="venture">
+        <figure class="liquid" role="img" aria-label="Phase 9 — service customer porté à 3 tâches" data-scale="28"><img src="images/ProjetAWS/web/phase-09-scaling.webp" alt="" loading="lazy" style="object-position:right top"></figure>
+        <div class="v-row"><div><h3 class="v-name">Évolution du code et capacité</h3><p class="v-blurb">Livrer une modification sans action manuelle sur le déploiement, sécuriser l’accès et monter en charge (service customer porté de 1 à 3 tâches).</p></div>
+        <div class="v-meta"><p class="v-year">Phase 09</p><p class="v-out">5 tâches</p></div></div>
+        <p class="v-cat">Exigences R5, R6</p>
+      </article></li>
+    </ul>
+  </section>
+
+  <!-- ============ Impact ============ -->
+  <section id="impact" class="section">
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow">En chiffres</p>
+        <h2 class="display sec-title flat split-lines" data-split>Le projet, mesuré.</h2>
+      </div>
+    </div>
+    <dl class="stats">
+      <div class="stat reveal" style="--d:0ms"><dt>Phases, de la conception à l’évolution</dt><dd>9</dd></div>
+      <div class="stat reveal" style="--d:110ms"><dt>Tâches réalisées et documentées</dt><dd>37</dd></div>
+      <div class="stat reveal" style="--d:220ms"><dt>Microservices : customer et employee</dt><dd>2</dd></div>
+      <div class="stat reveal" style="--d:330ms"><dt>Services AWS mobilisés</dt><dd>11+</dd></div>
+    </dl>
+  </section>
+
+  <!-- ============ Le rapport ============ -->
+  <section id="rapport" class="section">
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow">Le rapport</p>
+        <h2 class="display sec-title grow split-lines" data-split style="max-width:16ch">Le compte rendu complet.</h2>
+      </div>
+    </div>
+    <div class="grid-12 report">
+      <div class="col-3 report-figure reveal">
+        <figure class="liquid" role="img" aria-label="Badge AWS Academy — Microservices and CI/CD Pipeline Builder" data-scale="22">
+          <img src="images/ProjetAWS/aws-academy-graduate-microservices-and-ci-cd-pipeli.png" alt="" loading="lazy">
+        </figure>
+      </div>
+      <div class="col-6 reveal" style="--d:110ms">
+        <p class="story-body" style="margin-top:0">Chaque partie y est documentée : les tâches réalisées, les captures qui les prouvent, les questions de compréhension et les difficultés rencontrées, jusqu’au bilan personnel.</p>
+        <ul class="report-list" style="margin-top:2rem">
+          <li><span>Document</span><span>Compte rendu — PDF, 43 pages</span></li>
+          <li><span>Validation</span><span>Contrôle des connaissances AWS Academy : 45/50</span></li>
+          <li><span>Badge</span><span>AWS Academy — Microservices and CI/CD Pipeline Builder</span></li>
+        </ul>
+        <div class="btns">
+          <a class="btn primary" id="open-report" href="ProjetAWS/CHEYOUKH_Boubker_ProjetAWS_public.pdf" target="_blank" rel="noopener" aria-haspopup="dialog">Voir le rapport <span aria-hidden="true">↗</span></a>
+          <a class="btn" href="ProjetAWS/CHEYOUKH_Boubker_ProjetAWS_public.pdf" download>Télécharger <span aria-hidden="true">↓</span><span class="sr-only">(PDF, 6,1 Mo)</span></a>
+        </div>
+        <p class="note">Version publique du rapport : les identifiants de compte et adresses IP personnelles ont été masqués.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Contact / Footer ============ -->
+  <footer id="contact" class="contact">
+    <p class="eyebrow">Contact</p>
+    <h2 class="display contact-title split-lines" data-split>Une question sur ce projet&nbsp;?</h2>
+    <p class="contact-text reveal">Cloud, DevOps, MLOps ou IA : écrivez-moi.</p>
+    <p class="email-wrap reveal"><a class="email" href="mailto:cheyoukheboubker@gmail.com">cheyoukheboubker@gmail.com <span aria-hidden="true">↗</span></a></p>
+
+    <div class="footer-bar">
+      <div class="col-6">
+        <p class="sig">Boubker Cheyoukh</p>
+        <p class="sig-sub"><a href="index.html">← Retour au portfolio</a></p>
+      </div>
+      <nav class="col-3" aria-label="Réseaux">
+        <ul class="social">
+          <li><a href="https://github.com/BOUBKERsup07" target="_blank" rel="noreferrer noopener">GitHub</a></li>
+          <li><a href="https://www.linkedin.com/in/boubker-cheyoukh-4696a4276/" target="_blank" rel="noreferrer noopener">LinkedIn</a></li>
+          <li><a href="mailto:cheyoukheboubker@gmail.com">E-mail</a></li>
+        </ul>
+      </nav>
+      <p class="col-3 copy">© <span id="year">2026</span> Boubker Cheyoukh. Tous droits réservés.</p>
+    </div>
+  </footer>
+</main>
+
+<!-- ============ PDF modal ============ -->
+<dialog class="pdf-modal" id="pdf-modal" aria-labelledby="pdf-modal-title" data-lenis-prevent>
+  <div class="pdf-head">
+    <h2 class="pdf-title" id="pdf-modal-title">Projet AWS — Microservices &amp; CI/CD</h2>
+    <div class="pdf-tools">
+      <a class="pdf-tool" href="ProjetAWS/CHEYOUKH_Boubker_ProjetAWS_public.pdf" target="_blank" rel="noopener">Ouvrir dans un onglet <span aria-hidden="true">↗</span></a>
+      <a class="pdf-tool" href="ProjetAWS/CHEYOUKH_Boubker_ProjetAWS_public.pdf" download>Télécharger <span aria-hidden="true">↓</span></a>
+      <button class="pdf-close" type="button" id="pdf-close" aria-label="Fermer le rapport">×</button>
+    </div>
+  </div>
+  <div class="pdf-frame" id="pdf-frame"></div>
+</dialog>
+
+<!-- ============ Lenis (smooth scroll) ============ -->
+<script type="module">
+  import Lenis from "lenis";
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const lenis = new Lenis({ smoothWheel: true });
+    window.lenis = lenis;
+    if (window.__preloading) lenis.stop();
+    function raf(t){ lenis.raf(t); requestAnimationFrame(raf); }
+    requestAnimationFrame(raf);
+  }
+</script>
+
+<script>
+(function(){
+  "use strict";
+  var REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var REVEAL_DELAY = 2500;
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  /* ---------- Adaptive grid scale-up above 1920px ---------- */
+  var FONT_BASE = 16, BASE_W = 1920, COEF = 0.6666;
+  function applyAdaptiveGrid(){
+    var w = window.innerWidth;
+    var reduction = ((BASE_W - w) / BASE_W) * 100 * COEF;
+    var size = FONT_BASE - (FONT_BASE * reduction) / 100;
+    if (size > FONT_BASE) document.documentElement.style.fontSize = size + "px";
+    else document.documentElement.style.removeProperty("font-size");
+  }
+  applyAdaptiveGrid();
+  addEventListener("resize", applyAdaptiveGrid);
+
+  /* ---------- Hero name: letter-by-letter (52ms stagger, line 2 +240ms) ---------- */
+  document.querySelectorAll("[data-letters]").forEach(function(line){
+    var base = Number(line.dataset.line) * 240;
+    var txt = line.textContent; line.textContent = "";
+    Array.prototype.forEach.call(txt, function(c, i){
+      var s = document.createElement("span");
+      s.className = "ch"; s.textContent = c;
+      s.style.setProperty("--d", (base + i * 52) + "ms");
+      line.appendChild(s);
+    });
+  });
+
+  /* ---------- Section headings: line-by-line (90ms line stagger) ---------- */
+  function esc(w){ return w.replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+  function splitLines(el){
+    if (!el.dataset.src) el.dataset.src = el.innerHTML;
+    el.innerHTML = el.dataset.src;
+    var label = el.textContent.trim();
+    var words = label.split(/\s+/);
+    el.innerHTML = words.map(function(w){ return '<span class="wm">' + esc(w) + "</span>"; }).join(" ");
+    var lines = [], top = null;
+    el.querySelectorAll(".wm").forEach(function(s){
+      var t = s.offsetTop;
+      if (top === null || Math.abs(t - top) > 2){ lines.push([]); top = t; }
+      lines[lines.length - 1].push(esc(s.textContent));
+    });
+    el.setAttribute("aria-label", label);
+    el.innerHTML = lines.map(function(l, i){
+      return '<span class="line" aria-hidden="true"><span class="line-in" style="--d:' + (i * 90) + 'ms">' + l.join(" ") + "</span></span>";
+    }).join("");
+    el.classList.add("is-split");
+  }
+  // Once revealed, put the plain text back so it reflows naturally on resize
+  function settle(el){
+    setTimeout(function(){ el.innerHTML = el.dataset.src; el.removeAttribute("aria-label"); }, 900 + 90 * 6 + 100);
+  }
+
+  /* ---------- In-view observer (once, threshold 0) ---------- */
+  var io = ("IntersectionObserver" in window && !REDUCED) ? new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (!e.isIntersecting) return;
+      e.target.classList.add("in-view");
+      io.unobserve(e.target);
+      if (e.target.classList.contains("split-lines")) settle(e.target);
+    });
+  }, { threshold: 0 }) : null;
+
+  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(function(){
+    document.querySelectorAll(".split-lines").forEach(splitLines);
+    document.querySelectorAll("main .reveal:not(#hero-desc):not(#scroll-cue), .split-lines").forEach(function(el){
+      if (io) io.observe(el); else { el.classList.add("in-view"); if (el.classList.contains("split-lines")) settle(el); }
+    });
+  });
+
+  /* ---------- Hero sequencing ---------- */
+  (function heroIn(){
+    var els = { name: "hero-name", roles: "hero-roles", desc: "hero-desc", cue: "scroll-cue" };
+    Object.keys(els).forEach(function(k){ els[k] = document.getElementById(els[k]); });
+    if (REDUCED){ Object.keys(els).forEach(function(k){ els[k].classList.add("in-view"); }); return; }
+    setTimeout(function(){ els.name.classList.add("in-view"); }, REVEAL_DELAY);
+    setTimeout(function(){ els.roles.classList.add("in-view"); }, 2700);
+    setTimeout(function(){ els.desc.classList.add("in-view"); }, 2900);
+    setTimeout(function(){ els.cue.classList.add("in-view"); }, 3400);
+  })();
+
+  /* ---------- Preloader: 0→100 in 2000ms, fade 300ms, 200ms, wipe 650ms ---------- */
+  var pre = document.getElementById("preloader");
+  function finishPreloader(){
+    pre.classList.add("is-done"); pre.setAttribute("aria-hidden", "true");
+    window.__preloading = false;
+    if (window.lenis) window.lenis.start();
+  }
+  if (REDUCED){
+    finishPreloader();
+  } else {
+    window.__preloading = true;
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+    window.scrollTo(0, 0);
+    if (window.lenis) window.lenis.stop();
+    var num = document.getElementById("pre-num"), t0 = null;
+    requestAnimationFrame(function tick(t){
+      if (t0 === null) t0 = t;
+      var p = Math.min(1, (t - t0) / 2000);
+      num.textContent = Math.round(p * 100);
+      if (p < 1) return requestAnimationFrame(tick);
+      pre.classList.add("is-fading");
+      setTimeout(function(){
+        pre.classList.add("is-wiped");
+        setTimeout(finishPreloader, 650);
+      }, 300 + 200);
+    });
+  }
+
+  /* ---------- Anchor links via Lenis ---------- */
+  document.addEventListener("click", function(e){
+    var a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    var id = a.getAttribute("href");
+    var target = document.querySelector(id);
+    if (!target) return;
+    e.preventDefault();
+    closeMenu();
+    if (window.lenis) window.lenis.scrollTo(target);
+    else target.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" });
+    if (id === "#main"){ target.setAttribute("tabindex", "-1"); target.focus({ preventScroll: true }); }
+  });
+
+  /* ---------- Mobile menu ---------- */
+  var burger = document.getElementById("burger"), menu = document.getElementById("mobile-menu");
+  var menuLinks = menu.querySelectorAll("a");
+  function openMenu(){
+    menu.classList.add("is-open"); menu.setAttribute("aria-hidden", "false");
+    burger.setAttribute("aria-expanded", "true"); burger.setAttribute("aria-label", "Fermer le menu");
+    menuLinks.forEach(function(l){ l.removeAttribute("tabindex"); });
+    if (window.lenis) window.lenis.stop();
+    setTimeout(function(){ menuLinks[0].focus(); }, 50);
+  }
+  function closeMenu(){
+    if (!menu.classList.contains("is-open")) return;
+    menu.classList.remove("is-open"); menu.setAttribute("aria-hidden", "true");
+    burger.setAttribute("aria-expanded", "false"); burger.setAttribute("aria-label", "Ouvrir le menu");
+    menuLinks.forEach(function(l){ l.setAttribute("tabindex", "-1"); });
+    if (window.lenis && !window.__preloading) window.lenis.start();
+  }
+  burger.addEventListener("click", function(){
+    if (menu.classList.contains("is-open")){ closeMenu(); burger.focus(); } else openMenu();
+  });
+  document.addEventListener("keydown", function(e){
+    if (e.key === "Escape" && menu.classList.contains("is-open")){ closeMenu(); burger.focus(); }
+  });
+  addEventListener("resize", function(){ if (innerWidth >= 768) closeMenu(); });
+
+  /* ---------- LiquidImage ---------- */
+  var canHover = matchMedia("(hover: hover) and (min-width: 769px)");
+  var fid = 0;
+  function spring(state, target, k, c, onFrame, onRest){
+    cancelAnimationFrame(state.raf);
+    var last = performance.now();
+    state.raf = requestAnimationFrame(function step(now){
+      var dt = Math.min(0.032, (now - last) / 1000); last = now;
+      for (var i = 0, h = dt / 4; i < 4; i++){
+        var a = -k * (state.x - target) - c * state.v;
+        state.v += a * h; state.x += state.v * h;
+      }
+      onFrame(state.x);
+      if (Math.abs(state.v) < 0.001 && Math.abs(state.x - target) < 0.001){ state.x = target; onFrame(target); if (onRest) onRest(); return; }
+      state.raf = requestAnimationFrame(step);
+    });
+  }
+  document.querySelectorAll(".liquid").forEach(function(fig){
+    if (!fig.classList.contains("bare")){
+      ["veil", "glow", "vignette"].forEach(function(cls){
+        var d = document.createElement("span"); d.className = cls; d.setAttribute("aria-hidden", "true"); fig.appendChild(d);
+      });
+    }
+    // Displacement target: the image, or the radial placeholder when there is no image
+    var media = fig.querySelector("img, video, .ph");
+    if (!media) return;
+    if (media.tagName === "IMG"){
+      media.addEventListener("error", function(){
+        var ph = document.createElement("div"); ph.className = "ph"; ph.setAttribute("aria-hidden", "true");
+        ph.textContent = fig.getAttribute("aria-label") || ""; media.replaceWith(ph); media = ph;
+      });
+    }
+    var id = "liquid-" + (++fid), NS = "http://www.w3.org/2000/svg";
+    var svg = document.createElementNS(NS, "svg"); svg.setAttribute("aria-hidden", "true"); svg.setAttribute("focusable", "false");
+    svg.innerHTML = '<filter id="' + id + '" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.009" numOctaves="2" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="1" xChannelSelector="R" yChannelSelector="G"/></filter>';
+    fig.insertBefore(svg, fig.firstChild);
+    var turb = svg.querySelector("feTurbulence"), disp = svg.querySelector("feDisplacementMap");
+    var maxScale = Number(fig.dataset.scale || 28);
+    var st = { x: 0, v: 0, raf: 0 };
+    function frame(p){
+      disp.setAttribute("scale", (1 + (maxScale - 1) * p).toFixed(2));
+      turb.setAttribute("baseFrequency", (0.009 + 0.013 * p).toFixed(4));
+    }
+    // Filter attached only while hovering/animating (scale 1 at rest is visually identical) — keeps scrolling smooth.
+    fig.addEventListener("pointerenter", function(){
+      if (!canHover.matches || REDUCED) return;
+      media.style.filter = "url(#" + id + ")";
+      fig.classList.add("is-hover");
+      spring(st, 1, 140, 13, frame);
+    });
+    fig.addEventListener("pointerleave", function(){
+      fig.classList.remove("is-hover");
+      if (!media.style.filter) return;
+      spring(st, 0, 140, 13, frame, function(){ media.style.filter = ""; });
+    });
+  });
+
+  /* ---------- PDF modal ---------- */
+  var PDF = "ProjetAWS/CHEYOUKH_Boubker_ProjetAWS_public.pdf";
+  var modal = document.getElementById("pdf-modal"), frame = document.getElementById("pdf-frame");
+  var opener = document.getElementById("open-report");
+  var smallScreen = matchMedia("(max-width: 768px)");
+  opener.addEventListener("click", function(e){
+    // Inline viewer only where the browser has a built-in PDF viewer (Chrome, Edge, Firefox desktop).
+    // Otherwise (phones, viewer disabled, no <dialog>) the link opens the PDF in a new tab.
+    if (navigator.pdfViewerEnabled === false || smallScreen.matches || typeof modal.showModal !== "function") return;
+    e.preventDefault();
+    if (!frame.firstChild){
+      frame.innerHTML =
+        '<object data="' + PDF + '#view=FitH" type="application/pdf" aria-label="Rapport du projet AWS (PDF)">' +
+          '<div class="pdf-fallback"><p>Votre navigateur ne peut pas afficher le PDF ici.</p>' +
+          '<p style="display:flex;flex-wrap:wrap;gap:1rem"><a class="btn primary" href="' + PDF + '" target="_blank" rel="noopener">Ouvrir le rapport <span aria-hidden="true">↗</span></a>' +
+          '<a class="btn" href="' + PDF + '" download>Télécharger <span aria-hidden="true">↓</span></a></p></div>' +
+        "</object>";
+    }
+    modal.showModal();
+    if (window.lenis) window.lenis.stop();
+    document.getElementById("pdf-close").focus();
+  });
+  document.getElementById("pdf-close").addEventListener("click", function(){ modal.close(); });
+  modal.addEventListener("click", function(e){ if (e.target === modal) modal.close(); });
+  modal.addEventListener("close", function(){
+    if (window.lenis) window.lenis.start();
+    opener.focus({ preventScroll: true });
+  });
+})();
+</script>
+</body>
+</html>
