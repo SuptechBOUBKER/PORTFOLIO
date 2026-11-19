@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Autonomous Inspection Robot · Robotics — Boubker Cheyoukh</title>
+<meta name="description" content="Robotics Capstone at HESTIM: a simulated robot patrols a building, detects cracks and stains, places them on the map and generates a PDF report. mAP@0.5 of 0.995, median error of 11.8 cm, 4 complete patrols out of 8.">
+<meta name="author" content="Boubker Cheyoukh">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="icon" href="portfolio.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  document.documentElement.classList.add("js");
+  // Safety net: if the main module never starts (offline CDN, old browser), show the page as plain HTML.
+  setTimeout(function(){ if (!window.__booted) document.documentElement.classList.remove("js"); }, 6000);
+</script>
+<style>
+/* ---------- Tokens ---------- */
+:root{
+  --background:#ffffff; --foreground:#111111; --ink:#0a0a0a;
+  --muted:#8d8d8d; --subtle:#b6b6b6; --line:#e6e5e2;
+  --surface:#f1f0ee; --surface-2:#e3e2df;
+  --accent:#b15f2c; --accent-from:#cf8047; --accent-to:#97501f;
+  --hero-from:#ecebe9; --hero-to:#c9c9c9;
+  --radius-pill:9999px; --radius-card:2rem; --radius-card-sm:1.25rem; --radius-control:.875rem;
+  --text-watermark:13rem;
+  --e-line:cubic-bezier(.215,.61,.355,1); --e-word:cubic-bezier(.165,.84,.44,1);
+  --e-spring:cubic-bezier(.22,1,.36,1); --e-soft:cubic-bezier(.16,1,.3,1); --e-hover:cubic-bezier(.2,.8,.2,1);
+}
+
+/* ---------- Reset / base ---------- */
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-font-smoothing:antialiased}
+@media (max-width:1920px){html{font-size:.833333vw}}
+@media (max-width:1440px){html{font-size:1.111111vw}}
+@media (max-width:1024px){html{font-size:1.5625vw}}
+@media (max-width:640px){html{font-size:4.444444vw}}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto !important}
+.lenis.lenis-stopped{overflow:clip}
+body{background:#fff;color:#111;font-family:"Onest",sans-serif;line-height:1.5;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+ul,ol{list-style:none}
+img{display:block;max-width:100%}
+h1,h2,h3{font-weight:600}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+:focus-visible{outline:2px solid #b15f2c;outline-offset:2px}
+.ic{width:1em;height:1em;flex:none;display:inline-block}
+.shell{max-width:88rem;margin-inline:auto;padding-inline:1.25rem}
+@media (min-width:640px){.shell{padding-inline:2rem}}
+.skip-link{position:fixed;left:1rem;top:1rem;z-index:130;border-radius:.875rem;background:#0a0a0a;padding:.5rem 1rem;font-size:.875rem;color:#fff;transform:translateY(-300%)}
+.skip-link:focus{transform:none}
+
+/* ---------- Reveals (spring feel via CSS) ---------- */
+.js [data-r]{opacity:0;transform:translateY(var(--y,24px)) scale(var(--s,1));transition:opacity .8s var(--e-soft),transform .8s var(--e-soft);transition-delay:var(--d,0ms)}
+.js [data-r].in{opacity:var(--o,1);transform:none}
+.ln{display:block;overflow:hidden;padding-bottom:.1em;margin-bottom:-.1em}
+.js [data-lines]:not(.split){visibility:hidden}
+.js [data-lines] .ln-in{display:block;opacity:0;transform:translateY(100%);transition:transform .9s var(--e-line),opacity .9s var(--e-line);transition-delay:calc(var(--d,0ms) + var(--ld,0ms))}
+.js [data-lines].in .ln-in{opacity:1;transform:none}
+.js [data-words] .wd{display:inline-block;opacity:0;transform:translateY(24px);transition:opacity .7s var(--e-word),transform .7s var(--e-word);transition-delay:calc(var(--d,0ms) + var(--wd,0ms))}
+.js [data-words].in .wd{opacity:1;transform:none}
+
+/* ---------- Shared components ---------- */
+.eyebrow{display:inline-flex;align-items:center;gap:.5rem;font-size:.875rem;font-weight:500;color:rgba(17,17,17,.7)}
+.eyebrow::before{content:"";width:.375rem;height:.375rem;border-radius:9999px;background:rgba(17,17,17,.5)}
+.eyebrow.light{color:rgba(255,255,255,.7)}
+.eyebrow.light::before{background:rgba(255,255,255,.6)}
+.eyebrow.boxed{border:1px solid #e6e5e2;border-radius:9999px;padding:.375rem 1rem}
+.h2{font-size:2.25rem;font-weight:600;letter-spacing:-.02em;line-height:1.05}
+@media (min-width:640px){.h2{font-size:3rem}}
+.mut{color:#8d8d8d}
+
+.pill{display:inline-block}
+.pill-in{display:inline-flex;align-items:center;gap:.75rem;border-radius:9999px;font-size:.875rem;font-weight:500;padding:.875rem 1.75rem;transition:transform .35s var(--e-hover),background-color .3s}
+.pill.arrow .pill-in{padding:.375rem .375rem .375rem 1.5rem}
+.pill-dark .pill-in{background:#0a0a0a;color:#fff}
+.pill-light .pill-in{background:#f1f0ee;color:#111}
+.pill-outline .pill-in{border:1px solid #e6e5e2;background:transparent;color:#111}
+.pill-badge{width:2.25rem;height:2.25rem;display:grid;place-items:center;border-radius:9999px;font-size:1rem;background:#0a0a0a;color:#fff}
+.pill-dark .pill-badge{background:#fff;color:#0a0a0a}
+.pill-badge .ic{transition:transform .35s var(--e-hover)}
+@media (hover:hover){
+  .pill:hover .pill-in{transform:scale(1.04)}
+  .pill:hover .pill-badge .ic{transform:translate(3px,0)}
+  .pill.up:hover .pill-badge .ic{transform:translate(2px,-2px)}
+}
+.chip{display:inline-flex;align-items:center;gap:.375rem;border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:9999px;padding:.5rem 1rem;font-size:.875rem}
+.chip.dark{border-color:#e6e5e2;color:#111}
+.chip-link{gap:.5rem;transition:background .3s,color .3s}
+.chip-link:hover,.chip-link:focus-visible{background:#fff;color:#0a0a0a}
+
+/* ---------- Loader ---------- */
+.loader{display:none}
+.js .loader{position:fixed;inset:0;z-index:120;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem;background:#0a0a0a;color:#fff;border-radius:0 0 2rem 2rem;transition:transform .75s var(--e-spring)}
+.loader.out{transform:translateY(-100%)}
+.ld-center{display:flex;flex-direction:column;align-items:center;gap:1.25rem;text-align:center;transition:opacity .6s var(--e-spring),transform .6s var(--e-spring)}
+.loader.out .ld-center{opacity:0;transform:translateY(-12px)}
+.ld-brand{display:flex;align-items:center;gap:.75rem;font-weight:600;font-size:1.5rem}
+@media (min-width:640px){.ld-brand{font-size:1.875rem}}
+.ld-brand .ic{font-size:1.875rem;color:#cf8047}
+.ld-tag{max-width:24ch;font-size:.875rem;color:rgba(255,255,255,.55)}
+.ld-prog{width:min(22rem,72vw);display:flex;flex-direction:column;gap:.75rem}
+.ld-track{height:1px;background:rgba(255,255,255,.15)}
+.ld-fill{height:100%;width:0;background:#cf8047;transition:width .1s ease-out}
+.ld-row{display:flex;justify-content:space-between;font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:rgba(255,255,255,.45)}
+.ld-num{font-variant-numeric:tabular-nums;color:rgba(255,255,255,.8)}
+
+/* ---------- Header ---------- */
+.site-header{position:absolute;inset-inline:0;top:0;z-index:50}
+.hdr{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;padding-block:1.25rem}
+@media (min-width:640px){.hdr{padding-block:1.5rem}}
+.brand{display:flex;align-items:center;gap:.5rem;font-size:1.125rem;font-weight:600;letter-spacing:-.01em;transition:transform .35s var(--e-hover)}
+.brand .ic{font-size:1.25rem;color:#b15f2c}
+.nav{display:none}
+@media (min-width:1024px){.nav{display:flex;gap:2rem;font-size:.875rem;font-weight:500}}
+.nav a{display:inline-block;opacity:.8;transition:transform .35s var(--e-hover),opacity .35s}
+.hdr-right{display:flex;align-items:center;gap:.75rem}
+.clock{display:none}
+@media (min-width:768px){.clock{display:flex;align-items:center;gap:.75rem;border:1px solid rgba(230,229,226,.8);background:rgba(255,255,255,.4);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:.875rem;padding:.5rem .75rem;font-size:.75rem;color:rgba(17,17,17,.7)}}
+.clock .lbl{color:rgba(17,17,17,.55)}
+.clock .tm{min-width:2.5rem;font-variant-numeric:tabular-nums;font-weight:500;color:#111}
+.clock .sep{color:rgba(17,17,17,.3)}
+.clock .dt{font-weight:500}
+.menu-btn{border:1px solid rgba(230,229,226,.8);background:rgba(255,255,255,.4);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:.875rem;transition:background .3s}
+.menu-btn span{display:flex;align-items:center;gap:.5rem;padding:.5rem 1rem;font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.05em;transition:transform .35s var(--e-hover)}
+.menu-btn .ic{font-size:.875rem}
+.menu-btn .w{display:none}
+@media (min-width:640px){.menu-btn .w{display:inline}}
+@media (hover:hover){
+  .brand:hover{transform:scale(1.04)}
+  .nav a:hover{transform:translateY(-2px);opacity:1}
+  .menu-btn:hover{background:rgba(255,255,255,.7)}
+  .menu-btn:hover span{transform:scale(1.05)}
+}
+
+/* ---------- Hero ---------- */
+.hero{position:relative;isolation:isolate;overflow:hidden;border-radius:0 0 2rem 2rem;background:#c9c9c9}
+.lq{position:absolute;inset:0;z-index:0}
+.lq img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1) invert(1) blur(18px);transform:scale(1.08)}
+.lq .wash{position:absolute;inset:0;background:rgba(236,235,233,.6)}
+.lq canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.vignette{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(to bottom,rgba(255,255,255,.35),transparent,rgba(255,255,255,.35))}
+.hero-wm{pointer-events:none;position:absolute;inset-inline:0;bottom:7rem;z-index:1;text-align:center;user-select:none;font-weight:700;line-height:1;font-size:var(--text-watermark);color:rgba(255,255,255,.4);white-space:nowrap}
+.hero-grid{position:relative;z-index:20;display:flex;flex-direction:column;gap:2rem;padding-top:7rem;padding-bottom:5rem}
+@media (min-width:1024px){.hero-grid{display:grid;min-height:100vh;min-height:100lvh;grid-template-columns:repeat(12,minmax(0,1fr));gap:2.5rem;padding-top:9rem;padding-bottom:7rem}}
+.hero-left{display:flex;flex-direction:column;gap:1.75rem}
+@media (min-width:1024px){.hero-left{grid-column:span 7}}
+.hero h1{max-width:18ch;font-size:2.25rem;font-weight:600;line-height:.98;letter-spacing:-.02em}
+@media (min-width:640px){.hero h1{font-size:3rem}}
+@media (min-width:768px){.hero h1{font-size:3.75rem}}
+.hero-lead{max-width:34rem;font-size:1rem;line-height:1.55;color:rgba(17,17,17,.75)}
+.frame{display:flex;align-items:center;gap:.75rem;font-size:.875rem;font-weight:500;color:rgba(17,17,17,.7)}
+.frame .ic{color:#b15f2c}
+.cta-row{display:flex;flex-wrap:wrap;gap:.75rem}
+.hero-right{display:flex;flex-direction:column;align-items:flex-start;gap:2rem}
+@media (min-width:1024px){.hero-right{grid-column:span 5;align-items:flex-end;justify-content:center}}
+.hcard{width:100%;max-width:24rem;border-radius:1.25rem;background:rgba(255,255,255,.7);padding:.5rem;box-shadow:0 1px 2px rgba(0,0,0,.05),0 0 0 1px rgba(230,229,226,.7);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+@media (min-width:1024px){.hcard{width:19rem}}
+.hcard-row{display:flex;gap:.5rem;cursor:pointer;border-radius:.875rem}
+.hcard-tile{aspect-ratio:1;width:6rem;flex:none;display:grid;place-items:center;border-radius:.875rem;background:#0a0a0a;font-size:1.875rem;color:#cf8047}
+.hcard-panel{flex:1;min-width:0;border-radius:.875rem;background:rgba(241,240,238,.7);padding:.75rem;display:flex;flex-direction:column;justify-content:space-between;gap:.5rem}
+.hcard-slot{position:relative;min-height:4.25rem;overflow:hidden}
+.hc-item{position:absolute;inset:0;transition:opacity .45s var(--e-spring),transform .45s var(--e-spring)}
+.hc-item.from-down{opacity:0;transform:translateY(14px)}
+.hc-item.from-up{opacity:0;transform:translateY(-14px)}
+.hc-cap{font-size:.65rem;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:rgba(17,17,17,.55)}
+.hc-title{margin-top:.25rem;font-size:.875rem;font-weight:500;line-height:1.35}
+.hcard-bot{display:flex;align-items:center;justify-content:space-between}
+.dots{display:flex;gap:.25rem}
+.dots i{height:.25rem;width:.375rem;border-radius:9999px;background:rgba(17,17,17,.2);transition:all .3s}
+.dots i.on{width:1rem;background:rgba(17,17,17,.7)}
+.hc-nav{display:flex;gap:.25rem}
+.hc-nav button{width:1.75rem;height:1.75rem;display:grid;place-items:center;border-radius:9999px;background:#fff;color:rgba(17,17,17,.7);box-shadow:0 0 0 1px #e6e5e2;font-size:.875rem}
+.hc-nav button:hover{color:#111}
+.hc-nav .prev .ic{transform:rotate(180deg)}
+.tools-mini{width:100%;max-width:24rem}
+@media (min-width:1024px){.tools-mini{width:19rem}}
+.tools-mini p{margin-bottom:.75rem;font-size:.75rem;font-weight:500;color:rgba(17,17,17,.55)}
+@media (min-width:1024px){.tools-mini p{text-align:right}}
+.tools-mini ul{display:flex;flex-wrap:wrap;gap:.75rem 1rem}
+@media (min-width:1024px){.tools-mini ul{justify-content:flex-end}}
+.tools-mini li span{display:flex;align-items:center;gap:.375rem;font-size:.75rem;color:rgba(17,17,17,.75);opacity:.85;transition:transform .35s var(--e-hover),opacity .35s}
+.tools-mini li .ic{font-size:.875rem;color:rgba(17,17,17,.4)}
+@media (hover:hover){.tools-mini li span:hover{transform:translateY(-2px);opacity:1}}
+.hero-bar{position:relative;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:.75rem;border-top:1px solid rgba(17,17,17,.1);padding-block:1.25rem;font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.025em;color:rgba(17,17,17,.65)}
+.hero-bar .mid{display:none}
+@media (min-width:640px){.hero-bar .mid{display:inline}}
+.hero-bar a{display:inline-flex;gap:.5rem}
+
+/* ---------- About (problème) ---------- */
+.about-grid{display:grid;grid-template-columns:1fr;align-items:center;gap:3rem;padding-block:5rem}
+@media (min-width:1024px){.about-grid{grid-template-columns:1fr 1fr;padding-block:7rem}}
+.globe{position:relative;min-height:14rem;display:flex;flex-direction:column;justify-content:space-between}
+@media (min-width:1024px){.globe{min-height:20rem}}
+.globe-bg{position:absolute;left:-1rem;top:50%;transform:translateY(-50%);font-size:12rem;color:rgba(17,17,17,.1);pointer-events:none}
+@media (min-width:640px){.globe-bg{font-size:16rem}}
+@media (min-width:1024px){.globe-bg{left:-1.5rem;font-size:20rem}}
+.globe .eyebrow{position:relative}
+.globe-note{position:relative;display:flex;align-items:center;gap:.75rem;font-size:.875rem;color:rgba(17,17,17,.7)}
+.globe-note .ic{font-size:1.5rem;color:#111}
+.globe-note span{max-width:22rem}
+.statement{display:flex;flex-direction:column;gap:2.5rem}
+.statement h2{font-size:1.5rem;font-weight:500;line-height:1.35;letter-spacing:-.01em}
+@media (min-width:640px){.statement h2{font-size:1.875rem}}
+.st-foot{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:1.5rem;border-top:1px solid #e6e5e2;padding-top:1.5rem}
+.st-foot .k{font-size:.875rem;color:rgba(17,17,17,.55)}
+.st-foot .v{margin-top:.25rem;font-size:1rem;font-weight:500}
+
+/* ---------- Create band ---------- */
+.band{display:flex;flex-direction:column;gap:.75rem;padding-block:2.5rem}
+@media (min-width:640px){.band{flex-direction:row;gap:1rem}}
+.band li{flex:1;min-width:0}
+.tile{display:grid;place-items:center;height:6rem;border-radius:9999px;font-size:1.875rem;font-weight:500;transition:transform .35s var(--e-hover)}
+@media (min-width:640px){.tile{height:10rem;font-size:2rem}}
+@media (min-width:1024px){.tile{font-size:2.25rem}}
+.tile.light{background:#f1f0ee;color:#111}
+.tile.accent{background:linear-gradient(to bottom right,#cf8047,#97501f);color:#fff}
+.tile.dark{background:#0a0a0a;color:#fff}
+.tile.dark .ic{font-size:2.25rem}
+@media (min-width:640px){.tile.dark .ic{font-size:3rem}}
+.tile.ghost{background:rgba(241,240,238,.6);color:rgba(17,17,17,.45)}
+@media (hover:hover){.tile:hover{transform:scale(1.03)}}
+
+/* ---------- Système (portfolio cards) ---------- */
+.works{padding-block:2.5rem 5rem}
+@media (min-width:1024px){.works{padding-bottom:7rem}}
+.center{display:flex;flex-direction:column;align-items:center;text-align:center}
+.center .h2{margin-top:1.25rem;width:fit-content;max-width:20ch}
+.cards{margin-top:3rem;display:grid;grid-template-columns:1fr;gap:1.5rem}
+@media (min-width:768px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.wcard{position:relative;height:100%;display:flex;flex-direction:column;overflow:hidden;border-radius:2rem;background:#0a0a0a;padding:1.5rem;color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.05);transition:transform .4s var(--e-hover)}
+@media (min-width:640px){.wcard{padding:2rem}}
+.cards > li{height:100%}
+.wc-fig{margin-top:1.25rem}
+.wc-img{aspect-ratio:16/10;overflow:hidden;border-radius:1.25rem;background:#1a1a1a;box-shadow:0 0 0 1px rgba(255,255,255,.08)}
+.wc-img img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--e-soft)}
+.wc-fig figcaption{margin-top:.75rem;font-size:.75rem;color:rgba(255,255,255,.55)}
+.wc-meta{display:flex;justify-content:space-between;align-items:flex-start;font-size:.75rem;text-transform:uppercase;letter-spacing:.025em;color:rgba(255,255,255,.55)}
+.wc-badge{width:2.75rem;height:2.75rem;display:grid;place-items:center;border-radius:9999px;background:rgba(255,255,255,.1);color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.15);transition:transform .4s var(--e-hover)}
+.wc-mark{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+.wc-mark span{display:flex;align-items:flex-start;font-size:4.5rem;color:rgba(255,255,255,.9)}
+.wc-mark small{font-size:.75rem;color:rgba(255,255,255,.6)}
+.wc-bot{margin-top:auto;padding-top:1.75rem}
+.wc-bot h3{font-size:1.5rem;font-weight:500;letter-spacing:-.01em}
+@media (min-width:640px){.wc-bot h3{font-size:1.875rem}}
+.wc-bot p{margin-top:.5rem;max-width:28rem;font-size:.875rem;color:rgba(255,255,255,.65)}
+.wc-tags{margin-top:1.25rem;display:flex;flex-wrap:wrap;gap:.5rem}
+@media (hover:hover){
+  .wcard:hover{transform:translateY(-8px) scale(1.012)}
+  .wcard:hover .wc-badge{transform:rotate(45deg) scale(1.08)}
+  .wcard:hover .wc-img img{transform:scale(1.03)}
+}
+
+/* ---------- Démarche (services rows) ---------- */
+.services{padding-block:5rem}
+@media (min-width:1024px){.services{padding-block:7rem}}
+.services .h2{margin:1.25rem 0 3rem;max-width:18ch}
+@media (min-width:640px){.services .h2{margin-bottom:3.5rem}}
+.rows li + li{border-top:1px solid #e6e5e2}
+.row{display:flex;align-items:center;gap:1rem;border-radius:1.25rem;padding:1.5rem;background:rgba(241,240,238,0);transition:background .45s var(--e-soft),padding .45s var(--e-soft)}
+@media (min-width:640px){.row{gap:1.5rem;padding-block:2rem}}
+.row .n{width:1.75rem;flex:none;font-size:.875rem;font-weight:500;color:rgba(17,17,17,.45)}
+@media (min-width:640px){.row .n{width:2.5rem}}
+.row .body{flex:1;min-width:0;display:flex;flex-direction:column;gap:.5rem}
+@media (min-width:1024px){.row .body{flex-direction:row;align-items:center;gap:2rem}}
+.row h3{flex:1;font-size:1.5rem;font-weight:500;letter-spacing:-.01em;line-height:1.15}
+@media (min-width:640px){.row h3{font-size:1.875rem}}
+@media (min-width:768px){.row h3{font-size:2.25rem}}
+.row p{font-size:.875rem;line-height:1.55;color:rgba(17,17,17,.6)}
+@media (min-width:1024px){.row p{max-width:26rem}}
+.row .badge{width:2.5rem;height:2.5rem;flex:none;display:grid;place-items:center;border-radius:9999px;background:#0a0a0a;color:#fff;transition:transform .35s var(--e-hover)}
+@media (min-width:640px){.row .badge{width:3rem;height:3rem}}
+@media (hover:hover){
+  .row:hover{background:rgba(241,240,238,1);padding-left:2rem;padding-right:1.25rem}
+  .row:hover .badge{transform:translateX(5px)}
+}
+
+/* ---------- Résultats (stats panel) ---------- */
+.stats-wrap{padding-bottom:5rem}
+@media (min-width:1024px){.stats-wrap{padding-bottom:7rem}}
+.panel{border-radius:2rem;background:#0a0a0a;padding:3rem 1.5rem;color:#fff}
+@media (min-width:640px){.panel{padding:4rem 2rem}}
+@media (min-width:768px){.panel{padding-inline:4rem}}
+.panel h2{margin-top:1rem;max-width:20ch;font-size:1.875rem;font-weight:500;letter-spacing:-.01em;line-height:1.15}
+@media (min-width:768px){.panel h2{font-size:2.25rem}}
+.stats{margin-top:3.5rem;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:2rem;row-gap:3rem}
+@media (min-width:1024px){.stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.stat .v{font-size:2.25rem;font-weight:600;letter-spacing:-.02em;line-height:1;color:#fff;white-space:nowrap}
+@media (min-width:640px){.stat .v{font-size:3.75rem}}
+@media (min-width:768px){.stat .v{font-size:4.5rem}}
+.stat .v small{font-size:.5em;font-weight:500;letter-spacing:0}
+.stat p:not(.v){margin-top:.75rem;font-size:.875rem;color:rgba(255,255,255,.65)}
+.panel-note{margin-top:3.5rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.1);font-size:.875rem;color:rgba(255,255,255,.65)}
+
+/* ---------- Limites ---------- */
+.limits{padding-bottom:5rem}
+@media (min-width:1024px){.limits{padding-bottom:7rem}}
+.limits .h2{margin-top:1.25rem;max-width:18ch}
+.lcards{margin-top:3rem;display:grid;grid-template-columns:1fr;gap:1rem}
+@media (min-width:640px){.lcards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:1024px){.lcards{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.lcard{height:100%;border-radius:1.25rem;background:#f1f0ee;padding:1.5rem;display:flex;flex-direction:column;gap:.75rem}
+.lcard .n{font-size:.875rem;font-weight:500;color:rgba(17,17,17,.45)}
+.lcard h3{font-size:1.25rem;font-weight:500;letter-spacing:-.01em}
+.lcard p{font-size:.875rem;line-height:1.55;color:rgba(17,17,17,.65)}
+.after{margin-top:2rem;max-width:48rem;font-size:1rem;color:rgba(17,17,17,.7)}
+
+/* ---------- Ce que nous retenons ---------- */
+.learn{padding-bottom:5rem}
+@media (min-width:1024px){.learn{padding-bottom:7rem}}
+.learn-grid{display:grid;grid-template-columns:1fr;gap:3rem;border-top:1px solid #e6e5e2;padding-top:4rem}
+@media (min-width:1024px){.learn-grid{grid-template-columns:1fr 1fr}}
+.learn .h2{margin-top:1.25rem;max-width:16ch}
+.learn .txt{font-size:1.125rem;line-height:1.55;color:rgba(17,17,17,.7)}
+.learn ul{margin-top:2rem}
+.learn li{display:flex;gap:1rem;align-items:baseline;padding-block:1rem;border-top:1px solid #e6e5e2;font-size:1rem}
+.learn li:last-child{border-bottom:1px solid #e6e5e2}
+.learn li .ic{color:#b15f2c;font-size:.875rem;transform:translateY(.1em)}
+.learn .cta-row{margin-top:2rem}
+
+/* ---------- Outils ---------- */
+.toolbox{padding-bottom:5rem}
+@media (min-width:1024px){.toolbox{padding-bottom:7rem}}
+.toolbox .h2{margin-top:1.25rem}
+.toolbox ul{margin-top:2.5rem;display:flex;flex-wrap:wrap;gap:.5rem}
+.toolbox .chip .ic{color:rgba(17,17,17,.4)}
+
+/* ---------- Livrables ---------- */
+.deliv{padding-bottom:5rem}
+@media (min-width:1024px){.deliv{padding-bottom:7rem}}
+.deliv .h2{margin:1.25rem 0 3rem}
+.drow{display:flex;flex-direction:column;gap:1.25rem;padding:1.5rem;border-radius:1.25rem;background:#f1f0ee}
+@media (min-width:1024px){.drow{flex-direction:row;align-items:center;justify-content:space-between;gap:2rem;padding:2rem}}
+.drows{display:flex;flex-direction:column;gap:1rem}
+.drow h3{font-size:1.5rem;font-weight:500;letter-spacing:-.01em}
+.drow p{margin-top:.5rem;max-width:36rem;font-size:.875rem;line-height:1.55;color:rgba(17,17,17,.65)}
+
+/* ---------- Équipe ---------- */
+.team{padding-bottom:5rem}
+@media (min-width:1024px){.team{padding-bottom:7rem}}
+.team .h2{margin-top:1.25rem}
+.team-grid{margin-top:3rem;display:grid;grid-template-columns:1fr;gap:2rem;border-top:1px solid #e6e5e2;padding-top:2rem}
+@media (min-width:768px){.team-grid{grid-template-columns:3fr 1fr}}
+.team dt{font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:rgba(17,17,17,.55)}
+.team dd{margin-top:.5rem;font-size:1.5rem;font-weight:500;letter-spacing:-.01em}
+@media (min-width:768px){.team .made{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:2rem}.team .made dt{grid-column:1 / -1}}
+.team .school{margin-top:2rem;font-size:.875rem;font-weight:500;text-transform:uppercase;letter-spacing:.05em}
+.team .note{margin-top:1rem;font-size:.875rem;color:rgba(17,17,17,.6)}
+
+/* ---------- Footer ---------- */
+.footer{position:relative;overflow:hidden;border-radius:2rem 2rem 0 0;background:#0a0a0a;color:#fff}
+.f-in{position:relative;z-index:10;padding-top:5rem;padding-bottom:2.5rem}
+@media (min-width:1024px){.f-in{padding-top:6rem}}
+.f-cta{display:flex;flex-direction:column;gap:2rem;border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:4rem}
+@media (min-width:1024px){.f-cta{flex-direction:row;align-items:flex-end;justify-content:space-between}}
+.f-cta h2{max-width:16ch;font-size:2.25rem;font-weight:600;letter-spacing:-.02em;line-height:1.05}
+@media (min-width:640px){.f-cta h2{font-size:3rem}}
+@media (min-width:768px){.f-cta h2{font-size:3.75rem}}
+.f-cols{display:grid;grid-template-columns:1fr;gap:3rem;padding-block:4rem}
+@media (min-width:768px){.f-cols{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:1024px){.f-cols{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.f-brand{display:flex;align-items:center;gap:.5rem;font-size:1.125rem;font-weight:600}
+.f-brand .ic{font-size:1.25rem;color:#cf8047}
+.f-tag{margin-top:1rem;max-width:20rem;font-size:.875rem;color:rgba(255,255,255,.6)}
+.f-col h2{font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.025em;color:rgba(255,255,255,.5)}
+.f-col ul{margin-top:1rem;display:flex;flex-direction:column;gap:.75rem;font-size:.875rem}
+.alink{display:inline-flex}
+.alink span{display:inline-block;opacity:.75;transition:transform .35s var(--e-hover),opacity .35s}
+@media (hover:hover){.alink:hover span{transform:translateX(4px);opacity:1}}
+.alink:focus-visible span{opacity:1}
+.legal{display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:1rem;border-top:1px solid rgba(255,255,255,.1);padding-top:2rem;font-size:.75rem;color:rgba(255,255,255,.55)}
+@media (min-width:640px){.legal{flex-direction:row}}
+.f-wm{position:absolute;inset-inline:0;bottom:-1.5rem;z-index:0;text-align:center;pointer-events:none;user-select:none;font-weight:700;line-height:1;font-size:var(--text-watermark);color:rgba(255,255,255,.05);white-space:nowrap}
+
+/* ---------- Nav overlay ---------- */
+.navmenu{position:fixed;inset:0;z-index:115;display:flex;flex-direction:column;background:#0a0a0a;color:#fff;opacity:0;visibility:hidden;transition:opacity .45s var(--e-spring),visibility 0s .45s}
+.navmenu.open{opacity:1;visibility:visible;transition:opacity .45s var(--e-spring),visibility 0s}
+.nm-top{display:flex;align-items:center;justify-content:space-between;padding-block:1.25rem}
+@media (min-width:640px){.nm-top{padding-block:1.5rem}}
+.nm-close{display:inline-flex;align-items:center;gap:.5rem;border:1px solid rgba(255,255,255,.15);border-radius:.875rem;padding:.5rem 1rem;font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:rgba(255,255,255,.7);transition:border-color .3s,color .3s}
+.nm-close:hover{border-color:rgba(255,255,255,.4);color:#fff}
+.nm-close .ic{font-size:.875rem}
+.nm-nav{flex:1;display:flex;flex-direction:column;justify-content:center}
+.nm-nav ul{display:flex;flex-direction:column;gap:.25rem}
+.nm-nav a{display:flex;align-items:baseline;gap:1rem;width:100%;padding-block:.5rem;font-size:2.25rem;font-weight:600;letter-spacing:-.02em;line-height:1.1;opacity:0;transform:translateY(1rem);transition:all .5s ease-out;transition-delay:calc(var(--i) * 45ms + 80ms)}
+@media (min-width:640px){.nm-nav a{font-size:3.75rem}}
+.navmenu.open .nm-nav a{opacity:1;transform:none}
+.nm-nav .n{font-size:1rem;font-weight:400;color:rgba(255,255,255,.35);transition:color .3s}
+.nm-nav .t{color:rgba(255,255,255,.7);transition:color .3s}
+.nm-nav a:hover .n,.nm-nav a:focus-visible .n{color:#cf8047}
+.nm-nav a:hover .t,.nm-nav a:focus-visible .t{color:#fff}
+.nm-bot{display:flex;flex-direction:column;gap:.75rem;border-top:1px solid rgba(255,255,255,.1);padding-block:1.5rem;font-size:.75rem;text-transform:uppercase;letter-spacing:.025em;color:rgba(255,255,255,.55)}
+@media (min-width:640px){.nm-bot{flex-direction:row;justify-content:space-between}}
+.nm-bot a{color:rgba(255,255,255,.75);text-transform:uppercase}
+.nm-bot a:hover{color:#fff;text-decoration:underline}
+
+/* ---------- PDF viewer (modal style) ---------- */
+.viewer{margin:auto;width:min(72rem,calc(100% - 2rem));height:min(92vh,60rem);max-width:none;max-height:none;border:0;border-radius:2rem;background:#fff;color:#111;padding:1.5rem;box-shadow:0 25px 50px -12px rgba(0,0,0,.25),0 0 0 1px #e6e5e2;display:none;opacity:0;transform:translateY(28px);transition:opacity .45s var(--e-spring),transform .45s var(--e-spring)}
+.viewer[open]{display:flex;flex-direction:column;gap:1rem}
+.viewer.shown{opacity:1;transform:none}
+.viewer::backdrop{background:rgba(17,17,17,.3);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.v-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.75rem 1.5rem;padding-right:3rem}
+.v-cap{display:inline-flex;align-items:center;gap:.5rem;font-size:.875rem;font-weight:500;color:rgba(17,17,17,.6)}
+.v-cap::before{content:"";width:.375rem;height:.375rem;border-radius:9999px;background:#b15f2c}
+.v-title{margin-top:.25rem;font-size:1.5rem;font-weight:600;letter-spacing:-.01em}
+.v-tools{display:flex;flex-wrap:wrap;gap:.5rem}
+.v-tools a{display:inline-flex;align-items:center;gap:.5rem;border:1px solid #e6e5e2;border-radius:9999px;padding:.5rem 1rem;font-size:.875rem;font-weight:500;transition:background .3s}
+.v-tools a:hover{background:#f1f0ee}
+.v-close{position:absolute;right:1rem;top:1rem;width:2.25rem;height:2.25rem;display:grid;place-items:center;border-radius:9999px;background:#f1f0ee;color:rgba(17,17,17,.6);transition:background .3s,color .3s}
+.v-close:hover{background:#e3e2df;color:#111}
+.v-frame{flex:1;min-height:0;overflow:hidden;border-radius:1.25rem;background:#f1f0ee}
+.v-frame object{display:block;width:100%;height:100%;border:0}
+.v-fallback{height:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:1.5rem;padding:2rem}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none !important;transition:none !important}
+  .js [data-r],.js [data-lines] .ln-in,.js [data-words] .wd{opacity:1 !important;transform:none !important}
+  .js [data-r].hero-wm{opacity:.4 !important}
+  .js [data-lines]:not(.split){visibility:visible}
+}
+</style>
+</head>
+<body>
+<!-- ============ Icons ============ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-spark" viewBox="0 0 48 48"><path fill="currentColor" d="M24 2c2.2 13.8 7.9 19.6 22 22-14.1 2.4-19.8 8.2-22 22-2.2-13.8-7.9-19.6-22-22 14.1-2.4 19.8-8.2 22-22Z"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-upright" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M7 17 17 7M8 7h9v9"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M4 4l16 16M20 4 4 20"/></symbol>
+  <symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="3.2" fill="currentColor"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9.25"/><path d="M12 2.75c2.6 2.3 4 5.8 4 9.25s-1.4 6.95-4 9.25c-2.6-2.3-4-5.8-4-9.25s1.4-6.95 4-9.25zM2.75 12h18.5"/></g></symbol>
+</svg>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<!-- ============ Loader ============ -->
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="ld-center">
+    <div class="ld-brand"><svg class="ic"><use href="#i-spark"/></svg>Inspection robot</div>
+    <p class="ld-tag">Patrol, detect, report.</p>
+  </div>
+  <div class="ld-prog">
+    <div class="ld-track"><div class="ld-fill" id="ld-fill"></div></div>
+    <div class="ld-row"><span>Loading</span><span class="ld-num" id="ld-num">000</span></div>
+  </div>
+</div>
+
+<!-- ============ Header ============ -->
+<header class="site-header" data-r data-hero style="--y:-14px;--d:150ms">
+  <div class="shell hdr">
+    <a class="brand" href="#top" data-scroll aria-label="Back to top"><svg class="ic" aria-hidden="true"><use href="#i-spark"/></svg>bc</a>
+    <nav aria-label="Page sections">
+      <ul class="nav">
+        <li><a href="#project" data-scroll>Project</a></li>
+        <li><a href="#system" data-scroll>System</a></li>
+        <li><a href="#approach" data-scroll>Approach</a></li>
+        <li><a href="#results" data-scroll>Results</a></li>
+        <li><a href="#deliverables" data-scroll>Deliverables</a></li>
+        <li><a href="index.html#projects">← Portfolio</a></li>
+      </ul>
+    </nav>
+    <div class="hdr-right">
+      <div class="clock" aria-hidden="true"><span class="lbl">Local time</span><span class="tm" data-time>--:--</span><span class="sep">•</span><span class="dt" data-date></span></div>
+      <button class="menu-btn" id="menu-open" type="button" aria-expanded="false" aria-controls="navmenu"><span><svg class="ic" aria-hidden="true"><use href="#i-grid"/></svg><span class="w">Menu</span><span class="sr-only">Open the menu</span></span></button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <!-- ============ 1. Hero ============ -->
+  <section id="top" class="hero">
+    <div class="lq" id="lq">
+      <img src="images/Robotique/Project_Idea.png" alt="Project diagram: a robot patrols a simulated building, detects cracks and stains, places them on the SLAM map and generates a PDF report. Measured in simulation: mAP@0.5 of 0.995, median error of 11.8 cm, 4 complete patrols out of 8." width="2560" height="1440" fetchpriority="high">
+      <div class="wash"></div>
+      <canvas aria-hidden="true"></canvas>
+    </div>
+    <div class="vignette"></div>
+    <div class="hero-wm" aria-hidden="true" data-r data-hero style="--y:20px;--d:300ms;--o:.4">ROBOT</div>
+
+    <div class="shell hero-grid">
+      <div class="hero-left">
+        <p class="eyebrow" data-r data-hero style="--y:10px;--d:200ms">Robotics · Autonomous inspection</p>
+        <h1 data-lines data-static data-hero class="split" style="--d:250ms">
+          <span class="ln"><span class="ln-in" style="--ld:0ms">Patrol,</span></span>
+          <span class="ln"><span class="ln-in" style="--ld:120ms">detect,</span></span>
+          <span class="ln"><span class="ln-in" style="--ld:240ms">report.</span></span>
+        </h1>
+        <p class="hero-lead" data-r data-hero style="--y:12px;--d:500ms">An autonomous inspection robot, entirely in simulation: it patrols a building, spots cracks and stains on the walls, places them on the map and writes its own PDF report.</p>
+        <p class="frame" data-r data-hero style="--y:10px;--d:650ms"><svg class="ic" aria-hidden="true"><use href="#i-dot"/></svg>HESTIM · Robotics 9 Capstone · Simulation (ROS 2, Gazebo)</p>
+        <div class="cta-row" data-r data-hero style="--y:12px;--d:750ms">
+          <a class="pill pill-dark arrow" href="images/Robotique/LinkedIn_Carousel_preview.pdf" target="_blank" rel="noopener" data-viewer data-title="Presentation" data-original="images/Robotique/LinkedIn_Carousel_preview.pdf" aria-haspopup="dialog"><span class="pill-in">View the presentation<span class="pill-badge"><svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></span><span class="sr-only">(PDF, opens in a viewer)</span></a>
+          <a class="pill pill-outline" href="images/Robotique/Project_Idea.png" target="_blank" rel="noopener"><span class="pill-in">View the diagram</span><span class="sr-only">(PNG image, new tab)</span></a>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="hcard" data-r data-hero style="--y:16px;--s:.96;--d:400ms">
+          <div class="hcard-row" id="hc-row">
+            <div class="hcard-tile" aria-hidden="true"><svg class="ic"><use href="#i-spark"/></svg></div>
+            <div class="hcard-panel">
+              <div class="hcard-slot" id="hc-slot" aria-live="polite">
+                <div class="hc-item"><p class="hc-cap">Detector</p><p class="hc-title">mAP@0.5 of 0.995 on the test set.</p></div>
+              </div>
+              <div class="hcard-bot">
+                <div class="dots" id="hc-dots" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
+                <div class="hc-nav">
+                  <button class="prev" type="button" id="hc-prev" aria-label="Previous measurement"><svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+                  <button class="next" type="button" id="hc-next" aria-label="Next measurement"><svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tools-mini" data-r data-hero style="--y:14px;--d:550ms">
+          <p>Main tools</p>
+          <ul>
+            <li><span><svg class="ic" aria-hidden="true"><use href="#i-dot"/></svg>ROS 2</span></li>
+            <li><span><svg class="ic" aria-hidden="true"><use href="#i-dot"/></svg>Gazebo</span></li>
+            <li><span><svg class="ic" aria-hidden="true"><use href="#i-dot"/></svg>Nav2</span></li>
+            <li><span><svg class="ic" aria-hidden="true"><use href="#i-dot"/></svg>YOLOv8</span></li>
+            <li><span><svg class="ic" aria-hidden="true"><use href="#i-dot"/></svg>SLAM Toolbox</span></li>
+            <li><span><svg class="ic" aria-hidden="true"><use href="#i-dot"/></svg>TurtleBot3</span></li>
+            <li><span><svg class="ic" aria-hidden="true"><use href="#i-dot"/></svg>Python</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="shell hero-bar" data-r data-hero style="--y:0px;--d:900ms">
+      <span>HESTIM · Robotics 9 Capstone</span>
+      <span class="mid">Entirely in simulation</span>
+      <a href="#project" data-scroll>Scroll to explore <span aria-hidden="true">↓</span></a>
+    </div>
+  </section>
+
+  <!-- ============ 2. The problem ============ -->
+  <section id="project">
+    <div class="shell about-grid">
+      <div class="globe">
+        <svg class="ic globe-bg" aria-hidden="true"><use href="#i-dot"/></svg>
+        <p class="eyebrow">The problem</p>
+        <p class="globe-note" data-r style="--y:12px"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg><span>— Key question: can a robot patrol on its own, spot the defects, place them on a map and write the report?</span></p>
+      </div>
+      <div class="statement">
+        <h2 data-words>Inspecting walls by hand is slow, costly and subjective: <span class="mut">two inspectors do not always see the same defects.</span></h2>
+        <div class="st-foot" data-r style="--y:12px;--d:200ms">
+          <div><p class="k">Supervised by</p><p class="v">Dr Sridath Tula</p></div>
+          <a class="pill pill-outline arrow up" href="images/Robotique/Project_Idea.png" target="_blank" rel="noopener"><span class="pill-in">View the diagram<span class="pill-badge"><svg class="ic" aria-hidden="true"><use href="#i-upright"/></svg></span></span><span class="sr-only">(PNG image, new tab)</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 3. Band ============ -->
+  <section aria-label="Patrol, detect, report">
+    <ul class="shell band">
+      <li data-r style="--y:28px;--d:0ms"><div class="tile light">Patrol</div></li>
+      <li data-r style="--y:28px;--d:120ms"><div class="tile accent">Detect</div></li>
+      <li data-r style="--y:28px;--d:240ms" aria-hidden="true"><div class="tile dark"><svg class="ic"><use href="#i-arrow"/></svg></div></li>
+      <li data-r style="--y:28px;--d:360ms"><div class="tile ghost">Report</div></li>
+    </ul>
+  </section>
+
+  <!-- ============ 4. The system ============ -->
+  <section id="system">
+    <div class="shell works">
+      <div class="center">
+        <p class="eyebrow boxed" data-r style="--y:10px">The system</p>
+        <h2 class="h2" data-lines style="--d:120ms">Six steps, from patrol to report.</h2>
+      </div>
+      <ul class="cards">
+        <li data-r style="--y:48px;--d:0ms"><article class="wcard"><div class="wc-meta"><span>Step — 01</span><span class="wc-badge" aria-hidden="true"><svg class="ic"><use href="#i-upright"/></svg></span></div><figure class="wc-fig"><div class="wc-img"><img src="images/Robotique/steps/step-01-defect-textures.webp" alt="Procedural crack textures (top) and stain textures (bottom) applied to the defects of the simulated building" width="1200" height="750" loading="lazy" decoding="async"></div><figcaption>Procedural crack and stain textures used on the walls.</figcaption></figure><div class="wc-bot"><h3>Simulated world</h3><p>A three-zone building in Gazebo, with 8 known defects: 4 cracks and 4 stains.</p><div class="wc-tags"><span class="chip">Gazebo</span></div></div></article></li>
+        <li data-r style="--y:48px;--d:90ms"><article class="wcard"><div class="wc-meta"><span>Step — 02</span><span class="wc-badge" aria-hidden="true"><svg class="ic"><use href="#i-upright"/></svg></span></div><figure class="wc-fig"><div class="wc-img"><img src="images/Robotique/steps/step-02-nav2-path.webp" alt="RViz view of the SLAM map with the global path computed by Nav2 in green, going through a door" width="1200" height="750" loading="lazy" decoding="async"></div><figcaption>RViz: the Nav2 path through a door of the building.</figcaption></figure><div class="wc-bot"><h3>Patrol</h3><p>Nav2 drives the TurtleBot3 robot through 11 points.</p><div class="wc-tags"><span class="chip">Nav2</span><span class="chip">TurtleBot3</span></div></div></article></li>
+        <li data-r style="--y:48px;--d:0ms"><article class="wcard"><div class="wc-meta"><span>Step — 03</span><span class="wc-badge" aria-hidden="true"><svg class="ic"><use href="#i-upright"/></svg></span></div><figure class="wc-fig"><div class="wc-img"><img src="images/Robotique/steps/step-03-camera-views.webp" alt="Camera images taken in Gazebo in front of textured cracks and stains, each with its bounding box" width="1200" height="750" loading="lazy" decoding="async"></div><figcaption>Camera views in Gazebo, in front of each defect.</figcaption></figure><div class="wc-bot"><h3>Camera</h3><p>640 × 480 images at 2 Hz, without a depth camera.</p></div></article></li>
+        <li data-r style="--y:48px;--d:90ms"><article class="wcard"><div class="wc-meta"><span>Step — 04</span><span class="wc-badge" aria-hidden="true"><svg class="ic"><use href="#i-upright"/></svg></span></div><figure class="wc-fig"><div class="wc-img"><img src="images/Robotique/steps/step-04-labels.webp" alt="Grid of camera images with automatic labels: green boxes for cracks, orange boxes for stains" width="1200" height="750" loading="lazy" decoding="async"></div><figcaption>Labelled images used to train the detector (green = crack, orange = stain).</figcaption></figure><div class="wc-bot"><h3>Detection</h3><p>YOLOv8n spots cracks and stains, confidence threshold 0.4.</p><div class="wc-tags"><span class="chip">YOLOv8 (Ultralytics)</span></div></div></article></li>
+        <li data-r style="--y:48px;--d:0ms"><article class="wcard"><div class="wc-meta"><span>Step — 05</span><span class="wc-badge" aria-hidden="true"><svg class="ic"><use href="#i-upright"/></svg></span></div><figure class="wc-fig"><div class="wc-img"><img src="images/Robotique/steps/step-05-slam-localisation.webp" alt="SLAM map with the defects placed during one patrol (red dots for cracks, orange dots for stains) and the ground truth as green crosses" width="1200" height="750" loading="lazy" decoding="async"></div><figcaption>Defects placed on the SLAM map during one patrol, with the ground truth.</figcaption></figure><div class="wc-bot"><h3>Localisation</h3><p>A ray cast on the SLAM map gives the position of the defect.</p><div class="wc-tags"><span class="chip">SLAM Toolbox</span></div></div></article></li>
+        <li data-r style="--y:48px;--d:90ms"><article class="wcard"><div class="wc-meta"><span>Step — 06</span><span class="wc-badge" aria-hidden="true"><svg class="ic"><use href="#i-upright"/></svg></span></div><figure class="wc-fig"><div class="wc-img"><img src="images/Robotique/steps/step-06-report-table.webp" alt="Extract of the PDF report written by the robot: one row per defect with its type, confidence, position on the map, number of sightings, estimated severity and a camera preview" width="1200" height="750" loading="lazy" decoding="async"></div><figcaption>Extract of the generated report: one row per defect, with its severity and a preview.</figcaption></figure><div class="wc-bot"><h3>Report</h3><p>A PDF is written automatically at the end of the patrol.</p><div class="wc-tags"><a class="chip chip-link" href="images/Robotique/rapport_gravite_fd2.pdf" target="_blank" rel="noopener" data-viewer data-title="Sample inspection report" data-original="images/Robotique/rapport_gravite_fd2.pdf" aria-haspopup="dialog">See a sample report <svg class="ic" aria-hidden="true"><use href="#i-upright"/></svg><span class="sr-only">(PDF in French, opens in a viewer)</span></a></div></div></article></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ 5. The approach ============ -->
+  <section id="approach">
+    <div class="shell services">
+      <p class="eyebrow" data-r style="--y:10px">The approach</p>
+      <h2 class="h2" data-lines style="--d:120ms">From the simulated wall to the final report.</h2>
+      <ol class="rows">
+        <li data-r style="--y:24px;--d:0ms"><div class="row"><span class="n">01</span><div class="body"><h3>A simulated world</h3><p>Defect positions stored as ground truth. Floor and lighting tuned first: the robot was slipping and the image was white.</p></div><span class="badge" aria-hidden="true"><svg class="ic"><use href="#i-upright"/></svg></span></div></li>
+        <li data-r style="--y:24px;--d:80ms"><div class="row"><span class="n">02</span><div class="body"><h3>A dataset</h3><p>466 images taken by teleporting the robot, 19% of them without any defect. Split by position, not by image, plus a test_unseen set with 8 new defects.</p></div><span class="badge" aria-hidden="true"><svg class="ic"><use href="#i-upright"/></svg></span></div></li>
+        <li data-r style="--y:24px;--d:160ms"><div class="row"><span class="n">03</span><div class="body"><h3>The detector</h3><p>YOLOv8n trained on Google Colab for 60 epochs. YOLOv8s gives the same accuracy but is 2.4 times slower: YOLOv8n is kept.</p></div><span class="badge" aria-hidden="true"><svg class="ic"><use href="#i-upright"/></svg></span></div></li>
+        <li data-r style="--y:24px;--d:0ms"><div class="row"><span class="n">04</span><div class="body"><h3>Navigation</h3><p>Map built with SLAM Toolbox, then a Nav2 patrol. A missed point is retried once, then reported.</p></div><span class="badge" aria-hidden="true"><svg class="ic"><use href="#i-upright"/></svg></span></div></li>
+        <li data-r style="--y:24px;--d:80ms"><div class="row"><span class="n">05</span><div class="body"><h3>Localisation</h3><p>The direction of the defect in the image becomes a ray on the map. The first wall it hits gives the position.</p></div><span class="badge" aria-hidden="true"><svg class="ic"><use href="#i-upright"/></svg></span></div></li>
+        <li data-r style="--y:24px;--d:160ms"><div class="row"><span class="n">06</span><div class="body"><h3>Severity, tracking, report</h3><p>The height of the defect is estimated to give a severity level. Two patrols are compared: new, gone, worse. The PDF report is generated.</p></div><span class="badge" aria-hidden="true"><svg class="ic"><use href="#i-upright"/></svg></span></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ 6. Results ============ -->
+  <section id="results">
+    <div class="shell stats-wrap">
+      <div class="panel" data-r style="--y:40px;--s:.99">
+        <p class="eyebrow light">Results</p>
+        <h2 data-lines style="--d:120ms">Measurements, in simulation.</h2>
+        <ul class="stats">
+          <li class="stat" data-r style="--y:20px;--d:0ms"><p class="v" data-count="0.995" data-dec="3">0.995</p><p>mAP@0.5 on the test set</p></li>
+          <li class="stat" data-r style="--y:20px;--d:90ms"><p class="v" data-count="11.8" data-dec="1">11.8<small> cm</small></p><p>median position error</p></li>
+          <li class="stat" data-r style="--y:20px;--d:180ms"><p class="v" data-count="4" data-dec="0">4<small> / 8</small></p><p>complete patrols</p></li>
+          <li class="stat" data-r style="--y:20px;--d:0ms"><p class="v" data-count="0.988" data-dec="3">0.988</p><p>mAP@0.5 on never-seen defects</p></li>
+          <li class="stat" data-r style="--y:20px;--d:90ms"><p class="v" data-count="6.3" data-dec="1">6.3<small> cm</small></p><p>gap between patrols</p></li>
+          <li class="stat" data-r style="--y:20px;--d:180ms"><p class="v" data-count="7.3" data-dec="1">7.3<small>%</small></p><p>median error on the estimated height</p></li>
+        </ul>
+        <p class="panel-note">All scores are measured in simulation: they say nothing about real walls.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 7. Limitations ============ -->
+  <section aria-labelledby="lim-title">
+    <div class="shell limits">
+      <p class="eyebrow" data-r style="--y:10px">Limitations</p>
+      <h2 class="h2" id="lim-title" data-lines style="--d:120ms">What does not work <span class="mut">yet</span>.</h2>
+      <ul class="lcards">
+        <li data-r style="--y:24px;--d:0ms"><div class="lcard"><span class="n">01</span><h3>Navigation</h3><p>Nav2 completes 4 patrols out of 8. The cause of the planner's “empty plan” has not been established.</p></div></li>
+        <li data-r style="--y:24px;--d:80ms"><div class="lcard"><span class="n">02</span><h3>Strong lighting</h3><p>No complete patrol out of 4 in strong light. The detector alone stays close to 1.</p></div></li>
+        <li data-r style="--y:24px;--d:160ms"><div class="lcard"><span class="n">03</span><h3>Localisation</h3><p>Once, AMCL was off by about 3 m, which produced 12 false positives.</p></div></li>
+        <li data-r style="--y:24px;--d:240ms"><div class="lcard"><span class="n">04</span><h3>Simulation only</h3><p>No test on real walls.</p></div></li>
+      </ul>
+      <p class="after" data-r style="--y:12px">We document them because a good detector is not enough: the robot also has to reach the wall.</p>
+    </div>
+  </section>
+
+  <!-- ============ 8. What we learned ============ -->
+  <section aria-labelledby="learn-title">
+    <div class="shell learn">
+      <div class="learn-grid">
+        <div>
+          <p class="eyebrow" data-r style="--y:10px">What we learned</p>
+          <h2 class="h2" id="learn-title" data-lines style="--d:120ms">A good detector is not enough.</h2>
+        </div>
+        <div>
+          <p class="txt" data-words>The hardest part was not the model, but integrating it into a system that navigates, localises correctly and turns observations into usable information.</p>
+          <ul>
+            <li data-r style="--y:16px;--d:0ms"><svg class="ic" aria-hidden="true"><use href="#i-spark"/></svg>Document failures as much as successes</li>
+            <li data-r style="--y:16px;--d:80ms"><svg class="ic" aria-hidden="true"><use href="#i-spark"/></svg>Measure on never-seen images (test_unseen)</li>
+            <li data-r style="--y:16px;--d:160ms"><svg class="ic" aria-hidden="true"><use href="#i-spark"/></svg>Count demo runs separately from the evaluation</li>
+            <li data-r style="--y:16px;--d:240ms"><svg class="ic" aria-hidden="true"><use href="#i-spark"/></svg>Everything is evaluated in simulation, not yet in a real environment</li>
+          </ul>
+          <div class="cta-row" data-r style="--y:12px">
+            <a class="pill pill-dark arrow" href="images/Robotique/LinkedIn_Carousel_preview.pdf" target="_blank" rel="noopener" data-viewer data-title="Presentation" data-original="images/Robotique/LinkedIn_Carousel_preview.pdf" aria-haspopup="dialog"><span class="pill-in">View the presentation<span class="pill-badge"><svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></span><span class="sr-only">(PDF, opens in a viewer)</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 9. Tools ============ -->
+  <section aria-labelledby="tools-title">
+    <div class="shell toolbox">
+      <p class="eyebrow" data-r style="--y:10px">Tools</p>
+      <h2 class="h2" id="tools-title" data-lines style="--d:120ms">The toolbox.</h2>
+      <ul data-r style="--y:20px">
+        <li class="chip dark"><svg class="ic" aria-hidden="true"><use href="#i-dot"/></svg>ROS 2 Humble</li>
+        <li class="chip dark"><svg class="ic" aria-hidden="true"><use href="#i-dot"/></svg>Gazebo</li>
+        <li class="chip dark"><svg class="ic" aria-hidden="true"><use href="#i-dot"/></svg>TurtleBot3</li>
+        <li class="chip dark"><svg class="ic" aria-hidden="true"><use href="#i-dot"/></svg>Nav2</li>
+        <li class="chip dark"><svg class="ic" aria-hidden="true"><use href="#i-dot"/></svg>SLAM Toolbox</li>
+        <li class="chip dark"><svg class="ic" aria-hidden="true"><use href="#i-dot"/></svg>AMCL</li>
+        <li class="chip dark"><svg class="ic" aria-hidden="true"><use href="#i-dot"/></svg>TF2</li>
+        <li class="chip dark"><svg class="ic" aria-hidden="true"><use href="#i-dot"/></svg>RViz2</li>
+        <li class="chip dark"><svg class="ic" aria-hidden="true"><use href="#i-dot"/></svg>YOLOv8 (Ultralytics)</li>
+        <li class="chip dark"><svg class="ic" aria-hidden="true"><use href="#i-dot"/></svg>Google Colab</li>
+        <li class="chip dark"><svg class="ic" aria-hidden="true"><use href="#i-dot"/></svg>Python</li>
+        <li class="chip dark"><svg class="ic" aria-hidden="true"><use href="#i-dot"/></svg>WSL2</li>
+        <li class="chip dark"><svg class="ic" aria-hidden="true"><use href="#i-dot"/></svg>Git/GitHub</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ 10. Deliverables ============ -->
+  <section id="deliverables">
+    <div class="shell deliv">
+      <p class="eyebrow" data-r style="--y:10px">Deliverables</p>
+      <h2 class="h2" data-lines style="--d:120ms">The whole project, in files.</h2>
+      <ul class="drows">
+        <li data-r style="--y:24px;--d:0ms"><div class="drow">
+          <div><h3>Presentation (PDF)</h3><p>Ten pages: problem, system, data, detector, localisation, navigation, results and limitations.</p></div>
+          <div class="cta-row">
+            <a class="pill pill-dark arrow" href="images/Robotique/LinkedIn_Carousel_preview.pdf" target="_blank" rel="noopener" data-viewer data-title="Presentation" data-original="images/Robotique/LinkedIn_Carousel_preview.pdf" aria-haspopup="dialog"><span class="pill-in">View<span class="pill-badge"><svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></span><span class="sr-only">the presentation (PDF, opens in a viewer)</span></a>
+            <a class="pill pill-outline" href="images/Robotique/LinkedIn_Carousel_preview.pdf" download><span class="pill-in">Download ↓</span><span class="sr-only">the presentation (PDF)</span></a>
+          </div>
+        </div></li>
+        <li data-r style="--y:24px;--d:80ms"><div class="drow">
+          <div><h3>Project diagram (PNG)</h3><p>Overview of the pipeline and the four key measurements.</p></div>
+          <div class="cta-row">
+            <a class="pill pill-outline arrow up" href="images/Robotique/Project_Idea.png" target="_blank" rel="noopener"><span class="pill-in">Open<span class="pill-badge"><svg class="ic" aria-hidden="true"><use href="#i-upright"/></svg></span></span><span class="sr-only">the diagram (PNG, new tab)</span></a>
+          </div>
+        </div></li>
+        <li data-r style="--y:24px;--d:160ms"><div class="drow">
+          <div><h3>Sample inspection report (PDF)</h3><p>The report the robot wrote by itself after one patrol: mission summary, annotated map and one row per defect with its estimated severity. Generated in French.</p></div>
+          <div class="cta-row">
+            <a class="pill pill-dark arrow" href="images/Robotique/rapport_gravite_fd2.pdf" target="_blank" rel="noopener" data-viewer data-title="Sample inspection report" data-original="images/Robotique/rapport_gravite_fd2.pdf" aria-haspopup="dialog"><span class="pill-in">View<span class="pill-badge"><svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></span><span class="sr-only">the sample report (PDF, opens in a viewer)</span></a>
+            <a class="pill pill-outline" href="images/Robotique/rapport_gravite_fd2.pdf" download><span class="pill-in">Download ↓</span><span class="sr-only">the sample report (PDF)</span></a>
+          </div>
+        </div></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ 11. Team ============ -->
+  <section aria-labelledby="team-title">
+    <div class="shell team">
+      <p class="eyebrow" data-r style="--y:10px">Team</p>
+      <h2 class="h2" id="team-title" data-lines style="--d:120ms">A five-person project.</h2>
+      <dl class="team-grid" data-r style="--y:20px">
+        <div class="made"><dt>Built by</dt><dd>CHEYOUKH Boubker</dd><dd>FETTAH Saad</dd><dd>ELATMANI Abderrazzak</dd><dd>SALEK Mehdi</dd><dd>KHOUMANIA Hamza</dd></div>
+        <div><dt>Supervised by</dt><dd>Dr Sridath Tula</dd></div>
+      </dl>
+      <p class="school" data-r style="--y:10px">HESTIM</p>
+      <p class="note" data-r style="--y:10px">AI assistants were used during development. Every result shown was tested and measured.</p>
+    </div>
+  </section>
+</main>
+
+<!-- ============ Footer ============ -->
+<footer class="footer">
+  <div class="shell f-in">
+    <div class="f-cta">
+      <h2 data-lines data-stagger="100">Patrol, detect, report.</h2>
+      <a class="pill pill-light arrow up" href="images/Robotique/LinkedIn_Carousel_preview.pdf" target="_blank" rel="noopener" data-viewer data-title="Presentation" data-original="images/Robotique/LinkedIn_Carousel_preview.pdf" aria-haspopup="dialog"><span class="pill-in">View the presentation<span class="pill-badge"><svg class="ic" aria-hidden="true"><use href="#i-upright"/></svg></span></span><span class="sr-only">(PDF, opens in a viewer)</span></a>
+    </div>
+    <div class="f-cols">
+      <div>
+        <a class="f-brand" href="index.html" aria-label="Boubker Cheyoukh portfolio"><svg class="ic" aria-hidden="true"><use href="#i-spark"/></svg>bc</a>
+        <p class="f-tag">Autonomous inspection robot, entirely in simulation. Academic project · HESTIM · Robotics 9 Capstone.</p>
+      </div>
+      <nav class="f-col" aria-label="Page sections (footer)">
+        <h2>Page</h2>
+        <ul>
+          <li><a class="alink" href="#project" data-scroll><span>Project</span></a></li>
+          <li><a class="alink" href="#approach" data-scroll><span>Approach</span></a></li>
+          <li><a class="alink" href="#results" data-scroll><span>Results</span></a></li>
+          <li><a class="alink" href="#deliverables" data-scroll><span>Deliverables</span></a></li>
+        </ul>
+      </nav>
+      <nav class="f-col" aria-label="Portfolio">
+        <h2>Portfolio</h2>
+        <ul>
+          <li><a class="alink" href="index.html"><span>Home</span></a></li>
+          <li><a class="alink" href="index.html#projects"><span>All projects</span></a></li>
+        </ul>
+      </nav>
+      <div class="f-col">
+        <h2>Contact</h2>
+        <ul>
+          <li><a class="alink" href="mailto:cheyoukheboubker@gmail.com"><span>cheyoukheboubker@gmail.com</span></a></li>
+          <li><a class="alink" href="https://www.linkedin.com/in/boubker-cheyoukh-4696a4276/" target="_blank" rel="noopener noreferrer"><span>LinkedIn</span></a></li>
+          <li><a class="alink" href="https://github.com/BOUBKERsup07" target="_blank" rel="noopener noreferrer"><span>GitHub</span></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="legal">
+      <span>© 2026 CHEYOUKH Boubker</span>
+      <a class="alink" href="index.html#projects"><span>← Back to portfolio</span></a>
+    </div>
+  </div>
+  <div class="f-wm" aria-hidden="true">ROBOT</div>
+</footer>
+
+<!-- ============ Nav overlay ============ -->
+<div class="navmenu" id="navmenu" role="dialog" aria-modal="true" aria-label="Menu" aria-hidden="true">
+  <div class="shell nm-top">
+    <span class="brand"><svg class="ic" aria-hidden="true" style="color:#cf8047"><use href="#i-spark"/></svg>bc</span>
+    <button class="nm-close" id="menu-close" type="button"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg>Close</button>
+  </div>
+  <nav class="shell nm-nav" aria-label="Main menu">
+    <ul>
+      <li><a href="#project" data-scroll style="--i:0"><span class="n">01</span><span class="t">Project</span></a></li>
+      <li><a href="#system" data-scroll style="--i:1"><span class="n">02</span><span class="t">System</span></a></li>
+      <li><a href="#approach" data-scroll style="--i:2"><span class="n">03</span><span class="t">Approach</span></a></li>
+      <li><a href="#results" data-scroll style="--i:3"><span class="n">04</span><span class="t">Results</span></a></li>
+      <li><a href="#deliverables" data-scroll style="--i:4"><span class="n">05</span><span class="t">Deliverables</span></a></li>
+      <li><a href="index.html#projects" style="--i:5"><span class="n">06</span><span class="t">← Portfolio</span></a></li>
+    </ul>
+  </nav>
+  <div class="shell nm-bot">
+    <span>Local time — <span data-time>--:--</span></span>
+    <a href="images/Robotique/LinkedIn_Carousel_preview.pdf" target="_blank" rel="noopener" data-viewer data-title="Presentation" data-original="images/Robotique/LinkedIn_Carousel_preview.pdf" aria-haspopup="dialog">View the presentation →</a>
+  </div>
+</div>
+
+<!-- ============ PDF viewer ============ -->
+<dialog class="viewer" id="viewer" aria-labelledby="viewer-title" data-lenis-prevent>
+  <button class="v-close" id="viewer-close" type="button" aria-label="Close"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+  <div class="v-top">
+    <div><p class="v-cap">Autonomous inspection robot</p><h2 class="v-title" id="viewer-title">Document</h2></div>
+    <div class="v-tools">
+      <a id="viewer-tab" href="#" target="_blank" rel="noopener">Open in a new tab <svg class="ic" aria-hidden="true"><use href="#i-upright"/></svg></a>
+      <a id="viewer-orig" href="#" download>Download ↓</a>
+    </div>
+  </div>
+  <div class="v-frame" id="viewer-frame"></div>
+</dialog>
+
+<script type="importmap">
+{ "imports": { "lenis": "https://unpkg.com/lenis@1.3.23/dist/lenis.mjs" } }
+</script>
+<script type="module">
+window.__booted = true;
+const html = document.documentElement;
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const remPx = () => parseFloat(getComputedStyle(html).fontSize);
+
+/* ---------- Adaptive grid: scale up above 1920px ---------- */
+function applyAdaptiveGrid(){
+  const FONT_BASE = 16, baseWidth = 1920, coef = 0.6666, w = innerWidth;
+  const widthReduction = ((baseWidth - w) / baseWidth) * 100;
+  const size = FONT_BASE - (FONT_BASE * (widthReduction * coef)) / 100;
+  if (size > FONT_BASE) html.style.fontSize = size + "px"; else html.style.removeProperty("font-size");
+}
+applyAdaptiveGrid(); addEventListener("resize", applyAdaptiveGrid);
+
+/* ---------- Lenis + scroll lock ---------- */
+let lenis = null, locks = 0;
+const onScrollFns = [];
+const fireScroll = () => onScrollFns.forEach((f) => f());
+if (!location.hash) { history.scrollRestoration = "manual"; window.scrollTo(0, 0); }
+if (!REDUCED) {
+  import("lenis").then(({ default: Lenis }) => {
+    lenis = new Lenis({ smoothWheel: true });
+    window.lenis = lenis;
+    if (locks) lenis.stop();
+    lenis.on("scroll", fireScroll);
+    const raf = (t) => { lenis.raf(t); requestAnimationFrame(raf); };
+    requestAnimationFrame(raf);
+  }).catch(() => {});
+}
+addEventListener("scroll", () => { if (!lenis) fireScroll(); }, { passive: true });
+function stopScroll(){
+  locks++; if (lenis) lenis.stop();
+  html.style.position = "relative"; html.style.overflow = "hidden"; html.style.height = "100%";
+}
+function startScroll(){
+  locks = Math.max(0, locks - 1); if (locks) return;
+  if (lenis) lenis.start();
+  html.style.removeProperty("position"); html.style.removeProperty("overflow"); html.style.removeProperty("height");
+}
+function scrollToId(id){
+  const el = document.getElementById(id); if (!el) return;
+  if (lenis) lenis.scrollTo(el, { offset: id === "top" ? 0 : -16 });
+  else el.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" });
+}
+
+/* ---------- Loader → ready ---------- */
+let ready = false; const readyFns = [];
+const onReady = (f) => (ready ? f() : readyFns.push(f));
+function setReady(){ ready = true; readyFns.splice(0).forEach((f) => f()); }
+const loader = document.getElementById("loader");
+if (REDUCED || !loader) { loader && loader.remove(); setReady(); }
+else {
+  stopScroll();
+  const fill = document.getElementById("ld-fill"), num = document.getElementById("ld-num");
+  const FILL_MS = 1300; let t0 = null;
+  const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  const tick = (now) => {
+    if (t0 === null) t0 = now;
+    const t = Math.min(1, (now - t0) / FILL_MS), p = Math.round(ease(t) * 100);
+    fill.style.width = p + "%"; num.textContent = String(p).padStart(3, "0");
+    if (t < 1) return requestAnimationFrame(tick);
+    loader.classList.add("out");
+    setTimeout(() => { loader.remove(); startScroll(); setReady(); }, 750);
+  };
+  requestAnimationFrame(tick);
+}
+
+/* ---------- Text splitting ---------- */
+const esc = (w) => w.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+function splitLines(el){
+  if (!el.dataset.src) el.dataset.src = el.innerHTML;
+  el.innerHTML = el.dataset.src;
+  const units = [];
+  el.childNodes.forEach((n) => {
+    if (n.nodeType === 3) n.textContent.split(/\s+/).forEach((w, i, arr) => {
+      if (w) units.push({ html: esc(w), space: i < arr.length - 1 });
+      else if (i > 0 && units.length) units[units.length - 1].space = true;
+    });
+    else if (n.nodeType === 1) units.push({ html: n.outerHTML, space: false });
+  });
+  el.innerHTML = units.map((u) => '<span class="u-w">' + u.html + "</span>" + (u.space ? " " : "")).join("");
+  const lines = []; let top = null;
+  el.querySelectorAll(".u-w").forEach((s, i) => {
+    const t = s.offsetTop;
+    if (top === null || Math.abs(t - top) > 2) { lines.push([]); top = t; }
+    lines[lines.length - 1].push(units[i].html);
+  });
+  const stagger = Number(el.dataset.stagger || 90);
+  el.innerHTML = lines.map((l, i) => '<span class="ln"><span class="ln-in" style="--ld:' + i * stagger + 'ms">' + l.join(" ") + "</span></span>").join("");
+  el.classList.add("split");
+}
+function settleLines(el){
+  if (el.hasAttribute("data-static")) return;
+  const n = el.querySelectorAll(".ln").length, d = parseFloat(getComputedStyle(el).getPropertyValue("--d")) || 0;
+  setTimeout(() => { el.innerHTML = el.dataset.src; }, d + 900 + n * Number(el.dataset.stagger || 90) + 100);
+}
+function splitWords(el){
+  el.setAttribute("aria-label", el.textContent.trim().replace(/\s+/g, " "));
+  let i = 0; const out = [];
+  el.childNodes.forEach((n) => {
+    const cls = n.nodeType === 1 ? " " + n.className : "";
+    n.textContent.split(/\s+/).filter(Boolean).forEach((w) => out.push('<span class="wd' + cls + '" aria-hidden="true" style="--wd:' + (i++ * 35) + 'ms">' + esc(w) + "</span>"));
+  });
+  el.innerHTML = out.join(" ");
+}
+
+/* ---------- Reveals (once) ---------- */
+const io = !REDUCED && "IntersectionObserver" in window ? new IntersectionObserver((entries) => {
+  entries.forEach((e) => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add("in"); io.unobserve(e.target);
+    if (e.target.hasAttribute("data-lines")) settleLines(e.target);
+  });
+}, { rootMargin: "0px 0px -8% 0px" }) : null;
+const observe = (el) => (io ? io.observe(el) : el.classList.add("in"));
+
+if (!REDUCED) document.querySelectorAll("[data-words]").forEach(splitWords);
+(document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(() => {
+  document.querySelectorAll("[data-lines]:not([data-static])").forEach((el) => (REDUCED ? el.classList.add("split") : splitLines(el)));
+  document.querySelectorAll("[data-r],[data-lines],[data-words]").forEach((el) => {
+    if (el.hasAttribute("data-hero")) onReady(() => observe(el)); else observe(el);
+  });
+});
+
+/* ---------- Live clock ---------- */
+const timeEls = document.querySelectorAll("[data-time]"), dateEls = document.querySelectorAll("[data-date]");
+function clock(){
+  const d = new Date();
+  const t = d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+  const day = d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+  timeEls.forEach((el) => (el.textContent = t)); dateEls.forEach((el) => (el.textContent = day));
+}
+clock(); setInterval(clock, 1000);
+
+/* ---------- Hero card carousel (real measurements only) ---------- */
+const ITEMS = [
+  { cap: "Detector", title: "mAP@0.5 of 0.995 on the test set." },
+  { cap: "Localisation", title: "Median position error of 11.8 cm." },
+  { cap: "Navigation", title: "4 complete patrols out of 8." },
+];
+let ci = 0;
+const slot = document.getElementById("hc-slot"), dots = document.querySelectorAll("#hc-dots i");
+function showItem(step){
+  ci = (ci + step + ITEMS.length) % ITEMS.length;
+  const old = slot.querySelector(".hc-item:not(.leaving)");
+  const it = document.createElement("div");
+  it.className = "hc-item " + (step > 0 ? "from-down" : "from-up");
+  it.innerHTML = '<p class="hc-cap">' + ITEMS[ci].cap + '</p><p class="hc-title">' + ITEMS[ci].title + "</p>";
+  slot.appendChild(it);
+  if (old) { old.classList.add("leaving", step > 0 ? "from-up" : "from-down"); setTimeout(() => old.remove(), 450); }
+  requestAnimationFrame(() => requestAnimationFrame(() => it.classList.remove("from-down", "from-up")));
+  dots.forEach((d, i) => d.classList.toggle("on", i === ci));
+}
+document.getElementById("hc-row").addEventListener("click", () => showItem(1));
+document.getElementById("hc-next").addEventListener("click", (e) => { e.stopPropagation(); showItem(1); });
+document.getElementById("hc-prev").addEventListener("click", (e) => { e.stopPropagation(); showItem(-1); });
+
+/* ---------- Liquid reveal (hero) ---------- */
+(function liquid(){
+  const box = document.getElementById("lq"), canvas = box.querySelector("canvas"), base = box.querySelector("img");
+  if (REDUCED || !canvas.getContext) { canvas.remove(); return; }
+  const ctx = canvas.getContext("2d"), cover = document.createElement("canvas"), cctx = cover.getContext("2d");
+  const brush = document.createElement("canvas"), bctx = brush.getContext("2d");
+  const img = new Image(); img.src = base.currentSrc || base.src;
+  let dpr = 1, radius = 143, diam = 286, W = 0, H = 0, last = null, points = [], idle = 0, running = false;
+  function measure(){
+    const r = box.getBoundingClientRect();
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    W = canvas.width = Math.max(1, Math.round(r.width * dpr)); H = canvas.height = Math.max(1, Math.round(r.height * dpr));
+    radius = 143 * dpr; diam = Math.ceil(radius * 2); brush.width = brush.height = diam;
+    cover.width = W; cover.height = H;
+    if (img.naturalWidth) {
+      const s = Math.max(W / img.naturalWidth, H / img.naturalHeight), w = img.naturalWidth * s, h = img.naturalHeight * s;
+      cctx.drawImage(img, (W - w) / 2, (H - h) / 2, w, h);
+    }
+  }
+  img.onload = measure;
+  new ResizeObserver(measure).observe(box);
+  function stamp(x, y){
+    const c = diam / 2;
+    bctx.globalCompositeOperation = "source-over"; bctx.clearRect(0, 0, diam, diam);
+    const g = bctx.createRadialGradient(c, c, 0, c, c, c);
+    g.addColorStop(0, "rgba(255,255,255,1)"); g.addColorStop(0.55, "rgba(255,255,255,.82)"); g.addColorStop(1, "rgba(255,255,255,0)");
+    bctx.fillStyle = g; bctx.fillRect(0, 0, diam, diam);
+    bctx.globalCompositeOperation = "source-in";
+    bctx.drawImage(cover, x - c, y - c, diam, diam, 0, 0, diam, diam);
+    ctx.globalCompositeOperation = "source-over"; ctx.drawImage(brush, x - c, y - c);
+  }
+  function tick(){
+    const drawing = points.length > 0;
+    idle = drawing ? 0 : idle + 1;
+    if (idle > 120) { ctx.clearRect(0, 0, W, H); running = false; return; }
+    const fade = drawing ? 0.016 : Math.min(0.016 + idle * 0.004, 0.5);
+    ctx.globalCompositeOperation = "destination-out"; ctx.fillStyle = "rgba(0,0,0," + fade + ")"; ctx.fillRect(0, 0, W, H);
+    if (drawing) { points.forEach((p) => stamp(p.x, p.y)); points = []; }
+    requestAnimationFrame(tick);
+  }
+  addEventListener("pointermove", (e) => {
+    if (!img.naturalWidth || !W) return;
+    const r = box.getBoundingClientRect(), x = (e.clientX - r.left) * dpr, y = (e.clientY - r.top) * dpr;
+    if (x < -radius || y < -radius || x > W + radius || y > H + radius) { last = null; return; }
+    if (last) {
+      const dx = x - last.x, dy = y - last.y, dist = Math.hypot(dx, dy), step = Math.max(radius * 0.3, 1), n = Math.min(Math.ceil(dist / step), 60);
+      for (let i = 1; i <= n; i++) points.push({ x: last.x + (dx * i) / n, y: last.y + (dy * i) / n });
+    } else points.push({ x, y });
+    last = { x, y };
+    if (!running) { running = true; idle = 0; requestAnimationFrame(tick); }
+  }, { passive: true });
+})();
+
+/* ---------- Results: scroll-driven count-up (top bottom → center center) ---------- */
+const counters = [...document.querySelectorAll("[data-count]")].map((el) => ({ el, html: el.innerHTML, end: Number(el.dataset.count), dec: Number(el.dataset.dec || 0), max: 0, done: false }));
+const fmt = (v, dec) => v.toFixed(dec);
+let lastCount = 0, countQueued = false;
+function updateCounts(){
+  countQueued = false; lastCount = performance.now();
+  const vh = innerHeight;
+  counters.forEach((c) => {
+    if (c.done) return;
+    const r = c.el.getBoundingClientRect();
+    const p = Math.max(0, Math.min(1, (vh - r.top) / (vh / 2 + r.height / 2)));
+    c.max = Math.max(c.max, p); // never counts back down
+    if (c.max >= 1) { c.el.innerHTML = c.html; c.done = true; return; }
+    const small = c.el.querySelector("small");
+    c.el.firstChild.textContent = fmt(c.end * c.max, c.dec);
+    if (small) c.el.appendChild(small);
+  });
+}
+if (!REDUCED) {
+  counters.forEach((c) => { const small = c.el.querySelector("small"); c.el.textContent = fmt(0, c.dec); if (small) c.el.appendChild(small); });
+  const schedule = () => { if (countQueued) return; countQueued = true; setTimeout(() => requestAnimationFrame(updateCounts), Math.max(0, 30 - (performance.now() - lastCount))); };
+  onScrollFns.push(schedule); addEventListener("resize", schedule); onReady(schedule);
+}
+
+/* ---------- Anchor links ---------- */
+document.addEventListener("click", (e) => {
+  const a = e.target.closest("a[data-scroll]"); if (!a) return;
+  const id = a.getAttribute("href").slice(1);
+  if (!document.getElementById(id)) return;
+  e.preventDefault();
+  const wasOpen = menu.classList.contains("open");
+  closeMenu(false);
+  setTimeout(() => scrollToId(id), wasOpen ? 60 : 0);
+});
+
+/* ---------- Nav overlay ---------- */
+const menu = document.getElementById("navmenu"), openBtn = document.getElementById("menu-open"), closeBtn = document.getElementById("menu-close");
+function openMenu(){
+  if (menu.classList.contains("open")) return;
+  menu.classList.add("open"); menu.setAttribute("aria-hidden", "false"); openBtn.setAttribute("aria-expanded", "true");
+  stopScroll(); setTimeout(() => closeBtn.focus(), 50);
+}
+function closeMenu(returnFocus){
+  if (!menu.classList.contains("open")) return;
+  menu.classList.remove("open"); menu.setAttribute("aria-hidden", "true"); openBtn.setAttribute("aria-expanded", "false");
+  startScroll(); if (returnFocus !== false) openBtn.focus();
+}
+openBtn.addEventListener("click", openMenu);
+closeBtn.addEventListener("click", () => closeMenu());
+document.addEventListener("keydown", (e) => {
+  if (!menu.classList.contains("open")) return;
+  if (e.key === "Escape") { e.preventDefault(); closeMenu(); return; }
+  if (e.key === "Tab") {
+    const f = menu.querySelectorAll("button, a"), first = f[0], lastEl = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); lastEl.focus(); }
+    else if (!e.shiftKey && document.activeElement === lastEl) { e.preventDefault(); first.focus(); }
+  }
+});
+
+/* ---------- PDF viewer (no download; phones open a new tab) ---------- */
+const viewer = document.getElementById("viewer"), vFrame = document.getElementById("viewer-frame");
+const vTitle = document.getElementById("viewer-title"), vTab = document.getElementById("viewer-tab"), vOrig = document.getElementById("viewer-orig");
+let vOpener = null; const mqPhone = matchMedia("(max-width: 768px)");
+document.querySelectorAll("a[data-viewer]").forEach((a) => a.addEventListener("click", (e) => {
+  if (mqPhone.matches || navigator.pdfViewerEnabled === false || typeof viewer.showModal !== "function") return;
+  e.preventDefault();
+  const pdf = a.getAttribute("href"), orig = a.dataset.original;
+  vOpener = menu.contains(a) ? openBtn : a;
+  closeMenu(false);
+  vTitle.textContent = a.dataset.title; vTab.href = pdf; vOrig.href = orig;
+  vOrig.textContent = "Download (" + orig.split(".").pop().toUpperCase() + ") ↓";
+  vFrame.innerHTML = '<object data="' + pdf + '#view=FitH" type="application/pdf" aria-label="' + a.dataset.title + ' (PDF)"><div class="v-fallback"><p>Your browser cannot display this PDF here.</p><a class="pill pill-dark" href="' + pdf + '" target="_blank" rel="noopener"><span class="pill-in">Open the PDF</span></a></div></object>';
+  viewer.showModal(); stopScroll();
+  requestAnimationFrame(() => viewer.classList.add("shown"));
+  document.getElementById("viewer-close").focus();
+}));
+document.getElementById("viewer-close").addEventListener("click", () => viewer.close());
+viewer.addEventListener("click", (e) => { if (e.target === viewer) { const r = viewer.getBoundingClientRect(); if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) viewer.close(); } });
+viewer.addEventListener("close", () => {
+  viewer.classList.remove("shown"); vFrame.innerHTML = ""; startScroll();
+  if (vOpener) vOpener.focus({ preventScroll: true });
+});
+</script>
+</body>
+</html>
